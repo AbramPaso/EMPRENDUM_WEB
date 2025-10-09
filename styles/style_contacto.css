@@ -300,23 +300,21 @@ body {
 }
 
 .benefits-grid {
-    
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    display: flex; /* Cambiado de 'grid' a 'flex' */
+    flex-wrap: wrap; 
+    justify-content: center; /* Centra las tarjetas horizontalmente */
     gap: 2rem;
     max-width: 1200px;
-    margin: 0 auto;
-   
-    
+    margin: 0 auto; /* Centra el contenedor completo */
 }
 
 .benefit-card {
+    flex: 1 1 280px; /* Controla el tamaño de la tarjeta dentro de flexbox */
+    /* ... resto de estilos de benefit-card ... */
     padding: 2rem;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    
-    
 }
 
 .benefit-card:hover {
