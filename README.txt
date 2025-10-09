@@ -1,0 +1,1 @@
+Quede en el logo y el esqueleto

@@ -1,0 +1,355 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Header y Navbar */
+.header {
+    background-color: transparent; /* Transparente por defecto */
+    border-bottom: none; 
+    position: fixed; /* Se mantiene fijo en la parte superior */
+    width: 100%; 
+    top: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease, padding 0.3s ease; 
+    padding: 1.5rem 5%; 
+}
+
+/* Nueva clase para cuando el usuario hace scroll */
+.header.scrolled {
+    background-color: #fff; 
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); 
+    padding: 1rem 5%; 
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff; /* Logo blanco al inicio */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+/* Cambiamos el color del logo en el estado "scrolled" */
+.header.scrolled .nav-logo {
+    color: #005a87;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: #fff; /* Enlaces blancos al inicio */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #ffc107; /* Color de acento al pasar el mouse */
+}
+
+/* Color de los enlaces al hacer scroll */
+.header.scrolled .nav-link {
+    color: #555;
+}
+
+.header.scrolled .nav-link:hover {
+    color: #005a87;
+}
+
+.hamburger {
+    display: none;
+    cursor: pointer;
+}
+
+.bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: #fff; /* Barras blancas al inicio */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Color de las barras del menú al hacer scroll */
+.header.scrolled .hamburger .bar {
+    background-color: #333;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(rgba(0, 90, 135, 0.7), rgba(0, 90, 135, 0.7)), url('https://via.placeholder.com/1500x800.png?text=Imagen+de+Fondo') no-repeat center center/cover;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+}
+
+.hero-text h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.hero-text p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.cta-button {
+    background-color: #ffc107;
+    color: #333;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #e0a800;
+}
+
+/* Info Section */
+.info-section {
+    padding: 4rem 5%;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.info-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: #005a87;
+}
+
+.info-section p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+/* Footer */
+.footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+/* Responsive Design */
+@media(max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .hamburger.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: #fff;
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-item {
+        padding: 1.5rem 0;
+    }
+
+    .hero-text h1 {
+        font-size: 2rem;
+    }
+}
+
+
+/* Estilo para el título de la página */
+.page-title {
+    background-color: #005a87;
+    color: #fff;
+    text-align: center;
+    padding: 3rem 5%;
+}
+
+.page-title h1 {
+    font-size: 2.8rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Contenedor de las tarjetas de historias */
+.stories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 4rem 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Estilo de cada tarjeta */
+.story-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.story-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.story-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.story-content {
+    padding: 1.5rem;
+}
+
+.story-content h3 {
+    color: #005a87;
+    margin-bottom: 0.5rem;
+}
+
+.story-content p {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.read-more {
+    color: #005a87;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+
+
+/* Hero section específica para esta página */
+.hero-universitarios {
+    background: linear-gradient(rgba(0, 90, 135, 0.8), rgba(0, 90, 135, 0.8)), url('https://via.placeholder.com/1500x600.png?text=Estudiantes+Colaborando') no-repeat center center/cover;
+    height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    padding: 0 5%;
+}
+
+/* Sección de beneficios */
+.benefits-section {
+    padding: 4rem 5%;
+    text-align: center;
+    background-color: #fff;
+}
+
+.benefits-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #005a87;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.benefit-card {
+    padding: 2rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.benefit-icon {
+    font-size: 3rem;
+    color: #005a87;
+    margin-bottom: 1.5rem;
+}
+
+.benefit-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.benefit-card p {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Sección de Llamada a la Acción (CTA) */
+.cta-section {
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 4rem 5%;
+}
+
+.cta-section h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.cta-section p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    color: #666;
+}
