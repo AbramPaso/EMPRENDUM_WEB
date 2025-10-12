@@ -18,6 +18,7 @@ body {
 
 /* Header y Navbar */
 .header {
+    backdrop-filter: blur(7px);
     background-color: transparent; /* Transparente por defecto */
     border-bottom: none; 
     position: fixed; /* Se mantiene fijo en la parte superior */
@@ -76,10 +77,11 @@ body {
     display: flex;
     list-style: none;
     gap: 2rem;
+    margin-bottom: 0;
 }
 
 .nav-link {
-    color: #fff; /* Enlaces blancos al inicio */
+    color: #fff !important; /* Enlaces blancos al inicio */
     text-decoration: none;
     transition: color 0.3s ease;
 }
@@ -504,3 +506,9 @@ body {
     font-weight: 600;    
 }
 
+
+@media only screen and (max-width: 768px) {
+    .nav-link {
+        color: #000 !important;
+    }
+}
