@@ -114,14 +114,68 @@ body {
 }
 
 /* Hero Section */
+/* Hero Section (Ajustes para el carrusel) */
 .hero {
-    background: linear-gradient(rgba(0, 90, 135, 0.7), rgba(0, 90, 135, 0.7)), url('../image/image_index.jpg') no-repeat center center/cover;
-    height: 80vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    /* Eliminamos el background, las imágenes van en cada slide del carrusel */
+    height: 80vh; /* La altura general de tu carrusel */
+    position: relative; /* Importante para que los captions y controles se posicionen bien */
+    overflow: hidden; /* Asegura que nada se salga del contenedor */
+}
+
+/* Estilos para las imágenes del carrusel */
+.carousel-item img {
+    height: 80vh; /* Asegura que la imagen ocupe la altura definida */
+    object-fit: cover; /* Recorta la imagen para que cubra el área sin distorsionarse */
+    filter: brightness(60%); /* Oscurece las imágenes un poco para que el texto blanco resalte, sin un degradado azul */
+}
+
+/* Estilos para el texto del carrusel */
+.carousel-caption {
+    background-color: rgba(0, 0, 0, 0.2); /* Fondo semitransparente para el texto, si lo deseas */
+    padding: 1.5rem;
+    border-radius: 8px;
+    max-width: 80%; /* Limita el ancho del texto */
+    margin-bottom: 50px; /* Eleva el caption un poco del borde inferior */
+    color: #fff; /* Asegura que el texto sea blanco */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Agrega sombra al texto para mayor legibilidad */
+}
+
+.carousel-caption h1 {
+    font-size: 3.5rem; /* Ajusta el tamaño de la fuente para el título */
+    margin-bottom: 1rem;
     color: #fff;
+}
+
+.carousel-caption p {
+    font-size: 1.5rem; /* Ajusta el tamaño de la fuente para el párrafo */
+    margin-bottom: 2rem;
+    color: #fff;
+}
+
+/* Estilos de tu botón CTA, asegúrate de que se vean bien sobre el fondo oscuro */
+.cta-button {
+    background-color: #007bff; /* Color azul de Bootstrap */
+    color: #fff;
+    padding: 0.8rem 2rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    border: none; /* Elimina el borde si Bootstrap lo agrega */
+}
+
+.cta-button:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+/* Puedes ajustar el color de los indicadores y flechas si es necesario */
+.carousel-indicators [data-bs-target] {
+    background-color: #fff;
+}
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: brightness(0) invert(1); /* Hace que las flechas sean blancas */
 }
 
 .hero-text h1 {
