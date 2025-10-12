@@ -117,14 +117,14 @@ body {
 /* Hero Section (Ajustes para el carrusel) */
 .hero {
     /* Eliminamos el background, las imágenes van en cada slide del carrusel */
-    height: 80vh; /* La altura general de tu carrusel */
+    height: 100vh; /* La altura general de tu carrusel */
     position: relative; /* Importante para que los captions y controles se posicionen bien */
     overflow: hidden; /* Asegura que nada se salga del contenedor */
 }
 
 /* Estilos para las imágenes del carrusel */
 .carousel-item img {
-    height: 80vh; /* Asegura que la imagen ocupe la altura definida */
+    height: 100vh; /* Asegura que la imagen ocupe la altura definida */
     object-fit: cover; /* Recorta la imagen para que cubra el área sin distorsionarse */
     filter: brightness(60%); /* Oscurece las imágenes un poco para que el texto blanco resalte, sin un degradado azul */
 }
@@ -138,6 +138,13 @@ body {
     margin-bottom: 50px; /* Eleva el caption un poco del borde inferior */
     color: #fff; /* Asegura que el texto sea blanco */
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Agrega sombra al texto para mayor legibilidad */
+    /* Cod */
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0 !important;
+    max-width: 100%;
+    padding: 0 150px;
 }
 
 .carousel-caption h1 {
@@ -428,3 +435,69 @@ body {
     margin-bottom: 2rem;
     color: #666;
 }
+
+.flex-cod {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 80px;
+}
+.flex-cod .left {
+    font-size: 64px;
+    max-width: 300px;
+    text-align: left;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    gap: 10px;
+    .description {
+        font-size: 19px;
+        font-weight: normal;
+        line-height: normal;
+        margin-top: 10px;
+        color: #ffffffe0;
+    }
+}
+.flex-cod .right {
+    font-size: 1rem;
+    font-style: italic;
+    max-width: 250px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    .tag {
+        color: #15c423;
+    }
+}
+.cite {
+    padding: 0 20px;
+    border-left: 1px solid #15c423;
+    font-size: 1.2rem;
+}
+.colportor-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    font-style: normal;
+}
+.colportor-rol {
+    font-size: 14px;
+    font-weight: normal;
+    color: white;
+    font-style: normal;
+}
+.btn-cod {
+    font-size: 16px;
+    background: #144719;
+    border-radius: 200px;
+    border: none;
+    padding: 10px 30px;
+    width: fit-content;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 600;    
+}
+
