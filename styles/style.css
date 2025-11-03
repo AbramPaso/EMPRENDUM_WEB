@@ -290,10 +290,16 @@ body {
 
 /* Estilo para el título de la página */
 .page-title {
+    min-height: 100vh;
+    width: 100vw;
     background-color: #005a87;
     color: #fff;
     text-align: center;
     padding: 3rem 5%;
+    background-image: url('../image/image_carrusel1.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
 }
 
 .page-title h1 {
