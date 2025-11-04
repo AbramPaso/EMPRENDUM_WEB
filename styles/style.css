@@ -927,7 +927,7 @@ body {
 
 /* Colores de referencia */
 :root {
-    --color-footer-bg: #005a87; /* Azul oscuro principal */
+    --color-footer-bg: #004687; /* Azul oscuro principal */
     --color-texto-claro: #fff;
     --color-enlace-footer: #c0d9e8; /* Azul claro para los enlaces */
     --color-destacado: #f5b041; /* Color amarillo/naranja para el lema */
@@ -956,6 +956,8 @@ body {
     font-weight: 700;
     margin-bottom: 20px;
     text-transform: uppercase;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .footer-col ul {
@@ -986,15 +988,11 @@ body {
 }
 
 .footer-logo {
-    height: 45px; /* Altura del logo */
+    height: 70px; /* Altura del logo */
     margin-bottom: 5px;
+    filter: invert(100%);
 }
 
-.university-name {
-    font-size: 0.7rem;
-    opacity: 0.7;
-    margin-top: 0;
-}
 
 .lema {
     font-family: cursive, sans-serif; /* Usamos una fuente de estilo "script" */
@@ -1008,8 +1006,9 @@ body {
 }
 
 .agent-logo {
-    height: 60px; /* Tamaño del logo "Quiero ser un agente" */
+    height: 90px; 
     display: block;
+
 }
 
 /* --- Columna 5: Social y Copyright --- */
@@ -1023,22 +1022,23 @@ body {
 .social-links {
     display: flex;
     gap: 15px;
-    margin-bottom: 30px;
+    
 }
 
 .social-links img {
-    height: 25px; /* Tamaño de los iconos de redes sociales */
+    height: 25px; 
     width: 25px;
-    opacity: 0.8;
+
 }
 
-.um-logo {
-    height: 40px; /* Tamaño del logo de la UM */
+.iunav-logo {
+    height: 35px; 
     margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .copyright {
-    font-size: 0.75rem;
     opacity: 0.6;
 }
 
