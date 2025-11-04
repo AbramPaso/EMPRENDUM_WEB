@@ -533,3 +533,394 @@ body {
         color: #000 !important;
     }
 }
+
+
+
+
+
+/* === Estilos del Contenedor Principal (GRID) === */
+.historia-section {
+
+    color: #333; 
+   
+
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+
+    gap: 40px; 
+    
+    min-height: 50vh; /* Ajusta la altura mínima según necesites */
+    padding: 6rem 5%; /* Padding en los bordes */
+    background-image: url('../image/Photo_ejemplo1.jpg');
+    position: relative;
+    z-index: 1; 
+    background-color: transparent;
+}
+
+.historia-section::before {
+    content: '';
+    /* 2. Coloca la imagen en el seudo-elemento */
+    background-image: url('../image/Photo_ejemplo1.jpg'); 
+    background-size: cover;
+    background-position: center;
+    
+    /* 3. Estira el seudo-elemento para cubrir toda la sección */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* 4. Aplica el desenfoque */
+    filter: blur(5px); /* Ajusta el valor para más o menos desenfoque */
+    
+    /* 5. Baja el seudo-elemento para que esté detrás del contenido */
+    z-index: -1; 
+}
+
+.historia-texto p {
+    font-size: 2vw; 
+    
+   
+    text-align: justify;
+    width: 100%; /* Deja que ocupe todo el ancho de su contenedor (historia-texto) */
+    font-family: 'Raleway', sans-serif; 
+    line-height: 1.6; 
+}
+
+
+.historia-texto {
+    display: flex;
+    flex-direction: column;
+   
+    justify-content: center; 
+    color: #000000; 
+    max-width: 600px; 
+}
+
+.historia-texto h2 {
+    font-size: 2.5rem;
+    color: #005a87; /* Color principal de tu marca */
+}
+
+/* --- Estilos de la Columna de Imagen --- */
+.historia-imagen {
+    /* Centra la imagen dentro de la columna verticalmente */
+    display: flex;
+    align-items: center; /* Centrado vertical */
+    justify-content: center; /* Centrado horizontal */
+}
+
+.imagen-destacada {
+    max-width: 100%; /* Asegura que la imagen no se desborde */
+    height: auto;
+    /* Para darle el efecto de "tarjeta" o borde blanco como en tu imagen */
+    border-radius: 8px; 
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
+
+}
+
+/* === Media Queries para Móviles === */
+@media (max-width: 768px) {
+    .historia-section {
+        /* En pantallas pequeñas, apila las columnas: una encima de la otra */
+        grid-template-columns: 1fr; 
+        gap: 30px;
+    }
+}
+
+
+
+
+/* === Estilos del Contenedor Principal (Grid) === */
+.estadisticas-section {
+    display: grid;
+    /* Columnas: La imagen puede ser un poco más ancha que los datos */
+    grid-template-columns: 1.1fr 0.9fr; 
+    gap: 50px; /* Espacio entre las columnas */
+    padding: 6rem 5%; 
+    align-items: center; /* Centra las dos columnas verticalmente */
+    max-width: 1200px; /* Limita el ancho para que no se extienda demasiado */
+    margin: 0 auto; /* Centra la sección en la página */
+}
+
+/* --- Columna de Imagen --- */
+.estadisticas-imagen {
+    padding: 20px; /* Simula un margen alrededor de la imagen */
+    background-color: transparent; /* Si no lleva fondo */
+}
+
+.imagen-destacada-est {
+    width: 100%;
+    height: auto;
+    /* Redondeo de bordes para el estilo de la imagen */
+    border-radius: 12px; 
+    /* Borde blanco si lo deseas, o solo un sutil box-shadow */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    /* Cortamos los bordes si la imagen es muy grande */
+    object-fit: cover; 
+    display: block;
+}
+
+/* --- Columna de Datos Estadísticos --- */
+.datos-estadisticos {
+    /* Aquí los elementos se apilan naturalmente */
+    padding-left: 20px; /* Separación de la imagen */
+}
+
+.encabezado-stats {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+/* === Estilos de las Tarjetas de Datos (Dato-Card) === */
+.dato-card {
+    display: grid;
+    /* Grid de 3 columnas para alinear los elementos: Icono | Número | Texto */
+    grid-template-columns: auto 1fr; 
+    grid-template-areas: 
+        "icon number"
+        "icon text"; 
+    
+    /* Espacio debajo de cada tarjeta */
+    margin-bottom: 30px;
+    padding: 10px 0;
+    
+    /* Borde o separación sutil si lo necesitas */
+    /* border-bottom: 1px solid #eee; */
+}
+
+.icono-stat {
+    /* Mueve el icono a la posición inicial y le da un tamaño grande */
+    grid-area: icon;
+    font-size: 4rem; 
+    margin-right: 20px;
+    align-self: center; /* Centra el icono verticalmente */
+}
+
+.numero-stat {
+    /* Número grande y de color */
+    grid-area: number;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #005a87; /* Tu color principal */
+    line-height: 1; /* Elimina espacio innecesario */
+    align-self: flex-end; /* Alinea el número hacia abajo */
+}
+
+.image-ven{
+    width: 80px;
+    height: auto;
+    align-self: center; /* Centra la imagen verticalmente */
+    margin-right: 20px;
+}
+
+.texto-stat {
+    /* Texto "estudiantes" o "países" */
+    grid-area: text;
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 400;
+    line-height: 1;
+    align-self: flex-start; /* Alinea el texto hacia arriba */
+}
+
+
+
+/* === Estilo del Texto Inferior === */
+.texto-inferior {
+    text-align: center;
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 50px auto 30px auto;
+    padding: 0 5%;
+}
+
+/* --- Media Query para Móviles --- */
+@media (max-width: 900px) {
+    .estadisticas-section {
+        /* Apila las columnas: Imagen arriba, Datos abajo */
+        grid-template-columns: 1fr; 
+        gap: 40px;
+    }
+    
+    /* Asegura que los datos queden bien en el móvil */
+    .datos-estadisticos {
+        padding-left: 0;
+    }
+    
+    /* Reduce el tamaño de los números para móviles */
+    .numero-stat {
+        font-size: 2.5rem;
+    }
+}
+
+
+
+
+
+
+/* === Estilos del Contenedor Principal (GRID) === */
+.equipo-section {
+    /* Define la sección como un Grid de 4 columnas + 1 fila para el margen */
+    display: grid;
+    /* La primera fila es para el director y la descripción, la segunda para la cuadrícula */
+    grid-template-rows: auto 1fr; 
+    /* 4 columnas de ancho completo para controlar la disposición del encabezado/grid */
+    grid-template-columns: repeat(4, 1fr); 
+    
+    gap: 20px;
+    padding: 4rem 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* === Posicionamiento del Encabezado y Descripción (A la derecha del Director) === */
+.equipo-header {
+    /* Ocupa las columnas 3 y 4 de la cuadrícula principal */
+    grid-column: 3 / span 2; 
+    /* Ocupa la primera fila */
+    grid-row: 1; 
+    
+    /* Centrado vertical para alinearse con la foto del director */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    padding-left: 20px; /* Separación de la foto */
+}
+
+.equipo-header h1 {
+    /* Alineación según la imagen de referencia */
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.equipo-header .destacado {
+    /* Color de tu marca */
+    color: #005a87; 
+}
+
+.equipo-header p {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* === Contenedor de las Tarjetas (Para alinearlas debajo del director) === */
+.miembros-grid {
+    /* Ocupa las 4 columnas de la cuadrícula principal, PERO en la fila de abajo */
+    grid-column: 1 / span 4; 
+    grid-row: 2; /* Segunda fila */
+    
+    display: grid;
+    /* Redefine la cuadrícula interna a 4 columnas */
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+}
+
+/* --- Estilos de las Tarjetas de Miembros --- */
+.miembro-card {
+    background-color: #fff;
+    text-align: center;
+    /* Ocupa 1 columna por defecto */
+    grid-column: span 1; 
+}
+
+.miembro-foto {
+    width: 100%;
+    /* Altura consistente y corte de la imagen */
+    height: 250px; 
+    object-fit: cover;
+    display: block;
+    /* Opcional: Borde redondeado */
+    border-radius: 8px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.miembro-nombre {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.miembro-cargo {
+    font-size: 0.9rem;
+    color: #005a87;
+    font-weight: 400;
+}
+
+/* === CLAVE: Posicionamiento y Estilo del Director === */
+.director {
+    /* Ocupa las primeras 2 columnas y la fila 1 del GRID INTERNO */
+    grid-column: 1 / span 2;
+    grid-row: 1; 
+    
+    text-align: left; /* Alinea su texto a la izquierda */
+    padding-bottom: 0;
+}
+
+.director .miembro-foto {
+    /* Altura del director para que ocupe el mismo espacio vertical que la descripción */
+    height: 400px; 
+}
+
+.director .miembro-nombre,
+.director .miembro-cargo {
+    margin-left: 0;
+    text-align: left;
+}
+
+/* === Media Queries para Móviles (Responsividad) === */
+@media (max-width: 900px) {
+    /* El contenedor principal se apila en 2 columnas */
+    .equipo-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* El encabezado descriptivo se mueve abajo */
+    .equipo-header {
+        grid-column: 1 / span 2; 
+        grid-row: 2; /* Se coloca debajo del director */
+        padding-left: 0;
+    }
+    
+    /* El director (el primer elemento) ocupa las 2 columnas */
+    .director {
+        grid-column: 1 / span 2; 
+        grid-row: 1; 
+        text-align: center;
+    }
+    
+    .director .miembro-nombre,
+    .director .miembro-cargo {
+        text-align: center;
+    }
+
+    /* El grid interno también se reduce a 2 columnas */
+    .miembros-grid {
+        grid-column: 1 / span 2;
+        grid-row: 3; /* Se mueve a la tercera fila */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+@media (max-width: 500px) {
+     /* En los teléfonos más pequeños, se apila todo en 1 columna */
+    .equipo-section, .miembros-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .equipo-header, .director, .miembro-card {
+        grid-column: 1 / span 1; 
+    }
+    
+    .miembros-grid {
+        grid-row: 3;
+    }
+}
