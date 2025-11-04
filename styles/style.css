@@ -924,3 +924,160 @@ body {
         grid-row: 3;
     }
 }
+
+/* Colores de referencia */
+:root {
+    --color-footer-bg: #005a87; /* Azul oscuro principal */
+    --color-texto-claro: #fff;
+    --color-enlace-footer: #c0d9e8; /* Azul claro para los enlaces */
+    --color-destacado: #f5b041; /* Color amarillo/naranja para el lema */
+}
+
+/* === Contenedor Principal del Footer === */
+.main-footer {
+    background-color: var(--color-footer-bg);
+    color: var(--color-texto-claro);
+    padding: 3rem 5%;
+}
+
+.footer-grid-container {
+    display: grid;
+    /* Define la estructura de las columnas: 
+       La primera columna es más ancha (1.5fr) y las demás son iguales (1fr) */
+    grid-template-columns: 1.5fr repeat(4, 1fr); 
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- Estilos Comunes de Columna --- */
+.footer-col h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col li {
+    margin-bottom: 8px;
+}
+
+.footer-col a {
+    text-decoration: none;
+    color: var(--color-enlace-footer);
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+
+.footer-col a:hover {
+    color: var(--color-texto-claro);
+}
+
+/* --- Columna 1: Logo y Lema --- */
+.logo-info {
+    /* Ajusta el contenido */
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-logo {
+    height: 45px; /* Altura del logo */
+    margin-bottom: 5px;
+}
+
+.university-name {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    margin-top: 0;
+}
+
+.lema {
+    font-family: cursive, sans-serif; /* Usamos una fuente de estilo "script" */
+    font-size: 1.3rem;
+    line-height: 1.4;
+    margin: 25px 0;
+}
+
+.lema .destacado {
+    color: var(--color-destacado); /* Color destacado para "INSTRUMENTO de transformación" */
+}
+
+.agent-logo {
+    height: 60px; /* Tamaño del logo "Quiero ser un agente" */
+    display: block;
+}
+
+/* --- Columna 5: Social y Copyright --- */
+.social-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea todo el contenido a la derecha */
+    text-align: right;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.social-links img {
+    height: 25px; /* Tamaño de los iconos de redes sociales */
+    width: 25px;
+    opacity: 0.8;
+}
+
+.um-logo {
+    height: 40px; /* Tamaño del logo de la UM */
+    margin-bottom: 10px;
+}
+
+.copyright {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+/* === Media Queries para Móviles === */
+@media (max-width: 900px) {
+    .footer-grid-container {
+        /* En tabletas, se usa una cuadrícula de 3 columnas */
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .social-copy {
+        /* Mueve la columna social/copyright a la última posición de la cuadrícula */
+        grid-column: 2 / span 2;
+        grid-row: 2; /* Segunda fila */
+        align-items: center;
+        text-align: center;
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-grid-container {
+        /* En móviles, se apila en una sola columna */
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    /* El logo y lema van primero */
+    .logo-info {
+        order: 1; 
+    }
+    /* Los demás se apilan */
+    .footer-col {
+        order: 2; 
+    }
+    /* El social/copyright va al final */
+    .social-copy {
+        order: 3; 
+        grid-column: 1;
+        grid-row: auto;
+    }
+}
