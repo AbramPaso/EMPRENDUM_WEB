@@ -357,3 +357,152 @@ body {
     margin-bottom: 2rem;
     color: #666;
 }
+
+/* === Contenedor Principal del Footer === */
+.main-footer {
+    background-color: var(--color-footer-bg);
+    color: var(--color-texto-claro);
+    padding: 3rem 5%;
+}
+
+.footer-grid-container {
+    display: grid;
+    /* Define la estructura de las columnas: 
+       La primera columna es más ancha (1.5fr) y las demás son iguales (1fr) */
+    grid-template-columns: 1.5fr repeat(4, 1fr); 
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- Estilos Comunes de Columna --- */
+.footer-col h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col li {
+    margin-bottom: 8px;
+}
+
+.footer-col a {
+    text-decoration: none;
+    color: var(--color-enlace-footer);
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+
+.footer-col a:hover {
+    color: var(--color-texto-claro);
+}
+
+/* --- Columna 1: Logo y Lema --- */
+.logo-info {
+    /* Ajusta el contenido */
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-logo {
+    height: 70px; /* Altura del logo */
+    margin-bottom: 5px;
+    filter: invert(100%);
+}
+
+
+.lema {
+    font-family: cursive, sans-serif; /* Usamos una fuente de estilo "script" */
+    font-size: 1.3rem;
+    line-height: 1.4;
+    margin: 25px 0;
+}
+
+.lema .destacado {
+    color: var(--color-destacado); /* Color destacado para "INSTRUMENTO de transformación" */
+}
+
+.agent-logo {
+    height: 90px; 
+    display: block;
+
+}
+
+/* --- Columna 5: Social y Copyright --- */
+.social-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea todo el contenido a la derecha */
+    text-align: right;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    
+}
+
+.social-links img {
+    height: 25px; 
+    width: 25px;
+
+}
+
+.iunav-logo {
+    height: 35px; 
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.copyright {
+    opacity: 0.6;
+}
+
+/* === Media Queries para Móviles === */
+@media (max-width: 900px) {
+    .footer-grid-container {
+        /* En tabletas, se usa una cuadrícula de 3 columnas */
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .social-copy {
+        /* Mueve la columna social/copyright a la última posición de la cuadrícula */
+        grid-column: 2 / span 2;
+        grid-row: 2; /* Segunda fila */
+        align-items: center;
+        text-align: center;
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-grid-container {
+        /* En móviles, se apila en una sola columna */
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    /* El logo y lema van primero */
+    .logo-info {
+        order: 1; 
+    }
+    /* Los demás se apilan */
+    .footer-col {
+        order: 2; 
+    }
+    /* El social/copyright va al final */
+    .social-copy {
+        order: 3; 
+        grid-column: 1;
+        grid-row: auto;
+    }
+}
