@@ -82,7 +82,7 @@ body {
 }
 
 .nav-link {
-    color: #fff !important; /* Enlaces blancos al inicio */
+    color: #fff ; /* Enlaces blancos al inicio */
     text-decoration: none;
     transition: color 0.3s ease;
 }
