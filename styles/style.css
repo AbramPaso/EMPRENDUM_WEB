@@ -31,8 +31,6 @@ body {
 
 /* Nueva clase para cuando el usuario hace scroll */
 .header.scrolled {
-    /* background-color: #fff;  */
-    /* border-bottom: 1px solid #e0e0e0; */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); 
     padding: 1rem 5%; 
 }
