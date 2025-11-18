@@ -7,8 +7,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
 }
-
+html, body {
+    width: 100%; /* El 100% de su contenedor padre */
+    overflow-x: hidden; /* CORTA cualquier contenido que se salga */
+}
 body {
     font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
@@ -954,8 +958,7 @@ body {
     font-weight: 700;
     margin-bottom: 20px;
     text-transform: uppercase;
-    margin-left: auto;
-    margin-right: auto;
+
 }
 
 .footer-col ul {
@@ -1006,6 +1009,7 @@ body {
 .agent-logo {
     height: 90px; 
     display: block;
+
 
 }
 
