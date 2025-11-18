@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const header = document.querySelector('.header');
 
+    window.scrollTo(0, 0);
     window.addEventListener('scroll', () => {
         if (window.scrollY > 200) {
             header.classList.add('scrolled');
