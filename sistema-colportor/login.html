@@ -31,30 +31,49 @@
         </div>
     </div>
 
-    <script>
+<script>
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        alert('hola')
         e.preventDefault();
-        const cedula = document.getElementById('cedulaInput').value;
-        const password = document.getElementById('passwordInput').value;
+        
+        // CORRECCIÓN AQUÍ: Usamos los IDs 'cedula' y 'password' (sin la palabra Input)
+        // Si tu HTML dice id="cedula", aquí debe decir 'cedula'
+        const cedulaElement = document.getElementById('cedula');
+        const passwordElement = document.getElementById('password');
 
-        const response = await fetch('http://localhost:3000/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cedula, password })
-        });
+        // Verificación de seguridad por si acaso no los encuentra
+        if (!cedulaElement || !passwordElement) {
+            console.error("Error: No encuentro los inputs. Revisa los ID en tu HTML.");
+            return;
+        }
 
-        const data = await response.json();
+        const cedula = cedulaElement.value;
+        const password = passwordElement.value;
 
-        if (response.ok) {
-            // Guardamos el token en el navegador
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userRole', data.user.rol);
-            
-            // Redireccionar al dashboard
-            window.location.href = 'dashboard.html';
-        } else {
-            alert(data.message);
+        try {
+            const response = await fetch('http://localhost:3000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cedula, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Guardamos el token y los datos del usuario
+                localStorage.setItem('token', data.token);
+                // Guardamos el objeto usuario entero como texto para usarlo luego
+                localStorage.setItem('userData', JSON.stringify(data.user));
+                
+                alert('Bienvenido/a ' + data.user.nombre);
+                
+                // Redireccionar al dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Error: ' + (data.message || 'Credenciales incorrectas'));
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+            alert("No se pudo conectar con el servidor.");
         }
     });
 </script>

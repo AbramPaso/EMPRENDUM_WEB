@@ -98,5 +98,46 @@
         </div>
     </div>
 
+
+    <script>
+        document.getElementById('registroForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Evita que la página se recargue
+
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            // Pequeña corrección si el input se llama diferente al backend
+            // Aseguramos que enviamos 'nombre_completo' si en el HTML pusiste 'nombre'
+            if(data.nombre && !data.nombre_completo) {
+                data.nombre_completo = data.nombre;
+            }
+
+            try {
+                // 2. Enviamos los datos a tu servidor (Backend)
+                const response = await fetch('http://localhost:3000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data) // Convertimos los datos a JSON
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // 3. Si todo sale bien
+                    alert('¡Registro exitoso! Ahora serás redirigido para iniciar sesión.');
+                    window.location.href = 'login.html';
+                } else {
+                    // 4. Si hay un error (ej: Cédula repetida)
+                    alert('Error: ' + (result.message || 'Ocurrió un problema al registrarte.'));
+                }
+            } catch (error) {
+                console.error('Error de conexión:', error);
+                alert('No se pudo conectar con el servidor. Asegúrate de que el backend esté encendido.');
+            }
+        });
+    </script>
 </body>
 </html>
