@@ -1,0 +1,155 @@
+/* =========================================
+   ESTILOS DEL SISTEMA (DASHBOARD Y FORMS)
+   ========================================= */
+
+/* --- Contenedores de Formularios --- */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+    padding: 2rem;
+}
+
+.form-card {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 800px; /* Ancho para formularios grandes */
+}
+
+.form-card.small {
+    max-width: 450px; /* Ancho para login */
+}
+
+.form-title {
+    color: #005a87;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+/* --- Grid del Formulario (2 columnas) --- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1; /* Ocupa todo el ancho */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.form-group textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+/* --- Botones del Sistema --- */
+.btn-submit {
+    width: 100%;
+    background-color: #005a87;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #004466;
+}
+
+/* --- DASHBOARD STYLES --- */
+.dashboard-container {
+    padding: 2rem 5%;
+    max-width: 1400px;
+    margin: 80px auto 0; /* Margen superior por el navbar fijo */
+}
+
+.welcome-banner {
+    background: linear-gradient(to right, #005a87, #008cba);
+    color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Tarjetas de Estadísticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border-left: 5px solid #005a87;
+}
+
+.stat-card h3 {
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.stat-card .number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin: 10px 0;
+}
+
+/* Sección de Reportes */
+.report-section {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+
+/* --- Responsive Forms --- */
+@media (max-width: 700px) {
+    .form-grid {
+        grid-template-columns: 1fr; /* 1 columna en móvil */
+    }
+    .welcome-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+}

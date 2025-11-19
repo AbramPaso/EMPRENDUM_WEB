@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - EMPRENDUM</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="header scrolled" style="background-color: #fff; position: sticky;">
+        <nav class="navbar">
+            <a href="dashboard.html" class="nav-logo" style="color: #005a87;">EMPRENDUM</a>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html" class="nav-link" style="color: #333;">Volver al Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="dashboard-container">
+        <h1 style="text-align: center; color: #005a87; margin-bottom: 30px;">Configuración de Perfil</h1>
+
+        <div class="form-card" style="margin: 0 auto 30px auto;">
+            <h3 class="form-title" style="font-size: 1.5rem; text-align: left;"><i class="fas fa-id-badge"></i> Datos de Misión Actual</h3>
+            
+            <form>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Foto de Perfil</label>
+                        <input type="file" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>Lugar donde Colportas (Ciudad)</label>
+                        <input type="text" placeholder="Ej: Caracas">
+                    </div>
+                    <div class="form-group">
+                        <label>Unión de Trabajo</label>
+                        <select>
+                            <option>UVOC</option>
+                            <option>UVO</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Campo de Trabajo</label>
+                        <select>
+                            <option>AVCN</option>
+                            <option>MVY</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Pensamiento / Biografía Corta</label>
+                        <textarea placeholder="Escribe un pensamiento que te identifique..."></textarea>
+                    </div>
+                </div>
+                <button class="btn-submit">Guardar Perfil Laboral</button>
+            </form>
+        </div>
+
+        <div class="form-card" style="margin: 0 auto;">
+            <h3 class="form-title" style="font-size: 1.5rem; text-align: left;"><i class="fas fa-users"></i> Datos Personales y Familiares</h3>
+            <p style="margin-bottom: 20px; color: #666;">Esta información es privada y para uso administrativo.</p>
+            
+            <form>
+                <h4 style="margin-bottom: 15px; color: #005a87; border-bottom: 1px solid #eee; padding-bottom: 5px;">Datos de los Padres</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre del Padre</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono del Padre</label>
+                        <input type="tel">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre de la Madre</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono de la Madre</label>
+                        <input type="tel">
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 15px 0; color: #005a87; border-bottom: 1px solid #eee; padding-bottom: 5px;">Información Adicional</h4>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Dirección Exacta de Procedencia</label>
+                        <input type="text" placeholder="Estado, Ciudad, Municipio, Calle, Casa">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Estado Civil</label>
+                        <select id="estadoCivilSelect">
+                            <option value="Soltero">Soltero</option>
+                            <option value="Casado">Casado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nombre del Cónyuge</label>
+                        <input type="text">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Padecimientos Médicos / Alergias</label>
+                        <textarea placeholder="Indique si sufre de alguna condición médica..."></textarea>
+                    </div>
+                </div>
+
+                <button class="btn-submit" style="background-color: #555;">Actualizar Datos Personales</button>
+            </form>
+        </div>
+
+    </div>
+    <br><br>
+</body>
+</html>

@@ -1,69 +1,59 @@
 // routes/informes.js
 const express = require('express');
-const router = express.Router();
-const db = require('../db');
-const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const { verifyToken } = require('../middleware/authMiddleware'); // ¡AHORA IMPORTADO!
+const db = require('../db/connection'); // Asumimos que tienes una conexión DB
 
-// Middleware para verificar el Token
-const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) return res.status(403).send('Token requerido');
-    
-    try {
-        const decoded = jwt.verify(token.split(" ")[1], 'TU_SECRETO_SUPER_SECRETO');
-        req.user = decoded;
-        next();
-    } catch (err) {
-        return res.status(401).send('Token inválido');
-    }
-};
+const router = express.Router(); // Inicializamos el Router aquí
 
-// ENVIAR REPORTE SEMANAL
-router.post('/weekly', verifyToken, async (req, res) => {
-    const { semana, anio, colecciones, monto, horas, estudios } = req.body;
-    try {
-        await db.query(
-            `INSERT INTO reportes_semanales (usuario_id, semana_numero, anio, colecciones_vendidas, monto_dolares, horas_trabajadas, estudios_biblicos)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [req.user.id, semana, anio, colecciones, monto, horas, estudios]
-        );
-        res.status(201).json({ message: 'Reporte guardado' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+// --- Configuración de Multer ---
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // La carpeta 'uploads' debe existir en la raíz del proyecto
+        cb(null, 'uploads/'); 
+    },
+    filename: (req, file, cb) => {
+        // Nombre único: idUsuario-fecha-nombreOriginal
+        // req.user.id debe estar seteado por verifyToken
+        const safeName = file.originalname.replace(/ /g, '_'); // Reemplazar espacios
+        cb(null, `${req.user.id}-${Date.now()}-${safeName}`);
     }
 });
 
-// OBTENER DATOS PARA EL DASHBOARD (CON JERARQUÍA)
-router.get('/dashboard-stats', verifyToken, async (req, res) => {
-    let query = "";
-    let params = [];
+const upload = multer({ storage: storage });
+// ------------------------------
 
-    // LOGICA DE JERARQUÍA
-    if (req.user.role === 1) { 
-        // DIRECTOR: Suma TOTAL de toda la empresa
-        query = `SELECT SUM(colecciones_vendidas) as total_col, SUM(monto_dolares) as total_usd FROM reportes_semanales`;
-    } 
-    else if (req.user.role === 2) { 
-        // COACH: Suma solo de su zona
-        query = `SELECT SUM(r.colecciones_vendidas) as total_col, SUM(r.monto_dolares) as total_usd 
-                 FROM reportes_semanales r
-                 JOIN usuarios u ON r.usuario_id = u.id
-                 WHERE u.zona_id = ?`;
-        params = [req.user.zona];
-    } 
-    else { 
-        // COLPORTOR: Suma solo sus propios datos
-        query = `SELECT SUM(colecciones_vendidas) as total_col, SUM(monto_dolares) as total_usd 
-                 FROM reportes_semanales 
-                 WHERE usuario_id = ?`;
-        params = [req.user.id];
+// Ruta para subir informe (Acceso: /api/reports/upload-monthly)
+router.post('/upload-monthly', verifyToken, upload.single('informe'), async (req, res) => {
+    // NOTA: Si Multer falla, la ejecución se detiene aquí y Multer envía el error.
+
+    if (!req.file) {
+        return res.status(400).send('No se proporcionó ningún archivo en el campo "informe".');
     }
-
+    
+    // req.file contiene la información del archivo subido
+    const fileUrl = req.file.path; 
+    
+    // El usuario fue adjuntado por verifyToken
+    const usuarioId = req.user.id; 
+    
     try {
-        const [results] = await db.query(query, params);
-        res.json(results[0]);
+        // db.query DEBE usar el sintaxis correcto para tu librería (PostgreSQL)
+        // Usaremos el placeholder $1, $2, etc., común en la librería 'pg'
+        await db.query(
+            `INSERT INTO informes_mensuales (usuario_id, mes, anio, archivo_url) VALUES ($1, $2, $3, $4)`,
+            [usuarioId, req.body.mes, req.body.anio, fileUrl]
+        );
+        
+        res.status(201).json({ 
+            message: 'Archivo subido correctamente y registro guardado.', 
+            fileUrl: fileUrl 
+        });
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error al insertar en la base de datos:", error);
+        // Devolver un error 500 si falla la inserción
+        res.status(500).send('Error al guardar el registro del informe.');
     }
 });
 

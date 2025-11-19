@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - EMPRENDUM</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="header scrolled" style="background-color: #fff; position: sticky;">
+        <nav class="navbar">
+            <a href="#" class="nav-logo" style="color: #005a87;">EMPRENDUM <span style="font-size: 0.8rem;">APP</span></a>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html" class="nav-link" style="color: #333;">Inicio</a></li>
+                <li><a href="perfil.html" class="nav-link" style="color: #333;">Mi Perfil</a></li>
+                <li><a href="login.html" class="nav-link" style="color: #d9534f;">Salir</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <div class="welcome-banner">
+            <div>
+                <h1>Hola, <span id="nombreUsuario">Estudiante</span></h1>
+                <p>Panel de Control - Semana 42</p>
+            </div>
+            <div>
+                <a href="perfil.html" class="btn-cod" style="background: #fff; color: #005a87;">
+                    <i class="fas fa-user-edit"></i> Completar Datos Personales
+                </a>
+            </div>
+        </div>
+
+        <h2 style="margin-bottom: 20px; color: #333;">Tus Estadísticas</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Colecciones Vendidas</h3>
+                <div class="number">12</div>
+                <p style="color: green;"><i class="fas fa-arrow-up"></i> Esta semana</p>
+            </div>
+            <div class="stat-card">
+                <h3>Monto Total ($)</h3>
+                <div class="number">$450.00</div>
+                <p>Acumulado del mes</p>
+            </div>
+            <div class="stat-card">
+                <h3>Horas Trabajadas</h3>
+                <div class="number">38.5</div>
+                <p>Esta semana</p>
+            </div>
+            <div class="stat-card">
+                <h3>Estudios Bíblicos</h3>
+                <div class="number">5</div>
+                <p>Activos</p>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            
+            <div class="report-section">
+                <h3 style="color: #005a87; margin-bottom: 15px;"><i class="fas fa-calendar-week"></i> Enviar Reporte Semanal</h3>
+                <form action="#">
+                    <div class="form-group">
+                        <label>Colecciones Vendidas</label>
+                        <input type="number" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Monto en Dólares ($)</label>
+                        <input type="number" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Horas Trabajadas</label>
+                        <input type="number" step="0.5" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Estudios Bíblicos</label>
+                        <input type="number" placeholder="0">
+                    </div>
+                    <button class="btn-submit">Enviar Reporte</button>
+                </form>
+            </div>
+
+            <div class="report-section">
+                <h3 style="color: #005a87; margin-bottom: 15px;"><i class="fas fa-file-upload"></i> Informe Mensual</h3>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
+                    Sube tu informe detallado en formato PDF o Word al finalizar el mes.
+                </p>
+                <form action="#">
+                    <div class="form-group">
+                        <label>Mes a reportar</label>
+                        <select>
+                            <option>Enero</option>
+                            <option>Febrero</option>
+                            <option>Marzo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Archivo (PDF/DOCX)</label>
+                        <input type="file" accept=".pdf,.doc,.docx" style="border: 2px dashed #ccc; padding: 20px;">
+                    </div>
+                    <button class="btn-submit" style="background-color: #28a745;">Subir Informe</button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+<script>
+    async function cargarEstadisticas() {
+        const token = localStorage.getItem('token');
+        
+        // Si no hay token, lo mandamos al login
+        if (!token) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:3000/api/reports/dashboard-stats', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (response.ok) {
+                const datos = await response.json();
+                
+                // Actualizamos tu HTML existente (asegúrate de ponerles IDs a tus etiquetas)
+                document.getElementById('totalVentas').innerText = datos.total_usd || 0;
+                document.getElementById('totalColecciones').innerText = datos.total_col || 0;
+            }
+        } catch (error) {
+            console.error("Error cargando datos", error);
+        }
+    }
+
+    // Ejecutar al cargar la página
+    document.addEventListener('DOMContentLoaded', cargarEstadisticas);
+</script>
+</html>

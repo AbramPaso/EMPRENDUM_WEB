@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - EMPRENDUM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="form-card">
+            <h2 class="form-title">Registro de Nuevo Ingreso</h2>
+            <form id="registroForm">
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre y Apellido Completo</label>
+                        <input type="text" name="nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cédula</label>
+                        <input type="text" name="cedula" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sexo</label>
+                        <select name="sexo">
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado Civil</label>
+                        <select name="estado_civil">
+                            <option value="Soltero">Soltero(a)</option>
+                            <option value="Casado">Casado(a)</option>
+                            <option value="Divorciado">Divorciado(a)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de Nacimiento</label>
+                        <input type="date" name="fecha_nacimiento" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Religión</label>
+                        <input type="text" name="religion" placeholder="Adventista, etc.">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Teléfono Personal</label>
+                        <input type="tel" name="telefono" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Carrera / Profesión</label>
+                        <input type="text" name="carrera">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Lugar de Procedencia (Ciudad)</label>
+                        <input type="text" name="lugar_procedencia">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Unión de Origen</label>
+                        <select name="union_id">
+                            <option value="">Seleccione...</option>
+                            <option value="1">UVOC (Venezolana Occidental)</option>
+                            <option value="2">UVOC (Venezolana Oriental)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Campo de Origen</label>
+                        <select name="campo_id">
+                            <option value="">Seleccione...</option>
+                            <option value="1">MVY (Misión Yaracuy)</option>
+                            <option value="2">AVCN (Asoc. Venezolana Centro Norte)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Crear Contraseña</label>
+                        <input type="password" name="password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" style="margin-top: 20px;">Completar Registro</button>
+                <p style="text-align: center; margin-top: 15px;">
+                    <a href="login.html">Ya tengo cuenta</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
