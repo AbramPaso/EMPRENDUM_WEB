@@ -1,0 +1,91 @@
+necesito que me hagas lo siguiente, ayudame a crear una base de datos para registrar a los trabajadores de una empresa, lo que se va a almacenar es: 
+
+
+
+al momento del registro: 
+
+Nombre y apellido completo 
+
+sexo
+
+estado civil 
+
+religion 
+
+cedula
+
+Numero de telefono
+
+fecha de nacimiento 
+
+carrera
+
+lugar de procedencia 
+
+union ej: UVOC (Union venezolada ocidental) (Union venezolada Oriental)
+
+campo ej: MVY (mision venezolada de yaracuy)
+
+Contrase;a nueva
+
+
+
+ya dentro despues de iniciar seccion con cedula y contrase;a 
+
+
+
+se va a poder subir una foto de perfin 
+
+pensamiento o descripcion de la persona
+
+lugar a colportar ej: caracas 
+
+union ej: UVO / UVOC 
+
+campo ej: AVCN / AVC 
+
+
+
+en algun componente se van a subir datos 
+
+colecciones vendidas en la semana
+
+monto en dolares en la semana 
+
+horas trabajadas en la semana 
+
+estudios biblicos en la semana  
+
+estos datos se van a guardar por semana y van a servir para contabilizar sus datos en un dasboard personal
+
+ y una vez al mes van a mandar un archivo en word o pdf con todos los datos se llama indorme mensual 
+
+
+
+aparte se van a registrar diferentes datos secundarios, estos se van a registrar en otro lado en un area de datos personales 
+
+
+
+nombre y apellido del del padre y la madre 
+
+telefono del padre y la madre 
+
+si esta casado y si es asi con quien nombre y apellido y numero de telefono 
+
+direccion del lugar donde viene 
+
+algun padecimiento que tenga que declarar 
+
+
+
+
+
+tambien vamos a usar jerarquia de usuarios, va a estar el director de la empresa como el usuario maestro, que puede ver todo y modificar todo, despues esta el coach ese va a a ver los datos de sus empleados (colportores) se van a dividir por zonas ej: zona 1, zona 2 y asi, se va a filtrar dependiendo de la zona donde escojan trabajar, y por ultimo va estan los trabajadores que van a enviar los datos cada semana y cada mes 
+
+
+
+los coah tambien envian sus datos 
+
+
+
+ayudame con una base de datos relacional que trabaje correctamente con todo esto,  
