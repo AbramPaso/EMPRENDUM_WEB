@@ -2,30 +2,30 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
-// Conexión a Base de Datos
-// (Al requerirlo, se ejecuta el código de conexión dentro de db/connection.js)
+// Conexión a BD (solo para asegurar que inicia al arrancar)
 const db = require('./db/connection');
 
 // --- IMPORTACIÓN DE RUTAS ---
-const authRoutes = require('./routes/autenticacion'); // Rutas de Login/Registro
-const reportRoutes = require('./routes/informes');    // Rutas de Dashboard y Reportes
-const perfilRoutes = require('./routes/perfil');      // <--- NUEVA RUTA DE PERFIL
+const authRoutes = require('./routes/autenticacion');  // Login y Registro
+const reportRoutes = require('./routes/informes');     // Dashboard y Reportes
+const perfilRoutes = require('./routes/perfil');       // Perfil de Usuario
+const usuariosRoutes = require('./routes/usuarios');   // Lista de Compañeros
 
 const app = express();
 
 // --- MIDDLEWARES ---
 app.use(cors());           // Permite peticiones desde el frontend
-app.use(express.json());   // Permite leer JSON en el body de las peticiones
+app.use(express.json());   // Permite leer JSON en el body
 
-// --- ARCHIVOS ESTÁTICOS (FOTOS/DOCUMENTOS) ---
-// Esto permite que el navegador vea las fotos subidas entrando a:
-// http://localhost:3000/uploads/nombre-foto.jpg
+// Servir carpeta de uploads públicamente para ver las fotos
+// (Acceso: http://localhost:3000/uploads/nombre-archivo.jpg)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- USO DE RUTAS (ENDPOINTS) ---
-app.use('/api/auth', authRoutes);      // Maneja: /api/auth/login, /api/auth/register
-app.use('/api/reports', reportRoutes); // Maneja: /api/reports/dashboard-stats, etc.
-app.use('/api/profile', perfilRoutes); // Maneja: /api/profile/laboral, /api/profile/personales
+app.use('/api/auth', authRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/profile', perfilRoutes);
+app.use('/api/users', usuariosRoutes); // Ruta para la sección de Compañeros
 
 // --- INICIO DEL SERVIDOR ---
 const PORT = 3000;

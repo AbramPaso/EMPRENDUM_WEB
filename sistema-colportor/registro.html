@@ -6,27 +6,34 @@
     <title>Registro - EMPRENDUM</title>
     <link rel="icon" type="image/png" href="../image/Logo_individual.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
     <div class="auth-container">
         <div class="form-card">
-            <h2 class="form-title">Registro de Nuevo Ingreso</h2>
+            
+            <div class="auth-header">
+                <img src="../image/Logo_individual.png" alt="Logo" class="auth-logo">
+                <h2 class="form-title">Registro de Nuevo Ingreso</h2>
+                <p style="color: #666;">Únete al equipo de colportores</p>
+            </div>
+
             <form id="registroForm">
                 
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label>Nombre y Apellido Completo</label>
-                        <input type="text" name="nombre" required>
+                    <div class="form-group full-width">
+                        <label><i class="fas fa-user"></i> Nombre y Apellido Completo</label>
+                        <input type="text" name="nombre" placeholder="Ej: Juan Pérez" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Cédula</label>
-                        <input type="text" name="cedula" required>
+                        <label><i class="fas fa-id-card"></i> Cédula</label>
+                        <input type="text" name="cedula" placeholder="Ej: 12345678" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Sexo</label>
+                        <label><i class="fas fa-venus-mars"></i> Sexo</label>
                         <select name="sexo">
                             <option value="M">Masculino</option>
                             <option value="F">Femenino</option>
@@ -34,7 +41,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Estado Civil</label>
+                        <label><i class="fas fa-ring"></i> Estado Civil</label>
                         <select name="estado_civil">
                             <option value="Soltero">Soltero(a)</option>
                             <option value="Casado">Casado(a)</option>
@@ -43,100 +50,95 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Fecha de Nacimiento</label>
+                        <label><i class="fas fa-calendar-alt"></i> Fecha de Nacimiento</label>
                         <input type="date" name="fecha_nacimiento" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Religión</label>
-                        <input type="text" name="religion" placeholder="Adventista, etc.">
+                        <label><i class="fas fa-pray"></i> Religión</label>
+                        <input type="text" name="religion" placeholder="Ej: Adventista">
                     </div>
                     
                     <div class="form-group">
-                        <label>Teléfono Personal</label>
-                        <input type="tel" name="telefono" required>
+                        <label><i class="fas fa-phone"></i> Teléfono Personal</label>
+                        <input type="tel" name="telefono" placeholder="0414-1234567" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Carrera / Profesión</label>
-                        <input type="text" name="carrera">
+                        <label><i class="fas fa-graduation-cap"></i> Carrera / Profesión</label>
+                        <input type="text" name="carrera" placeholder="Ej: Teología">
                     </div>
 
                     <div class="form-group">
-                        <label>Lugar de Procedencia (Ciudad)</label>
-                        <input type="text" name="lugar_procedencia">
+                        <label><i class="fas fa-map-marker-alt"></i> Lugar de Procedencia</label>
+                        <input type="text" name="lugar_procedencia" placeholder="Ciudad de origen">
                     </div>
 
                     <div class="form-group">
-                        <label>Unión de Origen</label>
+                        <label><i class="fas fa-church"></i> Unión de Origen</label>
                         <select name="union_id">
                             <option value="">Seleccione...</option>
                             <option value="1">UVOC (Venezolana Occidental)</option>
-                            <option value="2">UVOC (Venezolana Oriental)</option>
+                            <option value="2">UVO (Venezolana Oriental)</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Campo de Origen</label>
+                        <label><i class="fas fa-map"></i> Campo de Origen</label>
                         <select name="campo_id">
                             <option value="">Seleccione...</option>
                             <option value="1">MVY (Misión Yaracuy)</option>
-                            <option value="2">AVCN (Asoc. Venezolana Centro Norte)</option>
+                            <option value="2">AVCN (Asoc. Centro Norte)</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Crear Contraseña</label>
-                        <input type="password" name="password" required>
+                        <label><i class="fas fa-key"></i> Crear Contraseña</label>
+                        <input type="password" name="password" placeholder="********" required>
                     </div>
                 </div>
 
                 <button type="submit" class="btn-submit" style="margin-top: 20px;">Completar Registro</button>
-                <p style="text-align: center; margin-top: 15px;">
-                    <a href="login.html">Ya tengo cuenta</a>
-                </p>
+                
+                <div style="text-align: center; margin-top: 20px; font-size: 0.9rem;">
+                    <p>¿Ya tienes cuenta? <a href="login.html" style="color: #005a87; font-weight: bold; text-decoration: none;">Inicia sesión aquí</a></p>
+                </div>
             </form>
         </div>
     </div>
 
-
     <script>
         document.getElementById('registroForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Evita que la página se recargue
-
+            e.preventDefault(); 
             
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
 
-            // Pequeña corrección si el input se llama diferente al backend
-            // Aseguramos que enviamos 'nombre_completo' si en el HTML pusiste 'nombre'
+            // Mapeo de nombre para el backend
             if(data.nombre && !data.nombre_completo) {
                 data.nombre_completo = data.nombre;
             }
 
             try {
-                // 2. Enviamos los datos a tu servidor (Backend)
                 const response = await fetch('http://localhost:3000/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(data) // Convertimos los datos a JSON
+                    body: JSON.stringify(data)
                 });
 
                 const result = await response.json();
 
                 if (response.ok) {
-                    // 3. Si todo sale bien
                     alert('¡Registro exitoso! Ahora serás redirigido para iniciar sesión.');
                     window.location.href = 'login.html';
                 } else {
-                    // 4. Si hay un error (ej: Cédula repetida)
                     alert('Error: ' + (result.message || 'Ocurrió un problema al registrarte.'));
                 }
             } catch (error) {
                 console.error('Error de conexión:', error);
-                alert('No se pudo conectar con el servidor. Asegúrate de que el backend esté encendido.');
+                alert('No se pudo conectar con el servidor.');
             }
         });
     </script>
