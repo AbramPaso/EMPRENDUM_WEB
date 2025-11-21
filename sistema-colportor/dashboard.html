@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .help-icon { color: #005a87; cursor: help; margin-left: 5px; font-size: 0.9rem; }
-        /* Ocultar inputs desactivados visualmente mejor */
         .disabled-look { background-color: #e9ecef; color: #6c757d; }
     </style>
 </head>
@@ -39,27 +38,27 @@
                 <h2>Panel de Control</h2>
                 <p>Resumen de tu actividad</p>
             </div>
-            <!-- Tarjetas Reordenadas: Título -> Subtítulo -> Número -->
+            
             <div class="stats-grid">
                 <div class="stat-card">
                     <h3>Ventas ($)</h3>
                     <p style="color: #28a745; font-size:0.9rem;">Total acumulado</p>
-                    <div class="number" id="stat-monto">--</div>
+                    <div class="number" id="stat-monto">0.00</div>
                 </div>
                 <div class="stat-card">
                     <h3>Colecciones</h3>
                     <p style="font-size:0.9rem;">entregadas</p>
-                    <div class="number" id="stat-colecciones">--</div>
+                    <div class="number" id="stat-colecciones">0</div>
                 </div>
                 <div class="stat-card">
                     <h3>Horas</h3>
                     <p style="font-size:0.9rem;">trabajadas</p>
-                    <div class="number" id="stat-horas">--</div>
+                    <div class="number" id="stat-horas">0</div>
                 </div>
                 <div class="stat-card">
                     <h3>Estudios</h3>
                     <p style="font-size:0.9rem;">bíblicos</p>
-                    <div class="number" id="stat-estudios">--</div>
+                    <div class="number" id="stat-estudios">0</div>
                 </div>
             </div>
         </section>
@@ -72,10 +71,16 @@
                 <h3><i class="fas fa-calendar-week"></i> Reporte Semanal</h3>
                 <form id="formReporteSemanal">
                     <div class="form-grid">
-                        <div class="form-group"><label>Semana #</label><input type="number" id="sem_numero" placeholder="Ej: 42" required></div>
-                        <div class="form-group"><label>Colecciones</label><input type="number" id="sem_colecciones" placeholder="0" required></div>
+                        <div class="form-group">
+                            <label>Semana #</label>
+                            <input type="number" id="sem_numero" placeholder="Ej: 42" required>
+                        </div>
                         
-                        <!-- CAMBIO: Título + Tooltip -->
+                        <div class="form-group">
+                            <label>Colecciones</label>
+                            <input type="number" id="sem_colecciones" placeholder="0" required>
+                        </div>
+                        
                         <div class="form-group full-width">
                             <label>
                                 Monto total depositado 
@@ -84,15 +89,21 @@
                             <input type="number" step="0.01" id="sem_monto" placeholder="0.00" required>
                         </div>
                         
-                        <div class="form-group"><label>Horas Trabajadas</label><input type="number" step="0.5" id="sem_horas" placeholder="0" required></div>
-                        <div class="form-group"><label>Estudios Bíblicos</label><input type="number" id="sem_estudios" placeholder="0" required></div>
+                        <div class="form-group">
+                            <label>Horas Trabajadas</label>
+                            <input type="number" step="0.5" id="sem_horas" placeholder="0" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Estudios Bíblicos</label>
+                            <input type="number" id="sem_estudios" placeholder="0" required>
+                        </div>
                     </div>
                     <button type="submit" class="btn-primary">Enviar Reporte</button>
                 </form>
             </div>
 
             <div class="form-container">
-                <!-- CAMBIO: Título + Tooltip -->
                 <h3>
                     <i class="fas fa-file-upload"></i> Informe Mensual 
                     <i class="fas fa-question-circle help-icon" title="Enviar al final del mes, cuando el coach lo requiera."></i>
@@ -118,7 +129,7 @@
             </div>
         </section>
 
-        <!-- 3. NUEVA SECCIÓN: COLPORTAJE INVIERNO -->
+        <!-- 3. COLPORTAJE INVIERNO -->
         <section id="colportaje" class="section-view">
             <div class="section-header">
                 <h2>Campaña Invierno - 2025</h2>
@@ -157,7 +168,7 @@
             </div>
         </section>
 
-        <!-- 4. PERFIL (Con edición de registro) -->
+        <!-- 4. PERFIL -->
         <section id="perfil" class="section-view">
             <div class="profile-header">
                 <img id="headerFoto" src="https://via.placeholder.com/100" class="profile-pic-large">
@@ -168,7 +179,7 @@
                 <button class="edit-toggle-btn" onclick="toggleEditProfile()"><i class="fas fa-pen"></i> Editar</button>
             </div>
 
-            <!-- MODO LECTURA -->
+            <!-- VISTA LECTURA -->
             <div id="viewProfileMode" class="form-container">
                 <h3>Datos Generales</h3>
                 <div class="form-grid">
@@ -176,6 +187,7 @@
                     <div><strong>Teléfono:</strong> <span id="view_telefono">--</span></div>
                     <div><strong>Origen:</strong> <span id="view_procedencia">--</span></div>
                     <div><strong>Religión:</strong> <span id="view_religion">--</span></div>
+                    <div><strong>Estado Civil:</strong> <span id="view_civil">--</span></div>
                     <div class="full-width">
                         <strong>Pensamiento:</strong> 
                         <p id="view_pensamiento" style="font-style: italic; color: #666; margin-top: 5px;">--</p>
@@ -183,9 +195,8 @@
                 </div>
             </div>
 
-            <!-- MODO EDICIÓN -->
+            <!-- VISTA EDICIÓN -->
             <div id="editProfileMode" style="display: none;">
-                <!-- Formulario 1: Foto y Bio -->
                 <div class="form-container">
                     <h3>Foto y Biografía</h3>
                     <form id="formBio">
@@ -201,7 +212,6 @@
                     </form>
                 </div>
 
-                <!-- Formulario 2: Datos Completos (Registro + Personales) -->
                 <div class="form-container">
                     <h3>Datos Personales y de Registro</h3>
                     <p style="color: #d9534f; font-size: 0.8rem; margin-bottom: 15px;">⚠ Estás modificando tu ficha de registro inicial.</p>
@@ -213,7 +223,10 @@
                             <div class="form-group"><label>Carrera</label><input type="text" id="reg_carrera"></div>
                             <div class="form-group"><label>Religión</label><input type="text" id="reg_religion"></div>
                             <div class="form-group"><label>Estado Civil</label>
-                                <select id="reg_civil"><option value="Soltero">Soltero</option><option value="Casado">Casado</option></select>
+                                <select id="reg_civil">
+                                    <option value="Soltero">Soltero</option>
+                                    <option value="Casado">Casado</option>
+                                </select>
                             </div>
                             
                             <!-- Datos de Procedencia (Registro) -->
@@ -248,10 +261,11 @@
 
         <!-- 5. COMPAÑEROS -->
         <section id="companeros" class="section-view">
-            <div class="section-header"><h2>Compañeros</h2></div>
-            <div class="colleagues-grid" id="listaCompaneros"><p>Cargando...</p></div>
+            <div class="section-header"><h2>Compañeros de Misión</h2></div>
+            <div class="colleagues-grid" id="listaCompaneros">
+                <div style="text-align:center; padding:20px;"><p>Cargando lista...</p></div>
+            </div>
         </section>
-
     </main>
 
     <!-- MODAL -->
@@ -291,72 +305,79 @@
             if(idSeccion === 'colportaje') cargarCampana(); 
         }
 
-async function cargarEstadisticas() {
+        // 1. CARGAR STATS
+        async function cargarEstadisticas() {
             try {
                 const res = await fetch(`${API_BASE}/reports/dashboard-stats`, { headers: { 'Authorization': `Bearer ${token}` } });
-                
                 if(res.ok) {
                     const data = await res.json();
-                    
-                    // Llenar los números
                     document.getElementById('stat-colecciones').innerText = data.total_colecciones || 0;
                     document.getElementById('stat-monto').innerText = '$' + (parseFloat(data.total_monto) || 0).toFixed(2);
                     document.getElementById('stat-horas').innerText = data.total_horas || 0;
                     document.getElementById('stat-estudios').innerText = data.total_estudios || 0;
-
-                    // CAMBIAR TÍTULOS SEGÚN ROL
-                    const tituloSeccion = document.querySelector('#inicio .section-header p');
-                    const tituloMonto = document.querySelector('#stat-monto').parentElement.querySelector('p');
-
-                    if (data.user_role === 1) {
-                        // Director
-                        tituloSeccion.innerText = "Vista Global - Dirección (Todos los datos)";
-                        tituloSeccion.style.color = "#d9534f"; // Rojo para resaltar poder
-                        tituloMonto.innerText = "Total Unión Recaudado";
-                    } else if (data.user_role === 2) {
-                        // Coach
-                        tituloSeccion.innerText = "Vista de Líder de Zona";
-                        tituloSeccion.style.color = "#005a87";
-                        tituloMonto.innerText = "Total Zona Recaudado";
-                    } else {
-                        // Colportor
-                        tituloSeccion.innerText = "Resumen de tu actividad";
-                        tituloMonto.innerText = "Total Acumulado";
-                    }
                 }
-            } catch(e) { console.error(e); }
+            } catch(e) {}
         }
 
-        // --- LÓGICA DE COLPORTAJE (FILTROS) ---
-        const datosCampana = {
-            1: { // UVOC
-                campos: [{id: 1, nombre: 'MVY (Misión Yaracuy)'}, {id: 2, nombre: 'AVCN (Centro Norte)'}],
-                zonas: ['Zona 1 (Occidente)', 'Zona 2 (Occidente)', 'Zona 3 (Occidente)', 'Zona 4 (Occidente)', 'Zona 5 (Occidente)']
-            },
-            2: { // UVO
-                campos: [{id: 3, nombre: 'AVNOR (Nor Oriental)'}, {id: 4, nombre: 'AVSO (Sur Oriental)'}],
-                zonas: ['Zona 1 (Oriente)', 'Zona 2 (Oriente)', 'Zona 3 (Oriente)', 'Zona 4 (Oriente)']
+        // 2. ENVIAR REPORTE SEMANAL (DINÁMICO)
+        document.getElementById('formReporteSemanal').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const currentYear = new Date().getFullYear();
+            const inputColecciones = document.getElementById('sem_colecciones').value;
+            const inputMonto = document.getElementById('sem_monto').value;
+            const inputHoras = document.getElementById('sem_horas').value;
+            const inputEstudios = document.getElementById('sem_estudios').value;
+
+            const datos = {
+                semana_numero: document.getElementById('sem_numero').value,
+                anio: currentYear,
+                colecciones: inputColecciones,
+                monto: inputMonto,
+                horas: inputHoras,
+                estudios: inputEstudios
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/reports/create-weekly`, {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}, 
+                    body: JSON.stringify(datos)
+                });
+
+                if(res.ok) { 
+                    alert("Reporte Enviado Exitosamente"); 
+                    e.target.reset(); 
+                    await cargarEstadisticas(); 
+                    mostrarSeccion('inicio');
+                } else {
+                    alert("Error al enviar el reporte.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error de conexión.");
             }
+        });
+
+        // 3. CAMPAÑA INVIERNO
+        const datosCampana = {
+            1: { campos: [{id: 1, nombre: 'MVY'}, {id: 2, nombre: 'AVCN'}], zonas: ['Zona 1', 'Zona 2', 'Zona 3', 'Zona 4'] },
+            2: { campos: [{id: 3, nombre: 'AVNOR'}, {id: 4, nombre: 'AVSO'}], zonas: ['Zona 1', 'Zona 2'] }
         };
 
         function filtrarCampos() {
             const unionId = document.getElementById('camp_union').value;
             const selectCampo = document.getElementById('camp_campo');
             const selectZona = document.getElementById('camp_zona');
-
+            
             selectCampo.innerHTML = '<option value="">Seleccione...</option>';
             selectZona.innerHTML = '<option value="">Seleccione...</option>';
-
+            
             if (datosCampana[unionId]) {
                 selectCampo.disabled = false;
                 selectZona.disabled = false;
-                
-                datosCampana[unionId].campos.forEach(c => {
-                    selectCampo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
-                });
-                datosCampana[unionId].zonas.forEach(z => {
-                    selectZona.innerHTML += `<option value="${z}">${z}</option>`;
-                });
+                datosCampana[unionId].campos.forEach(c => selectCampo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`);
+                datosCampana[unionId].zonas.forEach(z => selectZona.innerHTML += `<option value="${z}">${z}</option>`);
             } else {
                 selectCampo.disabled = true;
                 selectZona.disabled = true;
@@ -369,17 +390,13 @@ async function cargarEstadisticas() {
                 const data = await res.json();
                 if (data.union_trabajo_id) {
                     document.getElementById('camp_union').value = data.union_trabajo_id;
-                    filtrarCampos(); 
+                    filtrarCampos();
                     document.getElementById('camp_campo').value = data.campo_trabajo_id;
                     
                     if (data.lugar_colportar) {
                         const partes = data.lugar_colportar.split(' - ');
-                        if (partes.length > 1) {
-                            document.getElementById('camp_ciudad').value = partes[0];
-                            document.getElementById('camp_zona').value = partes[1];
-                        } else {
-                            document.getElementById('camp_ciudad').value = data.lugar_colportar;
-                        }
+                        document.getElementById('camp_ciudad').value = partes[0] || '';
+                        if (partes[1]) document.getElementById('camp_zona').value = partes[1];
                     }
                 }
             } catch(e) {}
@@ -399,37 +416,7 @@ async function cargarEstadisticas() {
             if (res.ok) alert("Asignación guardada correctamente");
         });
 
-        // --- REPORTE SEMANAL (AÑO AUTO) ---
-        document.getElementById('formReporteSemanal').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const currentYear = new Date().getFullYear();
-            const datos = {
-                semana_numero: document.getElementById('sem_numero').value,
-                anio: currentYear, // Automático
-                colecciones: document.getElementById('sem_colecciones').value,
-                monto: document.getElementById('sem_monto').value,
-                horas: document.getElementById('sem_horas').value,
-                estudios: document.getElementById('sem_estudios').value
-            };
-            const res = await fetch(`${API_BASE}/reports/create-weekly`, {
-                method: 'POST', headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}, body: JSON.stringify(datos)
-            });
-            if(res.ok) { alert("Reporte Enviado"); e.target.reset(); cargarEstadisticas(); }
-        });
-
-        // --- INFORME MENSUAL (AÑO AUTO) ---
-        document.getElementById('formInformeMensual').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const currentYear = new Date().getFullYear();
-            const formData = new FormData();
-            formData.append('mes', document.getElementById('mes_reporte').value);
-            formData.append('anio', currentYear); // Automático
-            formData.append('informe', document.getElementById('archivo_informe').files[0]);
-            const res = await fetch(`${API_BASE}/reports/upload-monthly`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
-            if(res.ok) { alert("Informe subido"); e.target.reset(); }
-        });
-
-        // --- PERFIL ---
+        // 4. PERFIL
         function toggleEditProfile() {
             const mode = document.getElementById('editProfileMode').style.display === 'none';
             document.getElementById('viewProfileMode').style.display = mode ? 'none' : 'block';
@@ -441,29 +428,27 @@ async function cargarEstadisticas() {
                 const res = await fetch(`${API_BASE}/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await res.json();
                 
-                document.getElementById('headerNombre').innerText = data.nombre_completo;
-                document.getElementById('nombreUsuarioDash').innerText = data.nombre_completo.split(' ')[0];
+                document.getElementById('headerNombre').innerText = data.nombre_completo || 'Usuario';
+                document.getElementById('nombreUsuarioDash').innerText = (data.nombre_completo || 'Usuario').split(' ')[0];
                 document.getElementById('headerCarrera').innerText = data.carrera || 'Estudiante';
                 if(data.foto_perfil_url) document.getElementById('headerFoto').src = `http://localhost:3000/${data.foto_perfil_url.replace(/\\/g, '/')}`;
 
-                document.getElementById('view_cedula').innerText = data.cedula;
-                document.getElementById('view_telefono').innerText = data.telefono;
-                document.getElementById('view_procedencia').innerText = data.lugar_procedencia || 'No especificado';
-                document.getElementById('view_religion').innerText = data.religion || '--';
-                document.getElementById('view_pensamiento').innerText = data.pensamiento_bio || 'Sin pensamiento.';
+                document.getElementById('view_cedula').innerText = data.cedula || '';
+                document.getElementById('view_telefono').innerText = data.telefono || '';
+                document.getElementById('view_procedencia').innerText = data.lugar_procedencia || '';
+                document.getElementById('view_religion').innerText = data.religion || '';
+                document.getElementById('view_civil').innerText = data.estado_civil || 'Soltero';
+                document.getElementById('view_pensamiento').innerText = data.pensamiento_bio || 'Sin pensamiento definido.';
 
                 document.getElementById('pensamiento_input').value = data.pensamiento_bio || '';
-                
                 document.getElementById('reg_nombre').value = data.nombre_completo || '';
                 document.getElementById('reg_cedula').value = data.cedula || '';
                 document.getElementById('reg_telefono').value = data.telefono || '';
                 document.getElementById('reg_carrera').value = data.carrera || '';
                 document.getElementById('reg_religion').value = data.religion || '';
                 document.getElementById('reg_lugar_procedencia').value = data.lugar_procedencia || '';
-                if(data.union_procedencia_id) document.getElementById('reg_union').value = data.union_procedencia_id;
-                if(data.campo_procedencia_id) document.getElementById('reg_campo').value = data.campo_procedencia_id;
                 if(data.estado_civil) document.getElementById('reg_civil').value = data.estado_civil;
-
+                
                 document.getElementById('padre_nombre').value = data.padre_nombre || '';
                 document.getElementById('padre_telefono').value = data.padre_telefono || '';
                 document.getElementById('madre_nombre').value = data.madre_nombre || '';
@@ -478,12 +463,22 @@ async function cargarEstadisticas() {
         document.getElementById('formBio').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData();
-            if (document.getElementById('foto_perfil_input').files[0]) {
-                formData.append('foto_perfil', document.getElementById('foto_perfil_input').files[0]);
-            }
-            formData.append('pensamiento', document.getElementById('pensamiento_input').value);
+            const fileInput = document.getElementById('foto_perfil_input');
+            if (fileInput.files[0]) formData.append('foto_perfil', fileInput.files[0]);
+            const nuevoPensamiento = document.getElementById('pensamiento_input').value;
+            formData.append('pensamiento', nuevoPensamiento);
+
             const res = await fetch(`${API_BASE}/profile/bio`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
-            if (res.ok) { alert("Biografía actualizada"); location.reload(); }
+            if (res.ok) { 
+                alert("Biografía actualizada");
+                document.getElementById('view_pensamiento').innerText = nuevoPensamiento;
+                if(fileInput.files[0]){
+                    const reader = new FileReader();
+                    reader.onload = function(e) { document.getElementById('headerFoto').src = e.target.result; }
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
+                toggleEditProfile(); 
+            }
         });
 
         document.getElementById('formPersonales').addEventListener('submit', async (e) => {
@@ -506,33 +501,49 @@ async function cargarEstadisticas() {
                 conyuge_nombre: document.getElementById('conyuge_nombre').value,
                 padecimiento: document.getElementById('padecimiento').value
             };
+
             const res = await fetch(`${API_BASE}/profile/personales`, { 
                 method: 'POST', headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}, body: JSON.stringify(datos)
             });
-            if(res.ok) alert("Datos actualizados correctamente");
+
+            if(res.ok) {
+                alert("Datos actualizados correctamente");
+                document.getElementById('headerNombre').innerText = datos.nombre_completo;
+                document.getElementById('headerCarrera').innerText = datos.carrera;
+                document.getElementById('view_cedula').innerText = datos.cedula;
+                document.getElementById('view_telefono').innerText = datos.telefono;
+                document.getElementById('view_procedencia').innerText = datos.lugar_procedencia;
+                document.getElementById('view_religion').innerText = datos.religion;
+                document.getElementById('view_civil').innerText = datos.estado_civil;
+                toggleEditProfile();
+            }
         });
 
+        // 5. COMPAÑEROS
         async function cargarCompaneros() {
             const container = document.getElementById('listaCompaneros');
+            container.innerHTML = '<div style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Cargando...</p></div>';
             try {
                 const res = await fetch(`${API_BASE}/users/lista`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!res.ok) throw new Error("Error al cargar lista.");
                 const users = await res.json();
+                if (users.length === 0) { container.innerHTML = '<p>No hay compañeros registrados aún.</p>'; return; }
                 container.innerHTML = '';
                 users.forEach(u => {
                     let foto = u.foto_perfil_url ? `http://localhost:3000/${u.foto_perfil_url.replace(/\\/g, '/')}` : 'https://via.placeholder.com/150';
-                    container.innerHTML += `<div class="colleague-card" onclick="verDetalle(${u.id})"><img src="${foto}" class="colleague-pic"><h4 class="colleague-name">${u.nombre_completo}</h4><span class="colleague-role">${u.carrera}</span></div>`;
+                    container.innerHTML += `<div class="colleague-card" onclick="verDetalle(${u.id})"><img src="${foto}" class="colleague-pic" onerror="this.src='https://via.placeholder.com/150'"><h4 class="colleague-name">${u.nombre_completo}</h4><span class="colleague-role">${u.carrera || 'Estudiante'}</span></div>`;
                 });
-            } catch(e) {}
+            } catch(e) { container.innerHTML = '<p>Error cargando lista. Asegúrate de que el servidor esté corriendo.</p>'; }
         }
 
         async function verDetalle(id) {
             const res = await fetch(`${API_BASE}/users/detalle/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
             const u = await res.json();
             document.getElementById('modalNombre').innerText = u.nombre_completo;
-            document.getElementById('modalCarrera').innerText = u.carrera;
+            document.getElementById('modalCarrera').innerText = u.carrera || 'Estudiante';
             document.getElementById('modalLugar').innerText = u.lugar_colportar || 'No especificado';
-            document.getElementById('modalTelefono').innerText = u.telefono;
-            document.getElementById('modalPensamiento').innerText = u.pensamiento_bio || '';
+            document.getElementById('modalTelefono').innerText = u.telefono || 'Privado';
+            document.getElementById('modalPensamiento').innerText = u.pensamiento_bio || 'Sin pensamiento.';
             let foto = u.foto_perfil_url ? `http://localhost:3000/${u.foto_perfil_url.replace(/\\/g, '/')}` : 'https://via.placeholder.com/150';
             document.getElementById('modalFoto').src = foto;
             document.getElementById('modalCompanero').style.display = 'flex';
@@ -540,6 +551,16 @@ async function cargarEstadisticas() {
 
         function cerrarModal() { document.getElementById('modalCompanero').style.display = 'none'; }
         function cerrarSesion() { localStorage.removeItem('token'); window.location.href = 'login.html'; }
+        document.getElementById('formInformeMensual').addEventListener('submit', async (e) => { 
+            e.preventDefault(); 
+            const currentYear = new Date().getFullYear();
+            const formData = new FormData();
+            formData.append('mes', document.getElementById('mes_reporte').value);
+            formData.append('anio', currentYear);
+            formData.append('informe', document.getElementById('archivo_informe').files[0]);
+            const res = await fetch(`${API_BASE}/reports/upload-monthly`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+            if (res.ok) { alert("Informe Subido Correctamente"); e.target.reset(); }
+        });
     </script>
 </body>
 </html>
