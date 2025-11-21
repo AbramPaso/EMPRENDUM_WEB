@@ -860,7 +860,9 @@ a.nav-link:hover {
 }
 
 .miembro-foto {
-    width: 100%;
+    width: 85%;
+    object-fit: cover; /* O contain según preferencia */
+    object-position: top;
     /* Altura consistente y corte de la imagen */
     height: 250px; 
     object-fit: cover;
