@@ -22,64 +22,73 @@
     <div class="dashboard-container">
         <h1 style="text-align: center; color: #005a87; margin-bottom: 30px;">Configuración de Perfil</h1>
 
+        <!-- FORMULARIO 1: DATOS LABORALES + FOTO -->
         <div class="form-card" style="margin: 0 auto 30px auto;">
             <h3 class="form-title" style="font-size: 1.5rem; text-align: left;"><i class="fas fa-id-badge"></i> Datos de Misión Actual</h3>
             
-            <form>
+            <!-- Previsualización de foto -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img id="previewFoto" src="https://via.placeholder.com/150" alt="Foto Perfil" 
+                     style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid #005a87;">
+            </div>
+
+            <form id="formLaboral">
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Foto de Perfil</label>
-                        <input type="file" accept="image/*">
+                        <input type="file" id="foto_perfil" accept="image/*">
                     </div>
                     <div class="form-group">
                         <label>Lugar donde Colportas (Ciudad)</label>
-                        <input type="text" placeholder="Ej: Caracas">
+                        <input type="text" id="lugar_colportar" placeholder="Ej: Caracas">
                     </div>
                     <div class="form-group">
                         <label>Unión de Trabajo</label>
-                        <select>
-                            <option>UVOC</option>
-                            <option>UVO</option>
+                        <!-- Los valores (value) deben coincidir con los IDs de tu tabla uniones si usas FK, o texto simple si no -->
+                        <select id="union_trabajo">
+                            <option value="1">UVOC</option>
+                            <option value="2">UVO</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Campo de Trabajo</label>
-                        <select>
-                            <option>AVCN</option>
-                            <option>MVY</option>
+                        <select id="campo_trabajo">
+                            <option value="1">AVCN</option>
+                            <option value="2">MVY</option>
                         </select>
                     </div>
                     <div class="form-group full-width">
                         <label>Pensamiento / Biografía Corta</label>
-                        <textarea placeholder="Escribe un pensamiento que te identifique..."></textarea>
+                        <textarea id="pensamiento" placeholder="Escribe un pensamiento que te identifique..."></textarea>
                     </div>
                 </div>
-                <button class="btn-submit">Guardar Perfil Laboral</button>
+                <button type="submit" class="btn-submit">Guardar Perfil Laboral</button>
             </form>
         </div>
 
+        <!-- FORMULARIO 2: DATOS PERSONALES -->
         <div class="form-card" style="margin: 0 auto;">
             <h3 class="form-title" style="font-size: 1.5rem; text-align: left;"><i class="fas fa-users"></i> Datos Personales y Familiares</h3>
             <p style="margin-bottom: 20px; color: #666;">Esta información es privada y para uso administrativo.</p>
             
-            <form>
+            <form id="formPersonales">
                 <h4 style="margin-bottom: 15px; color: #005a87; border-bottom: 1px solid #eee; padding-bottom: 5px;">Datos de los Padres</h4>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nombre del Padre</label>
-                        <input type="text">
+                        <input type="text" id="padre_nombre">
                     </div>
                     <div class="form-group">
                         <label>Teléfono del Padre</label>
-                        <input type="tel">
+                        <input type="tel" id="padre_telefono">
                     </div>
                     <div class="form-group">
                         <label>Nombre de la Madre</label>
-                        <input type="text">
+                        <input type="text" id="madre_nombre">
                     </div>
                     <div class="form-group">
                         <label>Teléfono de la Madre</label>
-                        <input type="tel">
+                        <input type="tel" id="madre_telefono">
                     </div>
                 </div>
 
@@ -87,33 +96,141 @@
                 <div class="form-grid">
                     <div class="form-group full-width">
                         <label>Dirección Exacta de Procedencia</label>
-                        <input type="text" placeholder="Estado, Ciudad, Municipio, Calle, Casa">
+                        <input type="text" id="direccion_origen" placeholder="Estado, Ciudad, Municipio, Calle, Casa">
                     </div>
                     
                     <div class="form-group">
                         <label>Estado Civil</label>
-                        <select id="estadoCivilSelect">
+                        <select id="estado_civil">
                             <option value="Soltero">Soltero</option>
                             <option value="Casado">Casado</option>
+                            <option value="Divorciado">Divorciado</option>
+                            <option value="Viudo">Viudo</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label>Nombre del Cónyuge</label>
-                        <input type="text">
+                        <input type="text" id="conyuge_nombre">
                     </div>
 
                     <div class="form-group full-width">
                         <label>Padecimientos Médicos / Alergias</label>
-                        <textarea placeholder="Indique si sufre de alguna condición médica..."></textarea>
+                        <textarea id="padecimiento" placeholder="Indique si sufre de alguna condición médica..."></textarea>
                     </div>
                 </div>
 
-                <button class="btn-submit" style="background-color: #555;">Actualizar Datos Personales</button>
+                <button type="submit" class="btn-submit" style="background-color: #555;">Actualizar Datos Personales</button>
             </form>
         </div>
 
     </div>
     <br><br>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api/profile';
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // 1. CARGAR DATOS AL INICIAR
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch(API_URL, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    
+                    // Llenar Datos Laborales
+                    if(data.foto_perfil_url) {
+                        // Ajustar ruta si viene de windows con backslash \
+                        const pathFixed = data.foto_perfil_url.replace(/\\/g, '/');
+                        document.getElementById('previewFoto').src = `http://localhost:3000/${pathFixed}`;
+                    }
+                    document.getElementById('lugar_colportar').value = data.lugar_colportar || '';
+                    document.getElementById('pensamiento').value = data.pensamiento_bio || '';
+                    if(data.union_trabajo_id) document.getElementById('union_trabajo').value = data.union_trabajo_id;
+                    if(data.campo_trabajo_id) document.getElementById('campo_trabajo').value = data.campo_trabajo_id;
+
+                    // Llenar Datos Personales
+                    document.getElementById('padre_nombre').value = data.padre_nombre || '';
+                    document.getElementById('padre_telefono').value = data.padre_telefono || '';
+                    document.getElementById('madre_nombre').value = data.madre_nombre || '';
+                    document.getElementById('madre_telefono').value = data.madre_telefono || '';
+                    document.getElementById('direccion_origen').value = data.direccion_origen || '';
+                    document.getElementById('estado_civil').value = data.estado_civil_extra || 'Soltero';
+                    document.getElementById('conyuge_nombre').value = data.conyuge_nombre || '';
+                    document.getElementById('padecimiento').value = data.padecimiento_medico || '';
+                }
+            } catch (error) {
+                console.error("Error cargando perfil:", error);
+            }
+        });
+
+        // 2. GUARDAR PERFIL LABORAL (Con Foto)
+        document.getElementById('formLaboral').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            
+            // Agregar foto solo si se seleccionó
+            const fileInput = document.getElementById('foto_perfil');
+            if (fileInput.files[0]) {
+                formData.append('foto_perfil', fileInput.files[0]);
+            }
+            
+            formData.append('lugar_colportar', document.getElementById('lugar_colportar').value);
+            formData.append('union_trabajo', document.getElementById('union_trabajo').value);
+            formData.append('campo_trabajo', document.getElementById('campo_trabajo').value);
+            formData.append('pensamiento', document.getElementById('pensamiento').value);
+
+            try {
+                const res = await fetch(`${API_URL}/laboral`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData // No poner Content-Type json aquí
+                });
+                if (res.ok) {
+                    alert("Perfil Laboral actualizado");
+                    location.reload(); // Recargar para ver foto nueva
+                } else {
+                    alert("Error al actualizar");
+                }
+            } catch (e) { console.error(e); }
+        });
+
+        // 3. GUARDAR DATOS PERSONALES
+        document.getElementById('formPersonales').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const datos = {
+                padre_nombre: document.getElementById('padre_nombre').value,
+                padre_telefono: document.getElementById('padre_telefono').value,
+                madre_nombre: document.getElementById('madre_nombre').value,
+                madre_telefono: document.getElementById('madre_telefono').value,
+                direccion_origen: document.getElementById('direccion_origen').value,
+                estado_civil: document.getElementById('estado_civil').value,
+                conyuge_nombre: document.getElementById('conyuge_nombre').value,
+                padecimiento: document.getElementById('padecimiento').value
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/personales`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify(datos)
+                });
+                if (res.ok) {
+                    alert("Datos personales guardados");
+                } else {
+                    alert("Error al guardar");
+                }
+            } catch (e) { console.error(e); }
+        });
+    </script>
 </body>
 </html>
