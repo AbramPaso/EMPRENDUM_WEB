@@ -9,9 +9,12 @@ const verifyToken = (req, res, next) => {
     }
 
     try {
-        // Debe coincidir con la clave en autenticacion.js
         const verified = jwt.verify(token, 'TU_SECRETO_SUPER_SECRETO');
-        req.user = verified; // { id: 1, role: 3, ... }
+        
+        // Aquí asignamos TODO el objeto del token a req.user
+        // Ahora req.user.role y req.user.zona estarán disponibles
+        req.user = verified; 
+        
         next();
     } catch (error) {
         res.status(403).json({ message: 'Token no válido.' });

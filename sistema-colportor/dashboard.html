@@ -8,18 +8,13 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Estilo simple para el icono de ayuda */
-        .help-icon {
-            color: #005a87;
-            cursor: help;
-            margin-left: 5px;
-            font-size: 0.9rem;
-        }
+        .help-icon { color: #005a87; cursor: help; margin-left: 5px; font-size: 0.9rem; }
+        /* Ocultar inputs desactivados visualmente mejor */
+        .disabled-look { background-color: #e9ecef; color: #6c757d; }
     </style>
 </head>
 <body>
 
-    <!-- BARRA LATERAL -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <div class="logo-text">EMPRENDUM <span>APP</span></div>
@@ -27,6 +22,7 @@
         <ul class="nav-links">
             <li><a href="#" onclick="mostrarSeccion('inicio')" id="nav-inicio" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('reportes')" id="nav-reportes"><i class="fas fa-file-invoice-dollar"></i> <span>Reportes</span></a></li>
+            <li><a href="#" onclick="mostrarSeccion('colportaje')" id="nav-colportaje"><i class="fas fa-map-marked-alt"></i> <span>Invierno 2025</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('perfil')" id="nav-perfil"><i class="fas fa-user"></i> <span>Mi Perfil</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('companeros')" id="nav-companeros"><i class="fas fa-users"></i> <span>Compañeros</span></a></li>
         </ul>
@@ -35,67 +31,52 @@
         </div>
     </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
 
-        <!-- VISTA: INICIO -->
+        <!-- 1. INICIO -->
         <section id="inicio" class="section-view active">
             <div class="section-header">
                 <h2>Panel de Control</h2>
-                <p>Bienvenido, <span id="nombreUsuarioDash">Colportor</span></p>
+                <p>Resumen de tu actividad</p>
             </div>
-            
-            <!-- CAMBIO DE ORDEN EN TARJETAS: Título -> Texto -> Número -->
+            <!-- Tarjetas Reordenadas: Título -> Subtítulo -> Número -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <h3>Ventas ($)</h3>
-                    <p style="color: #28a745;">Total acumulado</p>
+                    <p style="color: #28a745; font-size:0.9rem;">Total acumulado</p>
                     <div class="number" id="stat-monto">--</div>
                 </div>
                 <div class="stat-card">
                     <h3>Colecciones</h3>
-                    <p>entregadas</p>
+                    <p style="font-size:0.9rem;">entregadas</p>
                     <div class="number" id="stat-colecciones">--</div>
                 </div>
                 <div class="stat-card">
                     <h3>Horas</h3>
-                    <p>trabajadas</p>
+                    <p style="font-size:0.9rem;">trabajadas</p>
                     <div class="number" id="stat-horas">--</div>
                 </div>
                 <div class="stat-card">
                     <h3>Estudios</h3>
-                    <p>bíblicos</p>
+                    <p style="font-size:0.9rem;">bíblicos</p>
                     <div class="number" id="stat-estudios">--</div>
                 </div>
             </div>
-            
-            <button class="btn-primary" style="width: auto; background: #6c757d;" onclick="mostrarSeccion('reportes')">
-                <i class="fas fa-plus"></i> Nuevo Reporte
-            </button>
         </section>
 
-        <!-- VISTA: REPORTES -->
+        <!-- 2. REPORTES -->
         <section id="reportes" class="section-view">
             <div class="section-header"><h2>Gestión de Reportes</h2></div>
             
-            <!-- Formulario Semanal -->
             <div class="form-container">
                 <h3><i class="fas fa-calendar-week"></i> Reporte Semanal</h3>
                 <form id="formReporteSemanal">
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label>Semana #</label>
-                            <input type="number" id="sem_numero" placeholder="Ej: 42" required>
-                        </div>
-                        <!-- ELIMINADO: Input de Año (se envía automático) -->
+                        <div class="form-group"><label>Semana #</label><input type="number" id="sem_numero" placeholder="Ej: 42" required></div>
+                        <div class="form-group"><label>Colecciones</label><input type="number" id="sem_colecciones" placeholder="0" required></div>
                         
-                        <div class="form-group">
-                            <label>Colecciones</label>
-                            <input type="number" id="sem_colecciones" placeholder="0" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <!-- CAMBIO: Label con ayuda (?) -->
+                        <!-- CAMBIO: Título + Tooltip -->
+                        <div class="form-group full-width">
                             <label>
                                 Monto total depositado 
                                 <i class="fas fa-question-circle help-icon" title="Reportar el dinero enviado en la semana, no el valor de las colecciones entregadas."></i>
@@ -103,31 +84,23 @@
                             <input type="number" step="0.01" id="sem_monto" placeholder="0.00" required>
                         </div>
                         
-                        <div class="form-group">
-                            <label>Horas</label>
-                            <input type="number" step="0.5" id="sem_horas" placeholder="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Estudios</label>
-                            <input type="number" id="sem_estudios" placeholder="0" required>
-                        </div>
+                        <div class="form-group"><label>Horas Trabajadas</label><input type="number" step="0.5" id="sem_horas" placeholder="0" required></div>
+                        <div class="form-group"><label>Estudios Bíblicos</label><input type="number" id="sem_estudios" placeholder="0" required></div>
                     </div>
                     <button type="submit" class="btn-primary">Enviar Reporte</button>
                 </form>
             </div>
 
-            <!-- Formulario Mensual -->
             <div class="form-container">
-                <!-- CAMBIO: Icono de ayuda (?) en el título -->
+                <!-- CAMBIO: Título + Tooltip -->
                 <h3>
-                    <i class="fas fa-file-upload"></i> Informe Mensual (Archivo)
+                    <i class="fas fa-file-upload"></i> Informe Mensual 
                     <i class="fas fa-question-circle help-icon" title="Enviar al final del mes, cuando el coach lo requiera."></i>
                 </h3>
-                
                 <form id="formInformeMensual">
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label>Mes</label>
+                        <div class="form-group full-width">
+                            <label>Mes a reportar</label>
                             <select id="mes_reporte">
                                 <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
                                 <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
@@ -135,91 +108,162 @@
                                 <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
                             </select>
                         </div>
-                        <!-- Año automático también aquí si quieres, pero lo dejo visible por si reportan meses pasados -->
-                        <div class="form-group">
-                            <label>Año</label>
-                            <input type="number" id="anio_reporte" value="2025" required>
-                        </div>
                         <div class="form-group full-width">
                             <label>Archivo (PDF/DOC)</label>
                             <input type="file" id="archivo_informe" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn-primary" style="background-color: #28a745;">Subir Archivo</button>
+                    <button type="submit" class="btn-primary" style="background-color: #28a745;">Subir Informe</button>
                 </form>
             </div>
         </section>
 
-        <!-- VISTA: PERFIL -->
+        <!-- 3. NUEVA SECCIÓN: COLPORTAJE INVIERNO -->
+        <section id="colportaje" class="section-view">
+            <div class="section-header">
+                <h2>Campaña Invierno - 2025</h2>
+                <p>Configura tu asignación actual de trabajo</p>
+            </div>
+            <div class="form-container">
+                <form id="formCampana">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Unión de Trabajo</label>
+                            <select id="camp_union" onchange="filtrarCampos()">
+                                <option value="">Seleccione...</option>
+                                <option value="1">UVOC (Occidental)</option>
+                                <option value="2">UVO (Oriental)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Campo de Trabajo</label>
+                            <select id="camp_campo" disabled>
+                                <option value="">Seleccione unión primero</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Zona Asignada</label>
+                            <select id="camp_zona" disabled>
+                                <option value="">Seleccione unión primero</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Ciudad Específica</label>
+                            <input type="text" id="camp_ciudad" placeholder="Ej: Barquisimeto Centro">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Guardar Asignación</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 4. PERFIL (Con edición de registro) -->
         <section id="perfil" class="section-view">
             <div class="profile-header">
                 <img id="headerFoto" src="https://via.placeholder.com/100" class="profile-pic-large">
-                <div class="profile-info-text"><h3 id="headerNombre">Cargando...</h3><p id="headerCarrera">Estudiante</p></div>
+                <div class="profile-info-text">
+                    <h3 id="headerNombre">Cargando...</h3>
+                    <p id="headerCarrera">Estudiante</p>
+                </div>
                 <button class="edit-toggle-btn" onclick="toggleEditProfile()"><i class="fas fa-pen"></i> Editar</button>
             </div>
-            <!-- SOLO LECTURA -->
+
+            <!-- MODO LECTURA -->
             <div id="viewProfileMode" class="form-container">
-                <h3>Información Personal</h3>
+                <h3>Datos Generales</h3>
                 <div class="form-grid">
+                    <div><strong>Cédula:</strong> <span id="view_cedula">--</span></div>
                     <div><strong>Teléfono:</strong> <span id="view_telefono">--</span></div>
-                    <div><strong>Procedencia:</strong> <span id="view_procedencia">--</span></div>
-                    <div><strong>Estado Civil:</strong> <span id="view_civil">--</span></div>
-                    <div class="full-width"><strong>Pensamiento:</strong> <p id="view_pensamiento" style="font-style: italic; color: #666; margin-top: 5px;">--</p></div>
+                    <div><strong>Origen:</strong> <span id="view_procedencia">--</span></div>
+                    <div><strong>Religión:</strong> <span id="view_religion">--</span></div>
+                    <div class="full-width">
+                        <strong>Pensamiento:</strong> 
+                        <p id="view_pensamiento" style="font-style: italic; color: #666; margin-top: 5px;">--</p>
+                    </div>
                 </div>
             </div>
-            <!-- EDICIÓN -->
+
+            <!-- MODO EDICIÓN -->
             <div id="editProfileMode" style="display: none;">
+                <!-- Formulario 1: Foto y Bio -->
                 <div class="form-container">
-                    <h3>Editar Datos Laborales</h3>
-                    <form id="formLaboral">
-                        <div class="form-grid">
-                            <div class="form-group full-width"><label>Cambiar Foto</label><input type="file" id="foto_perfil_input"></div>
-                            <div class="form-group"><label>Ciudad de Misión</label><input type="text" id="lugar_colportar"></div>
-                            <div class="form-group"><label>Unión</label><select id="union_trabajo"><option value="1">UVOC</option><option value="2">UVO</option></select></div>
-                            <div class="form-group"><label>Campo</label><select id="campo_trabajo"><option value="1">AVCN</option><option value="2">MVY</option></select></div>
-                            <div class="form-group full-width"><label>Pensamiento</label><textarea id="pensamiento"></textarea></div>
+                    <h3>Foto y Biografía</h3>
+                    <form id="formBio">
+                        <div class="form-group full-width">
+                            <label>Foto de Perfil</label>
+                            <input type="file" id="foto_perfil_input">
                         </div>
-                        <button type="submit" class="btn-primary">Guardar Cambios Laborales</button>
+                        <div class="form-group full-width">
+                            <label>Pensamiento</label>
+                            <textarea id="pensamiento_input"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Actualizar Bio</button>
                     </form>
                 </div>
+
+                <!-- Formulario 2: Datos Completos (Registro + Personales) -->
                 <div class="form-container">
-                    <h3>Datos Privados (Padres/Salud)</h3>
+                    <h3>Datos Personales y de Registro</h3>
+                    <p style="color: #d9534f; font-size: 0.8rem; margin-bottom: 15px;">⚠ Estás modificando tu ficha de registro inicial.</p>
                     <form id="formPersonales">
                         <div class="form-grid">
+                            <div class="form-group"><label>Nombre Completo</label><input type="text" id="reg_nombre"></div>
+                            <div class="form-group"><label>Cédula</label><input type="text" id="reg_cedula"></div>
+                            <div class="form-group"><label>Teléfono</label><input type="text" id="reg_telefono"></div>
+                            <div class="form-group"><label>Carrera</label><input type="text" id="reg_carrera"></div>
+                            <div class="form-group"><label>Religión</label><input type="text" id="reg_religion"></div>
+                            <div class="form-group"><label>Estado Civil</label>
+                                <select id="reg_civil"><option value="Soltero">Soltero</option><option value="Casado">Casado</option></select>
+                            </div>
+                            
+                            <!-- Datos de Procedencia (Registro) -->
+                            <div class="form-group full-width" style="border-top: 1px solid #eee; padding-top:10px; margin-top:10px;">
+                                <label style="color:#005a87;">Lugar de Procedencia (Origen)</label>
+                            </div>
+                            <div class="form-group"><label>Unión Origen</label>
+                                <select id="reg_union"><option value="1">UVOC</option><option value="2">UVO</option></select>
+                            </div>
+                            <div class="form-group"><label>Campo Origen</label>
+                                <select id="reg_campo"><option value="1">MVY</option><option value="2">AVCN</option></select>
+                            </div>
+                            <div class="form-group full-width"><label>Ciudad de Origen</label><input type="text" id="reg_lugar_procedencia"></div>
+                            <div class="form-group full-width"><label>Dirección Exacta</label><input type="text" id="reg_direccion"></div>
+
+                            <!-- Familiares -->
+                            <div class="form-group full-width" style="border-top: 1px solid #eee; padding-top:10px; margin-top:10px;">
+                                <label style="color:#005a87;">Familiares y Salud</label>
+                            </div>
                             <div class="form-group"><label>Padre</label><input type="text" id="padre_nombre"></div>
                             <div class="form-group"><label>Tlf Padre</label><input type="text" id="padre_telefono"></div>
                             <div class="form-group"><label>Madre</label><input type="text" id="madre_nombre"></div>
                             <div class="form-group"><label>Tlf Madre</label><input type="text" id="madre_telefono"></div>
-                            <div class="form-group full-width"><label>Dirección</label><input type="text" id="direccion_origen"></div>
-                            <div class="form-group"><label>Estado Civil</label>
-                                <select id="estado_civil"><option value="Soltero">Soltero</option><option value="Casado">Casado</option><option value="Divorciado">Divorciado</option></select>
-                            </div>
                             <div class="form-group"><label>Cónyuge</label><input type="text" id="conyuge_nombre"></div>
-                            <div class="form-group full-width"><label>Alergias/Salud</label><textarea id="padecimiento"></textarea></div>
+                            <div class="form-group"><label>Alergias/Salud</label><input type="text" id="padecimiento"></div>
                         </div>
-                        <button type="submit" class="btn-primary" style="background-color: #555;">Guardar Privados</button>
+                        <button type="submit" class="btn-primary" style="background-color: #555;">Guardar Todo</button>
                     </form>
                 </div>
             </div>
         </section>
 
-        <!-- VISTA: COMPAÑEROS -->
+        <!-- 5. COMPAÑEROS -->
         <section id="companeros" class="section-view">
-            <div class="section-header"><h2>Compañeros de Misión</h2><p>Conecta con otros colportores</p></div>
-            <div class="colleagues-grid" id="listaCompaneros"><p>Cargando compañeros...</p></div>
+            <div class="section-header"><h2>Compañeros</h2></div>
+            <div class="colleagues-grid" id="listaCompaneros"><p>Cargando...</p></div>
         </section>
+
     </main>
 
-    <!-- MODAL DE DETALLE -->
+    <!-- MODAL -->
     <div id="modalCompanero" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="cerrarModal()">&times;</span>
             <img id="modalFoto" src="" class="profile-pic-large" style="margin: 0 auto 1rem;">
-            <h3 id="modalNombre">Nombre</h3>
-            <span id="modalCarrera" style="background: #eee; padding: 2px 10px; border-radius: 10px; font-size: 0.9rem;">Carrera</span>
+            <h3 id="modalNombre">--</h3>
+            <span id="modalCarrera" style="background: #eee; padding: 2px 10px; border-radius: 10px;">--</span>
             <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-            <p><strong><i class="fas fa-map-marker-alt"></i> Colportando en:</strong> <span id="modalLugar">--</span></p>
-            <p><strong><i class="fas fa-phone"></i> Teléfono:</strong> <span id="modalTelefono">--</span></p>
+            <p><strong>Colportando en:</strong> <span id="modalLugar">--</span></p>
+            <p><strong>Teléfono:</strong> <span id="modalTelefono">--</span></p>
             <div style="margin-top: 15px; font-style: italic; color: #555; background: #f9f9f9; padding: 10px; border-radius: 8px;">
                 "<span id="modalPensamiento">--</span>"
             </div>
@@ -241,33 +285,127 @@
             document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
             document.getElementById(idSeccion).classList.add('active');
             document.getElementById('nav-' + idSeccion).classList.add('active');
+            
             if(idSeccion === 'companeros') cargarCompaneros();
             if(idSeccion === 'perfil') cargarPerfil(); 
+            if(idSeccion === 'colportaje') cargarCampana(); 
         }
 
-        async function cargarEstadisticas() {
+async function cargarEstadisticas() {
             try {
                 const res = await fetch(`${API_BASE}/reports/dashboard-stats`, { headers: { 'Authorization': `Bearer ${token}` } });
+                
                 if(res.ok) {
                     const data = await res.json();
+                    
+                    // Llenar los números
                     document.getElementById('stat-colecciones').innerText = data.total_colecciones || 0;
                     document.getElementById('stat-monto').innerText = '$' + (parseFloat(data.total_monto) || 0).toFixed(2);
                     document.getElementById('stat-horas').innerText = data.total_horas || 0;
                     document.getElementById('stat-estudios').innerText = data.total_estudios || 0;
+
+                    // CAMBIAR TÍTULOS SEGÚN ROL
+                    const tituloSeccion = document.querySelector('#inicio .section-header p');
+                    const tituloMonto = document.querySelector('#stat-monto').parentElement.querySelector('p');
+
+                    if (data.user_role === 1) {
+                        // Director
+                        tituloSeccion.innerText = "Vista Global - Dirección (Todos los datos)";
+                        tituloSeccion.style.color = "#d9534f"; // Rojo para resaltar poder
+                        tituloMonto.innerText = "Total Unión Recaudado";
+                    } else if (data.user_role === 2) {
+                        // Coach
+                        tituloSeccion.innerText = "Vista de Líder de Zona";
+                        tituloSeccion.style.color = "#005a87";
+                        tituloMonto.innerText = "Total Zona Recaudado";
+                    } else {
+                        // Colportor
+                        tituloSeccion.innerText = "Resumen de tu actividad";
+                        tituloMonto.innerText = "Total Acumulado";
+                    }
                 }
             } catch(e) { console.error(e); }
         }
 
-        // --- ENVIAR REPORTE SEMANAL (JS ACTUALIZADO) ---
+        // --- LÓGICA DE COLPORTAJE (FILTROS) ---
+        const datosCampana = {
+            1: { // UVOC
+                campos: [{id: 1, nombre: 'MVY (Misión Yaracuy)'}, {id: 2, nombre: 'AVCN (Centro Norte)'}],
+                zonas: ['Zona 1 (Occidente)', 'Zona 2 (Occidente)', 'Zona 3 (Occidente)', 'Zona 4 (Occidente)', 'Zona 5 (Occidente)']
+            },
+            2: { // UVO
+                campos: [{id: 3, nombre: 'AVNOR (Nor Oriental)'}, {id: 4, nombre: 'AVSO (Sur Oriental)'}],
+                zonas: ['Zona 1 (Oriente)', 'Zona 2 (Oriente)', 'Zona 3 (Oriente)', 'Zona 4 (Oriente)']
+            }
+        };
+
+        function filtrarCampos() {
+            const unionId = document.getElementById('camp_union').value;
+            const selectCampo = document.getElementById('camp_campo');
+            const selectZona = document.getElementById('camp_zona');
+
+            selectCampo.innerHTML = '<option value="">Seleccione...</option>';
+            selectZona.innerHTML = '<option value="">Seleccione...</option>';
+
+            if (datosCampana[unionId]) {
+                selectCampo.disabled = false;
+                selectZona.disabled = false;
+                
+                datosCampana[unionId].campos.forEach(c => {
+                    selectCampo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+                });
+                datosCampana[unionId].zonas.forEach(z => {
+                    selectZona.innerHTML += `<option value="${z}">${z}</option>`;
+                });
+            } else {
+                selectCampo.disabled = true;
+                selectZona.disabled = true;
+            }
+        }
+
+        async function cargarCampana() {
+            try {
+                const res = await fetch(`${API_BASE}/campana`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (data.union_trabajo_id) {
+                    document.getElementById('camp_union').value = data.union_trabajo_id;
+                    filtrarCampos(); 
+                    document.getElementById('camp_campo').value = data.campo_trabajo_id;
+                    
+                    if (data.lugar_colportar) {
+                        const partes = data.lugar_colportar.split(' - ');
+                        if (partes.length > 1) {
+                            document.getElementById('camp_ciudad').value = partes[0];
+                            document.getElementById('camp_zona').value = partes[1];
+                        } else {
+                            document.getElementById('camp_ciudad').value = data.lugar_colportar;
+                        }
+                    }
+                }
+            } catch(e) {}
+        }
+
+        document.getElementById('formCampana').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const datos = {
+                union_id: document.getElementById('camp_union').value,
+                campo_id: document.getElementById('camp_campo').value,
+                zona: document.getElementById('camp_zona').value,
+                ciudad: document.getElementById('camp_ciudad').value
+            };
+            const res = await fetch(`${API_BASE}/campana/asignar`, {
+                method: 'POST', headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}, body: JSON.stringify(datos)
+            });
+            if (res.ok) alert("Asignación guardada correctamente");
+        });
+
+        // --- REPORTE SEMANAL (AÑO AUTO) ---
         document.getElementById('formReporteSemanal').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // Calculamos el año automáticamente aquí
             const currentYear = new Date().getFullYear();
-
             const datos = {
                 semana_numero: document.getElementById('sem_numero').value,
-                anio: currentYear, // <-- AÑO AUTOMÁTICO
+                anio: currentYear, // Automático
                 colecciones: document.getElementById('sem_colecciones').value,
                 monto: document.getElementById('sem_monto').value,
                 horas: document.getElementById('sem_horas').value,
@@ -276,120 +414,128 @@
             const res = await fetch(`${API_BASE}/reports/create-weekly`, {
                 method: 'POST', headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}, body: JSON.stringify(datos)
             });
-            if(res.ok) { 
-                alert("Reporte Enviado"); 
-                e.target.reset(); 
-                cargarEstadisticas(); 
-            }
+            if(res.ok) { alert("Reporte Enviado"); e.target.reset(); cargarEstadisticas(); }
         });
 
+        // --- INFORME MENSUAL (AÑO AUTO) ---
         document.getElementById('formInformeMensual').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const currentYear = new Date().getFullYear();
             const formData = new FormData();
             formData.append('mes', document.getElementById('mes_reporte').value);
-            formData.append('anio', document.getElementById('anio_reporte').value);
+            formData.append('anio', currentYear); // Automático
             formData.append('informe', document.getElementById('archivo_informe').files[0]);
-            const res = await fetch(`${API_BASE}/reports/upload-monthly`, {
-                method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData
-            });
-            if(res.ok) { alert("Archivo subido"); e.target.reset(); }
+            const res = await fetch(`${API_BASE}/reports/upload-monthly`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+            if(res.ok) { alert("Informe subido"); e.target.reset(); }
         });
 
-        let isEditMode = false;
+        // --- PERFIL ---
         function toggleEditProfile() {
-            isEditMode = !isEditMode;
-            document.getElementById('viewProfileMode').style.display = isEditMode ? 'none' : 'block';
-            document.getElementById('editProfileMode').style.display = isEditMode ? 'block' : 'none';
+            const mode = document.getElementById('editProfileMode').style.display === 'none';
+            document.getElementById('viewProfileMode').style.display = mode ? 'none' : 'block';
+            document.getElementById('editProfileMode').style.display = mode ? 'block' : 'none';
         }
 
         async function cargarPerfil() {
             try {
-                const res = await fetch(`${API_BASE}/profile`, { headers: { 'Authorization': `Bearer ${token}` }});
+                const res = await fetch(`${API_BASE}/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await res.json();
-                document.getElementById('headerNombre').innerText = data.nombre_completo || 'Usuario';
-                document.getElementById('nombreUsuarioDash').innerText = (data.nombre_completo || 'Usuario').split(' ')[0];
-                document.getElementById('headerCarrera').innerText = data.carrera || 'Estudiante';
-                if(data.foto_perfil_url) {
-                    const rutaFoto = data.foto_perfil_url.replace(/\\/g, '/');
-                    document.getElementById('headerFoto').src = `http://localhost:3000/${rutaFoto}`;
-                }
-                document.getElementById('view_telefono').innerText = data.telefono || 'No registrado';
-                document.getElementById('view_procedencia').innerText = data.direccion_origen || 'No registrada';
-                document.getElementById('view_civil').innerText = data.estado_civil_extra || 'Soltero';
-                document.getElementById('view_pensamiento').innerText = data.pensamiento_bio || 'Sin pensamiento definido.';
                 
-                document.getElementById('lugar_colportar').value = data.lugar_colportar || '';
-                document.getElementById('pensamiento').value = data.pensamiento_bio || '';
+                document.getElementById('headerNombre').innerText = data.nombre_completo;
+                document.getElementById('nombreUsuarioDash').innerText = data.nombre_completo.split(' ')[0];
+                document.getElementById('headerCarrera').innerText = data.carrera || 'Estudiante';
+                if(data.foto_perfil_url) document.getElementById('headerFoto').src = `http://localhost:3000/${data.foto_perfil_url.replace(/\\/g, '/')}`;
+
+                document.getElementById('view_cedula').innerText = data.cedula;
+                document.getElementById('view_telefono').innerText = data.telefono;
+                document.getElementById('view_procedencia').innerText = data.lugar_procedencia || 'No especificado';
+                document.getElementById('view_religion').innerText = data.religion || '--';
+                document.getElementById('view_pensamiento').innerText = data.pensamiento_bio || 'Sin pensamiento.';
+
+                document.getElementById('pensamiento_input').value = data.pensamiento_bio || '';
+                
+                document.getElementById('reg_nombre').value = data.nombre_completo || '';
+                document.getElementById('reg_cedula').value = data.cedula || '';
+                document.getElementById('reg_telefono').value = data.telefono || '';
+                document.getElementById('reg_carrera').value = data.carrera || '';
+                document.getElementById('reg_religion').value = data.religion || '';
+                document.getElementById('reg_lugar_procedencia').value = data.lugar_procedencia || '';
+                if(data.union_procedencia_id) document.getElementById('reg_union').value = data.union_procedencia_id;
+                if(data.campo_procedencia_id) document.getElementById('reg_campo').value = data.campo_procedencia_id;
+                if(data.estado_civil) document.getElementById('reg_civil').value = data.estado_civil;
+
                 document.getElementById('padre_nombre').value = data.padre_nombre || '';
                 document.getElementById('padre_telefono').value = data.padre_telefono || '';
                 document.getElementById('madre_nombre').value = data.madre_nombre || '';
                 document.getElementById('madre_telefono').value = data.madre_telefono || '';
-                document.getElementById('direccion_origen').value = data.direccion_origen || '';
-                if(data.estado_civil_extra) document.getElementById('estado_civil').value = data.estado_civil_extra;
+                document.getElementById('reg_direccion').value = data.direccion_origen || '';
                 document.getElementById('conyuge_nombre').value = data.conyuge_nombre || '';
                 document.getElementById('padecimiento').value = data.padecimiento_medico || '';
-            } catch(e) { console.error(e); }
+
+            } catch(e) {}
         }
 
-        document.getElementById('formLaboral').addEventListener('submit', async (e) => {
+        document.getElementById('formBio').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData();
-            const fileInput = document.getElementById('foto_perfil_input');
-            if (fileInput.files[0]) formData.append('foto_perfil', fileInput.files[0]);
-            formData.append('lugar_colportar', document.getElementById('lugar_colportar').value);
-            formData.append('union_trabajo', document.getElementById('union_trabajo').value);
-            formData.append('campo_trabajo', document.getElementById('campo_trabajo').value);
-            formData.append('pensamiento', document.getElementById('pensamiento').value);
-            const res = await fetch(`${API_BASE}/profile/laboral`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
-            if (res.ok) { alert("Perfil actualizado"); location.reload(); }
+            if (document.getElementById('foto_perfil_input').files[0]) {
+                formData.append('foto_perfil', document.getElementById('foto_perfil_input').files[0]);
+            }
+            formData.append('pensamiento', document.getElementById('pensamiento_input').value);
+            const res = await fetch(`${API_BASE}/profile/bio`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+            if (res.ok) { alert("Biografía actualizada"); location.reload(); }
         });
 
         document.getElementById('formPersonales').addEventListener('submit', async (e) => {
             e.preventDefault();
             const datos = {
+                nombre_completo: document.getElementById('reg_nombre').value,
+                cedula: document.getElementById('reg_cedula').value,
+                telefono: document.getElementById('reg_telefono').value,
+                carrera: document.getElementById('reg_carrera').value,
+                religion: document.getElementById('reg_religion').value,
+                estado_civil: document.getElementById('reg_civil').value,
+                union_procedencia: document.getElementById('reg_union').value,
+                campo_procedencia: document.getElementById('reg_campo').value,
+                lugar_procedencia: document.getElementById('reg_lugar_procedencia').value,
                 padre_nombre: document.getElementById('padre_nombre').value,
                 padre_telefono: document.getElementById('padre_telefono').value,
                 madre_nombre: document.getElementById('madre_nombre').value,
                 madre_telefono: document.getElementById('madre_telefono').value,
-                direccion_origen: document.getElementById('direccion_origen').value,
-                estado_civil: document.getElementById('estado_civil').value,
+                direccion_origen: document.getElementById('reg_direccion').value,
                 conyuge_nombre: document.getElementById('conyuge_nombre').value,
                 padecimiento: document.getElementById('padecimiento').value
             };
-            const res = await fetch(`${API_BASE}/profile/personales`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(datos) });
-            if (res.ok) alert("Datos guardados");
+            const res = await fetch(`${API_BASE}/profile/personales`, { 
+                method: 'POST', headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}, body: JSON.stringify(datos)
+            });
+            if(res.ok) alert("Datos actualizados correctamente");
         });
 
         async function cargarCompaneros() {
             const container = document.getElementById('listaCompaneros');
-            container.innerHTML = '<p>Cargando...</p>';
             try {
-                const res = await fetch(`${API_BASE}/users/lista`, { headers: { 'Authorization': `Bearer ${token}` }});
-                const usuarios = await res.json();
+                const res = await fetch(`${API_BASE}/users/lista`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const users = await res.json();
                 container.innerHTML = '';
-                usuarios.forEach(u => {
-                    let foto = 'https://via.placeholder.com/150';
-                    if(u.foto_perfil_url) foto = `http://localhost:3000/${u.foto_perfil_url.replace(/\\/g, '/')}`;
-                    const card = `<div class="colleague-card" onclick="verDetalleCompanero(${u.id})"><img src="${foto}" class="colleague-pic"><h4 class="colleague-name">${u.nombre_completo}</h4><span class="colleague-role">${u.carrera || 'Estudiante'}</span></div>`;
-                    container.innerHTML += card;
+                users.forEach(u => {
+                    let foto = u.foto_perfil_url ? `http://localhost:3000/${u.foto_perfil_url.replace(/\\/g, '/')}` : 'https://via.placeholder.com/150';
+                    container.innerHTML += `<div class="colleague-card" onclick="verDetalle(${u.id})"><img src="${foto}" class="colleague-pic"><h4 class="colleague-name">${u.nombre_completo}</h4><span class="colleague-role">${u.carrera}</span></div>`;
                 });
-            } catch(e) { container.innerHTML = '<p>Error cargando lista.</p>'; }
+            } catch(e) {}
         }
 
-        async function verDetalleCompanero(id) {
-            try {
-                const res = await fetch(`${API_BASE}/users/detalle/${id}`, { headers: { 'Authorization': `Bearer ${token}` }});
-                const u = await res.json();
-                document.getElementById('modalNombre').innerText = u.nombre_completo;
-                document.getElementById('modalCarrera').innerText = u.carrera || 'Estudiante';
-                document.getElementById('modalLugar').innerText = u.lugar_colportar || 'No especificado';
-                document.getElementById('modalTelefono').innerText = u.telefono || 'Privado';
-                document.getElementById('modalPensamiento').innerText = u.pensamiento_bio || 'Sin pensamiento.';
-                let foto = 'https://via.placeholder.com/150';
-                if(u.foto_perfil_url) foto = `http://localhost:3000/${u.foto_perfil_url.replace(/\\/g, '/')}`;
-                document.getElementById('modalFoto').src = foto;
-                document.getElementById('modalCompanero').style.display = 'flex';
-            } catch(e) { console.error(e); }
+        async function verDetalle(id) {
+            const res = await fetch(`${API_BASE}/users/detalle/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+            const u = await res.json();
+            document.getElementById('modalNombre').innerText = u.nombre_completo;
+            document.getElementById('modalCarrera').innerText = u.carrera;
+            document.getElementById('modalLugar').innerText = u.lugar_colportar || 'No especificado';
+            document.getElementById('modalTelefono').innerText = u.telefono;
+            document.getElementById('modalPensamiento').innerText = u.pensamiento_bio || '';
+            let foto = u.foto_perfil_url ? `http://localhost:3000/${u.foto_perfil_url.replace(/\\/g, '/')}` : 'https://via.placeholder.com/150';
+            document.getElementById('modalFoto').src = foto;
+            document.getElementById('modalCompanero').style.display = 'flex';
         }
 
         function cerrarModal() { document.getElementById('modalCompanero').style.display = 'none'; }
