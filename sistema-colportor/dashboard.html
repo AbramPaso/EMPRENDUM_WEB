@@ -315,64 +315,63 @@
         </div>
     </div>
 
-        <!-- OTRO MODAL -->
-    <div id="modalGestion" class="modal">
-    <div class="modal-content" style="max-width: 600px;">
+        <!-- MODAL PARA EL COUCH-->
+<div id="modalGestion" class="modal">
+    <div class="modal-content" style="max-width: 450px; width: 95%; padding: 20px;">
         <span class="close-modal" onclick="cerrarModalGestion()">&times;</span>
         
-        <h2 style="color: #005a87; margin-bottom: 15px;">Gestión de Colportor</h2>
+        <h3 style="color: #005a87; margin-top: 0; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+            <i class="fas fa-user-edit"></i> Gestión de Colportor
+        </h3>
         
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <h4 style="margin-top:0;">📊 Rendimiento Actual</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+        <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; text-align: center;">
                 <div class="stat-mini">
-                    <strong>Colecciones</strong>
-                    <div id="gest_colecciones" style="font-size: 1.2rem; color: #005a87;">0</div>
+                    <div style="font-size: 0.7rem; color: #666;">Colec.</div>
+                    <div id="gest_colecciones" style="font-size: 1rem; font-weight:bold; color: #005a87;">0</div>
                 </div>
                 <div class="stat-mini">
-                    <strong>Dinero ($)</strong>
-                    <div id="gest_monto" style="font-size: 1.2rem; color: #28a745;">0.00</div>
+                    <div style="font-size: 0.7rem; color: #666;">Dinero</div>
+                    <div id="gest_monto" style="font-size: 1rem; font-weight:bold; color: #28a745;">0</div>
                 </div>
                 <div class="stat-mini">
-                    <strong>Horas</strong>
-                    <div id="gest_horas" style="font-size: 1.2rem; color: #666;">0</div>
+                    <div style="font-size: 0.7rem; color: #666;">Horas</div>
+                    <div id="gest_horas" style="font-size: 1rem; font-weight:bold; color: #555;">0</div>
                 </div>
                 <div class="stat-mini">
-                    <strong>Estudios B.</strong>
-                    <div id="gest_estudios" style="font-size: 1.2rem; color: #666;">0</div>
+                    <div style="font-size: 0.7rem; color: #666;">Estudios</div>
+                    <div id="gest_estudios" style="font-size: 1rem; font-weight:bold; color: #555;">0</div>
                 </div>
             </div>
         </div>
 
         <form id="formGestionColportor">
-            <input type="hidden" id="gest_id_usuario"> <h4 style="margin-bottom: 10px;">✏️ Datos Personales</h4>
-            <div class="form-group full-width">
-                <label>Nombre Completo</label>
-                <input type="text" id="gest_nombre" required>
+            <input type="hidden" id="gest_id_usuario"> 
+            
+            <div class="form-group full-width" style="margin-bottom: 10px;">
+                <label style="font-size: 0.85rem;">Nombre Completo</label>
+                <input type="text" id="gest_nombre" required style="padding: 8px; font-size: 0.9rem;">
             </div>
             
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Teléfono</label>
-                    <input type="text" id="gest_telefono">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div class="form-group" style="margin:0;">
+                    <label style="font-size: 0.85rem;">Teléfono</label>
+                    <input type="text" id="gest_telefono" style="padding: 8px; font-size: 0.9rem;">
                 </div>
-                <div class="form-group">
-                    <label>Carrera / Profesión</label>
-                    <input type="text" id="gest_carrera">
+                <div class="form-group" style="margin:0;">
+                    <label style="font-size: 0.85rem;">Carrera</label>
+                    <input type="text" id="gest_carrera" style="padding: 8px; font-size: 0.9rem;">
                 </div>
             </div>
 
-            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-
-            <h4 style="margin-bottom: 10px; color: #d9534f;">🔒 Seguridad</h4>
-            <div class="form-group full-width">
-                <label>Cambiar Contraseña (Dejar vacío si no se desea cambiar)</label>
-                <input type="text" id="gest_password" placeholder="Nueva contraseña..." style="border-color: #d9534f;">
+            <div style="background: #fff5f5; padding: 10px; border-radius: 6px; border: 1px dashed #d9534f; margin-top: 15px;">
+                <label style="font-size: 0.8rem; color: #d9534f; font-weight: bold;">Cambiar Contraseña (Opcional)</label>
+                <input type="text" id="gest_password" placeholder="Escribe para cambiar..." style="padding: 6px; font-size: 0.85rem; width: 100%; border: 1px solid #ffcccc; margin-top: 5px;">
             </div>
 
-            <div style="margin-top: 20px; text-align: right;">
-                <button type="button" class="btn-primary" style="background: #6c757d;" onclick="cerrarModalGestion()">Cancelar</button>
-                <button type="submit" class="btn-primary">Guardar Cambios</button>
+            <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" onclick="cerrarModalGestion()" style="padding: 8px 15px; border: none; background: #eee; color: #555; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Cancelar</button>
+                <button type="submit" class="btn-primary" style="padding: 8px 15px; font-size: 0.9rem;">Guardar</button>
             </div>
         </form>
     </div>
