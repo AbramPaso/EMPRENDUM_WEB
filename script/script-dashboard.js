@@ -1,5 +1,7 @@
         const API_BASE = 'http://localhost:3000/api';
         const token = localStorage.getItem('token');
+let usuarioActual = {};
+
 
         document.addEventListener('DOMContentLoaded', () => {
             if (!token) { window.location.href = 'login.html'; return; }
@@ -19,18 +21,122 @@
         }
 
         // 1. CARGAR STATS
-        async function cargarEstadisticas() {
-            try {
-                const res = await fetch(`${API_BASE}/reports/dashboard-stats`, { headers: { 'Authorization': `Bearer ${token}` } });
-                if(res.ok) {
-                    const data = await res.json();
-                    document.getElementById('stat-colecciones').innerText = data.total_colecciones || 0;
-                    document.getElementById('stat-monto').innerText = '$' + (parseFloat(data.total_monto) || 0).toFixed(2);
-                    document.getElementById('stat-horas').innerText = data.total_horas || 0;
-                    document.getElementById('stat-estudios').innerText = data.total_estudios || 0;
-                }
-            } catch(e) {}
+
+async function cargarEstadisticas() {
+    try {
+        // 1. Obtenemos stats básicas para saber el ROL
+        const res = await fetch(`${API_BASE}/reports/dashboard-stats`, { headers: { 'Authorization': `Bearer ${token}` } });
+        
+        if(res.ok) {
+            const data = await res.json();
+            const rol = data.rol_detectado;
+            usuarioActual.rol = rol; // Guardamos el rol globalmente
+
+            // --- ACTUALIZAR BADGE ---
+            const badge = document.getElementById('rol-badge');
+            if (rol === 1) { badge.innerText = "DIRECTOR"; badge.style.background = "#d9534f"; }
+            else if (rol === 2) { badge.innerText = "COACH"; badge.style.background = "#f0ad4e"; }
+            else { badge.innerText = "COLPORTOR"; badge.style.background = "#0275d8"; }
+
+            // --- OCULTAR TODO PRIMERO ---
+            document.getElementById('vista-colportor').style.display = 'none';
+            document.getElementById('vista-director').style.display = 'none';
+            document.getElementById('vista-coach').style.display = 'none';
+
+            // --- MOSTRAR SEGÚN ROL ---
+            
+            // CASO 1: DIRECTOR (Gráficas)
+            if (rol === 1) {
+                document.getElementById('vista-director').style.display = 'block';
+                cargarGraficasDirector();
+                // El director también puede ver la tabla del coach si quiere, pero abajo
+                document.getElementById('vista-coach').style.display = 'block';
+                cargarTablaCoach(); 
+            }
+
+            // CASO 2: COACH (Tabla)
+            else if (rol === 2) {
+                document.getElementById('vista-coach').style.display = 'block';
+                cargarTablaCoach();
+                // Opcional: mostrar tarjetas resumen también
+                document.getElementById('vista-colportor').style.display = 'flex';
+                llenarTarjetas(data);
+            }
+
+            // CASO 3: COLPORTOR (Tarjetas)
+            else {
+                document.getElementById('vista-colportor').style.display = 'flex';
+                llenarTarjetas(data);
+            }
         }
+    } catch(e) { console.error(e); }
+}
+
+function llenarTarjetas(data) {
+    document.getElementById('stat-colecciones').innerText = data.total_colecciones || 0;
+    document.getElementById('stat-monto').innerText = '$' + (parseFloat(data.total_monto) || 0).toFixed(2);
+    document.getElementById('stat-horas').innerText = data.total_horas || 0;
+}
+
+// --- LÓGICA DE GRÁFICAS (Solo Director) ---
+async function cargarGraficasDirector() {
+    const res = await fetch(`${API_BASE}/reports/director-charts`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const data = await res.json();
+
+    // Gráfica de Dinero
+    new Chart(document.getElementById('graficaDinero'), {
+        type: 'bar', // Barras
+        data: {
+            labels: data.dinero.map(d => d.zona),
+            datasets: [{
+                label: 'Dólares Recaudados',
+                data: data.dinero.map(d => d.total),
+                backgroundColor: ['#005a87', '#28a745', '#ffc107', '#dc3545', '#17a2b8']
+            }]
+        }
+    });
+
+    // Gráfica de Libros
+    new Chart(document.getElementById('graficaLibros'), {
+        type: 'doughnut', // Torta / Donut
+        data: {
+            labels: data.libros.map(d => d.zona),
+            datasets: [{
+                label: 'Colecciones',
+                data: data.libros.map(d => d.total),
+                backgroundColor: ['#005a87', '#28a745', '#ffc107', '#dc3545', '#17a2b8']
+            }]
+        }
+    });
+}
+
+// --- LÓGICA DE TABLA (Coach y Director) ---
+async function cargarTablaCoach() {
+    const res = await fetch(`${API_BASE}/reports/coach-team`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const usuarios = await res.json();
+    
+    const tbody = document.getElementById('tabla-coach-body');
+    tbody.innerHTML = '';
+
+    usuarios.forEach(u => {
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = "1px solid #eee";
+        tr.innerHTML = `
+            <td style="padding: 10px; font-weight:bold;">${u.nombre_completo}</td>
+            <td style="padding: 10px;">${u.total_colecciones} col.</td>
+            <td style="padding: 10px; color: green;">$${u.total_dinero}</td>
+            <td style="padding: 10px;">
+                <button onclick="alert('Ver detalles de ${u.nombre_completo}')" style="cursor:pointer; background:none; border:none; color:#005a87;">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button onclick="alert('Descargar PDF de ${u.nombre_completo}')" style="cursor:pointer; background:none; border:none; color:#d9534f; margin-left:10px;">
+                    <i class="fas fa-file-pdf"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
 
         // 2. ENVIAR REPORTE SEMANAL (DINÁMICO)
         document.getElementById('formReporteSemanal').addEventListener('submit', async (e) => {
