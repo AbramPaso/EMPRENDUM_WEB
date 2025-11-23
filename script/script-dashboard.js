@@ -73,15 +73,18 @@
         });
 
         // 3. CAMPAÑA INVIERNO
-        const datosCampana = {
+const datosCampana = {
             // ID 1 = UVOC (Occidental)
             1: { 
                 campos: [
-                    {id: 1, nombre: 'AVCN'}, {id: 2, nombre: 'MVY'}, 
-                    {id: 3, nombre: 'AVCOC'}, {id: 4, nombre: 'AVLLOC'}, 
-                    {id: 5, nombre: 'MVP'}, {id: 6, nombre: 'AVSOC'}, {id: 7, nombre: 'AVOC'}
+                    {id: 1, nombre: 'AVCN'}, 
+                    {id: 2, nombre: 'MVY'}, 
+                    {id: 3, nombre: 'AVCOC'}, 
+                    {id: 4, nombre: 'AVLLOC'}, 
+                    {id: 5, nombre: 'MVP'}, 
+                    {id: 6, nombre: 'AVSOC'}, 
+                    {id: 7, nombre: 'AVOC'}
                 ], 
-                // Zonas UVOC (IDs 4 al 8 según la BD)
                 zonas: [
                     {id: 4, nombre: 'Zona 1 (Carabobo-Cojedes)'},
                     {id: 5, nombre: 'Zona 2 (Yaracuy-Lara)'},
@@ -93,12 +96,15 @@
             // ID 2 = UVO (Oriental)
             2: { 
                 campos: [
-                    {id: 8, nombre: 'AVC'}, {id: 9, nombre: 'AVCOR'}, 
-                    {id: 10, nombre: 'AVCS'}, {id: 11, nombre: 'MIVELLACEN'}, 
-                    {id: 12, nombre: 'MIVENOR'}, {id: 13, nombre: 'AVOR'}, 
-                    {id: 14, nombre: 'AVSOR'}, {id: 15, nombre: 'MIVESUB'}
+                    {id: 8, nombre: 'AVC'}, 
+                    {id: 9, nombre: 'AVCOR'}, 
+                    {id: 10, nombre: 'AVCS'}, 
+                    {id: 11, nombre: 'MIVELLACEN'}, 
+                    {id: 12, nombre: 'MIVENOR'}, 
+                    {id: 13, nombre: 'AVOR'}, 
+                    {id: 14, nombre: 'AVSOR'}, 
+                    {id: 15, nombre: 'MIVESUB'}
                 ], 
-                // Zonas UVO (IDs 1 al 3 según la BD)
                 zonas: [
                     {id: 1, nombre: 'Zona 1 (Capital/Llanos)'},
                     {id: 2, nombre: 'Zona 2 (Oriente)'},
