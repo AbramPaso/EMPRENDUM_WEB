@@ -165,7 +165,7 @@ async function cargarTablaCoach() {
             <td style="padding: 10px;">${u.total_colecciones} col.</td>
             <td style="padding: 10px; color: green;">$${u.total_dinero}</td>
             <td style="padding: 10px;">
-                <button onclick="alert('Ver detalles de ${u.nombre_completo}')" style="cursor:pointer; background:none; border:none; color:#005a87;">
+                <button onclick="abrirModalGestion(${u.id})" style="cursor:pointer; background:none; border:none; color:#005a87; font-size: 1.1rem;" title="Gestionar">
                     <i class="fas fa-eye"></i>
                 </button>
                 <button onclick="alert('Descargar PDF de ${u.nombre_completo}')" style="cursor:pointer; background:none; border:none; color:#d9534f; margin-left:10px;">
@@ -176,6 +176,119 @@ async function cargarTablaCoach() {
     tbody.appendChild(tr);
   });
 }
+
+//NUEVA FUNCIÓN
+// 1. ABRIR MODAL CON DATOS
+async function abrirModalGestion(id) {
+  try {
+    // Usamos la NUEVA ruta específica para gestión
+    const res = await fetch(`${API_BASE}/users/gestion/detalle/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    
+    if (!res.ok) throw new Error("Error cargando datos");
+    const u = await res.json();
+
+    // Llenar Stats (Solo lectura)
+    document.getElementById('gest_colecciones').innerText = u.total_colecciones;
+    document.getElementById('gest_monto').innerText = '$' + u.total_dinero;
+    document.getElementById('gest_horas').innerText = u.total_horas;
+    document.getElementById('gest_estudios').innerText = u.total_estudios;
+
+    // Llenar Formulario de Edición
+    document.getElementById('gest_id_usuario').value = u.id;
+    document.getElementById('gest_nombre').value = u.nombre_completo;
+    document.getElementById('gest_telefono').value = u.telefono || '';
+    document.getElementById('gest_carrera').value = u.carrera || '';
+    document.getElementById('gest_password').value = ''; // Limpiar campo password
+
+    // Mostrar Modal
+    document.getElementById('modalGestion').style.display = 'flex';
+
+  } catch (error) {
+    console.error(error);
+    alert("No se pudo cargar la información.");
+  }
+}
+
+// 2. CERRAR MODAL
+function cerrarModalGestion() {
+  document.getElementById('modalGestion').style.display = 'none';
+}
+
+// 3. GUARDAR CAMBIOS (Listener)
+// Asegúrate de que este listener solo se agregue una vez (fuera de funciones)
+const formGestion = document.getElementById('formGestionColportor');
+if (formGestion) {
+    formGestion.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById('gest_id_usuario').value;
+      const datos = {
+        nombre_completo: document.getElementById('gest_nombre').value,
+        telefono: document.getElementById('gest_telefono').value,
+        carrera: document.getElementById('gest_carrera').value,
+        nueva_password: document.getElementById('gest_password').value
+      };
+
+      if (!confirm("¿Guardar cambios?")) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/users/gestion/update/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(datos)
+        });
+
+        if (res.ok) {
+          alert("Datos actualizados");
+          cerrarModalGestion();
+          cargarTablaCoach(); // Refrescar la tabla para ver el nuevo nombre si cambió
+        } else {
+          alert("Error al actualizar");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Error de conexión");
+      }
+    });
+}
+
+// 4. NUEVO EVENTO: GUARDAR CAMBIOS
+document.getElementById('formGestionColportor').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const id = document.getElementById('gest_id_usuario').value;
+    const datos = {
+        nombre_completo: document.getElementById('gest_nombre').value,
+        telefono: document.getElementById('gest_telefono').value,
+        carrera: document.getElementById('gest_carrera').value,
+        nueva_password: document.getElementById('gest_password').value
+    };
+
+    if(!confirm("¿Estás seguro de guardar estos cambios?")) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/users/gestion/update/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify(datos)
+        });
+
+        if(res.ok) {
+            alert("Datos actualizados correctamente");
+            cerrarModalGestion();
+            cargarTablaCoach(); // Recargamos la tabla para ver cambios (ej: nombre)
+        } else {
+            alert("Error al actualizar");
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Error de conexión");
+    }
+});
+
+
 
 // 2. ENVIAR REPORTE SEMANAL (DINÁMICO)
 document

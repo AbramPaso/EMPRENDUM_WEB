@@ -315,6 +315,69 @@
         </div>
     </div>
 
+        <!-- OTRO MODAL -->
+    <div id="modalGestion" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <span class="close-modal" onclick="cerrarModalGestion()">&times;</span>
+        
+        <h2 style="color: #005a87; margin-bottom: 15px;">Gestión de Colportor</h2>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="margin-top:0;">📊 Rendimiento Actual</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+                <div class="stat-mini">
+                    <strong>Colecciones</strong>
+                    <div id="gest_colecciones" style="font-size: 1.2rem; color: #005a87;">0</div>
+                </div>
+                <div class="stat-mini">
+                    <strong>Dinero ($)</strong>
+                    <div id="gest_monto" style="font-size: 1.2rem; color: #28a745;">0.00</div>
+                </div>
+                <div class="stat-mini">
+                    <strong>Horas</strong>
+                    <div id="gest_horas" style="font-size: 1.2rem; color: #666;">0</div>
+                </div>
+                <div class="stat-mini">
+                    <strong>Estudios B.</strong>
+                    <div id="gest_estudios" style="font-size: 1.2rem; color: #666;">0</div>
+                </div>
+            </div>
+        </div>
+
+        <form id="formGestionColportor">
+            <input type="hidden" id="gest_id_usuario"> <h4 style="margin-bottom: 10px;">✏️ Datos Personales</h4>
+            <div class="form-group full-width">
+                <label>Nombre Completo</label>
+                <input type="text" id="gest_nombre" required>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" id="gest_telefono">
+                </div>
+                <div class="form-group">
+                    <label>Carrera / Profesión</label>
+                    <input type="text" id="gest_carrera">
+                </div>
+            </div>
+
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+
+            <h4 style="margin-bottom: 10px; color: #d9534f;">🔒 Seguridad</h4>
+            <div class="form-group full-width">
+                <label>Cambiar Contraseña (Dejar vacío si no se desea cambiar)</label>
+                <input type="text" id="gest_password" placeholder="Nueva contraseña..." style="border-color: #d9534f;">
+            </div>
+
+            <div style="margin-top: 20px; text-align: right;">
+                <button type="button" class="btn-primary" style="background: #6c757d;" onclick="cerrarModalGestion()">Cancelar</button>
+                <button type="submit" class="btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script src="../script/script-dashboard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
