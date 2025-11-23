@@ -349,53 +349,54 @@ async function cargarPerfil() {
     });
     const data = await res.json();
 
-    document.getElementById("headerNombre").innerText =
-      data.nombre_completo || "Usuario";
-    document.getElementById("nombreUsuarioDash").innerText = (
-      data.nombre_completo || "Usuario"
-    ).split(" ")[0];
-    document.getElementById("headerCarrera").innerText =
-      data.carrera || "Estudiante";
-    if (data.foto_perfil_url)
-      document.getElementById(
-        "headerFoto"
-      ).src = `http://localhost:3000/${data.foto_perfil_url.replace(
-        /\\/g,
-        "/"
-      )}`;
+    // --- Textos del Header ---
+    document.getElementById("headerNombre").innerText = data.nombre_completo || "Usuario";
+    // Verificamos si existe el elemento antes de llenarlo (por seguridad)
+    if(document.getElementById("nombreUsuarioDash")) {
+        document.getElementById("nombreUsuarioDash").innerText = (data.nombre_completo || "Usuario").split(" ")[0];
+    }
+    document.getElementById("headerCarrera").innerText = data.carrera || "Estudiante";
 
+    // --- IMAGEN DE PERFIL (Optimizada) ---
+    const imgPerfil = document.getElementById('headerFoto');
+    if(data.foto_perfil_url) {
+        imgPerfil.src = `http://localhost:3000/${data.foto_perfil_url.replace(/\\/g, '/')}`;
+    } else {
+        imgPerfil.src = '../image/usuario-icon.webp';
+    }
+    // Si la imagen falla al cargar, ponemos el icono por defecto
+    imgPerfil.onerror = function() { this.src = '../image/usuario-icon.webp'; };
+
+    // --- Vista de Lectura ---
     document.getElementById("view_cedula").innerText = data.cedula || "";
     document.getElementById("view_telefono").innerText = data.telefono || "";
-    document.getElementById("view_procedencia").innerText =
-      data.lugar_procedencia || "";
+    document.getElementById("view_procedencia").innerText = data.lugar_procedencia || "";
     document.getElementById("view_religion").innerText = data.religion || "";
-    document.getElementById("view_civil").innerText =
-      data.estado_civil || "Soltero";
-    document.getElementById("view_pensamiento").innerText =
-      data.pensamiento_bio || "Sin pensamiento definido.";
+    document.getElementById("view_civil").innerText = data.estado_civil || "Soltero";
+    document.getElementById("view_pensamiento").innerText = data.pensamiento_bio || "Sin pensamiento definido.";
 
-    document.getElementById("pensamiento_input").value =
-      data.pensamiento_bio || "";
+    // --- Formularios de Edición ---
+    document.getElementById("pensamiento_input").value = data.pensamiento_bio || "";
     document.getElementById("reg_nombre").value = data.nombre_completo || "";
     document.getElementById("reg_cedula").value = data.cedula || "";
     document.getElementById("reg_telefono").value = data.telefono || "";
     document.getElementById("reg_carrera").value = data.carrera || "";
     document.getElementById("reg_religion").value = data.religion || "";
-    document.getElementById("reg_lugar_procedencia").value =
-      data.lugar_procedencia || "";
-    if (data.estado_civil)
-      document.getElementById("reg_civil").value = data.estado_civil;
+    document.getElementById("reg_lugar_procedencia").value = data.lugar_procedencia || "";
+    
+    if (data.estado_civil) document.getElementById("reg_civil").value = data.estado_civil;
 
     document.getElementById("padre_nombre").value = data.padre_nombre || "";
     document.getElementById("padre_telefono").value = data.padre_telefono || "";
     document.getElementById("madre_nombre").value = data.madre_nombre || "";
     document.getElementById("madre_telefono").value = data.madre_telefono || "";
-    document.getElementById("reg_direccion").value =
-      data.direccion_origen || "";
+    document.getElementById("reg_direccion").value = data.direccion_origen || "";
     document.getElementById("conyuge_nombre").value = data.conyuge_nombre || "";
-    document.getElementById("padecimiento").value =
-      data.padecimiento_medico || "";
-  } catch (e) {}
+    document.getElementById("padecimiento").value = data.padecimiento_medico || "";
+
+  } catch (e) {
+    console.error("Error cargando perfil:", e);
+  }
 }
 
 document.getElementById("formBio").addEventListener("submit", async (e) => {
@@ -490,7 +491,7 @@ async function cargarCompaneros() {
     users.forEach((u) => {
       let foto = u.foto_perfil_url
         ? `http://localhost:3000/${u.foto_perfil_url.replace(/\\/g, "/")}`
-        : "https://via.placeholder.com/150";
+        : '../image/usuario-icon.webp';
       container.innerHTML += `<div class="colleague-card" onclick="verDetalle(${
         u.id
       })"><img src="${foto}" class="colleague-pic" onerror="this.src='https://via.placeholder.com/150'"><h4 class="colleague-name">${
@@ -504,24 +505,38 @@ async function cargarCompaneros() {
       "<p>Error cargando lista. Asegúrate de que el servidor esté corriendo.</p>";
   }
 }
-
+//DETALLE DE LOS COMPA;EROS
 async function verDetalle(id) {
-  const res = await fetch(`${API_BASE}/users/detalle/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  const u = await res.json();
-  document.getElementById("modalNombre").innerText = u.nombre_completo;
-  document.getElementById("modalCarrera").innerText = u.carrera || "Estudiante";
-  document.getElementById("modalLugar").innerText =
-    u.lugar_colportar || "No especificado";
-  document.getElementById("modalTelefono").innerText = u.telefono || "Privado";
-  document.getElementById("modalPensamiento").innerText =
-    u.pensamiento_bio || "Sin pensamiento.";
-  let foto = u.foto_perfil_url
-    ? `http://localhost:3000/${u.foto_perfil_url.replace(/\\/g, "/")}`
-    : "https://via.placeholder.com/150";
-  document.getElementById("modalFoto").src = foto;
-  document.getElementById("modalCompanero").style.display = "flex";
+  try {
+    const res = await fetch(`${API_BASE}/users/detalle/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const u = await res.json();
+
+    // 1. Textos
+    document.getElementById("modalNombre").innerText = u.nombre_completo;
+    document.getElementById("modalCarrera").innerText = u.carrera || "Estudiante";
+    document.getElementById("modalLugar").innerText = u.lugar_colportar || "No especificado";
+    document.getElementById("modalTelefono").innerText = u.telefono || "Privado";
+    document.getElementById("modalPensamiento").innerText = u.pensamiento_bio || "Sin pensamiento.";
+
+    // 2. Lógica de Imagen (CORREGIDA)
+    let foto = u.foto_perfil_url
+      ? `http://localhost:3000/${u.foto_perfil_url.replace(/\\/g, "/")}`
+      : '../image/usuario-icon.webp';
+
+    // AQUI ESTABA EL ERROR: Primero seleccionamos la etiqueta
+    const imgElement = document.getElementById("modalFoto");
+    
+    // Luego asignamos la fuente y el evento de error
+    imgElement.src = foto;
+    imgElement.onerror = function() { this.src = '../image/usuario-icon.webp'; };
+
+    // 3. Mostrar Modal
+    document.getElementById("modalCompanero").style.display = "flex";
+  } catch (error) {
+    console.error("Error al ver detalle:", error);
+  }
 }
 
 function cerrarModal() {
@@ -531,6 +546,7 @@ function cerrarSesion() {
   localStorage.removeItem("token");
   window.location.href = "login.html";
 }
+
 document
   .getElementById("formInformeMensual")
   .addEventListener("submit", async (e) => {
