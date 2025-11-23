@@ -286,39 +286,7 @@ if (formGestion) {
     });
 }
 
-// 4. NUEVO EVENTO: GUARDAR CAMBIOS
-document.getElementById('formGestionColportor').addEventListener('submit', async (e) => {
-    e.preventDefault();
 
-    const id = document.getElementById('gest_id_usuario').value;
-    const datos = {
-        nombre_completo: document.getElementById('gest_nombre').value,
-        telefono: document.getElementById('gest_telefono').value,
-        carrera: document.getElementById('gest_carrera').value,
-        nueva_password: document.getElementById('gest_password').value
-    };
-
-    if(!confirm("¿Estás seguro de guardar estos cambios?")) return;
-
-    try {
-        const res = await fetch(`${API_BASE}/users/gestion/update/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify(datos)
-        });
-
-        if(res.ok) {
-            alert("Datos actualizados correctamente");
-            cerrarModalGestion();
-            cargarTablaCoach(); // Recargamos la tabla para ver cambios (ej: nombre)
-        } else {
-            alert("Error al actualizar");
-        }
-    } catch (error) {
-        console.error(error);
-        alert("Error de conexión");
-    }
-});
 
 
 
@@ -892,4 +860,64 @@ if (formTotal) {
             }
         } catch(e) { console.error(e); }
     });
+}
+
+// --- EVENTO GUARDAR (MODAL BÁSICO / OJO) ---
+// Coloca esto AL FINAL de tu archivo script-dashboard.js
+
+const formBasico = document.getElementById('formGestionColportor');
+
+if (formBasico) {
+    // TRUCO ANTI-DUPLICADOS:
+    // Clonamos el formulario para borrar cualquier "evento fantasma" anterior.
+    const newForm = formBasico.cloneNode(true);
+    formBasico.parentNode.replaceChild(newForm, formBasico);
+
+    newForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const id = document.getElementById('gest_id_usuario').value;
+        
+        const datos = {
+            nombre_completo: document.getElementById('gest_nombre').value,
+            telefono: document.getElementById('gest_telefono').value,
+            carrera: document.getElementById('gest_carrera').value,
+            nueva_password: document.getElementById('gest_password').value
+        };
+
+        if(!confirm("¿Estás seguro de guardar los cambios básicos?")) return;
+
+        try {
+            const res = await fetch(`${API_BASE}/users/gestion/update/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(datos)
+            });
+
+            if(res.ok) {
+                alert("Datos actualizados correctamente");
+                
+                // Cerrar modal manualmente porque cloneNode rompe el onclick del HTML a veces
+                document.getElementById('modalGestion').style.display = 'none';
+                
+                // Recargar tablas si existen las funciones
+                if(typeof cargarTablaCoach === 'function') cargarTablaCoach();
+                if(typeof cargarTablaGlobalDirector === 'function') cargarTablaGlobalDirector();
+            } else {
+                alert("Error al actualizar");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Error de conexión");
+        }
+    });
+    
+    // IMPORTANTE: Como clonamos el form, hay que reconectar el botón Cancelar
+    // Busca el botón que dice "Cancelar" dentro del nuevo form y dale vida de nuevo
+    const btnCancelar = newForm.querySelector('button[type="button"]');
+    if(btnCancelar) {
+        btnCancelar.onclick = function() {
+            document.getElementById('modalGestion').style.display = 'none';
+        };
+    }
 }
