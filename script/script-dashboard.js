@@ -732,7 +732,14 @@ async function abrirModalCompleto(id) {
         document.getElementById('gt_telefono').value = u.telefono || '';
         document.getElementById('gt_carrera').value = u.carrera || '';
         document.getElementById('gt_religion').value = u.religion || '';
+        document.getElementById('gt_civil').value = u.estado_civil || 'Soltero';
         document.getElementById('gt_procedencia').value = u.lugar_procedencia || '';
+
+        if(u.fecha_nacimiento) {
+            document.getElementById('gt_fecha_nac').value = u.fecha_nacimiento.toString().substring(0, 10);
+        } else {
+            document.getElementById('gt_fecha_nac').value = '';
+        }
 
         // --- PASO 2: FAMILIA (Datos Extra) ---
         // Nota: Asegúrate que tu backend envíe estos campos (padre_nombre, etc.)
@@ -815,12 +822,23 @@ function filtrarCamposGestion() {
 }
 
 // 4. GUARDAR TODO (SUBMIT)
-const formTotal = document.getElementById('formGestionTotal');
-if (formTotal) {
-    formTotal.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if(!confirm("¿Estás seguro de guardar todos los cambios?")) return;
+// --- LÓGICA DE GUARDADO DEL WIZARD (MODAL GRANDE) ---
+// Pegar esto AL FINAL del archivo script-dashboard.js
 
+const formTotal = document.getElementById('formGestionTotal');
+
+if (formTotal) {
+    // 1. EL TRUCO: Clonamos el formulario para borrar cualquier evento "fantasma" anterior
+    const newFormTotal = formTotal.cloneNode(true);
+    formTotal.parentNode.replaceChild(newFormTotal, formTotal);
+
+    // 2. Ahora escuchamos el evento en el formulario NUEVO y LIMPIO
+    newFormTotal.addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+
+        if(!confirm("¿Estás seguro de guardar TODOS los cambios?")) return;
+
+        // Recopilamos los datos
         const id = document.getElementById('gt_id_usuario').value;
         const datos = {
             // Paso 1
@@ -830,6 +848,8 @@ if (formTotal) {
             carrera: document.getElementById('gt_carrera').value,
             religion: document.getElementById('gt_religion').value,
             lugar_procedencia: document.getElementById('gt_procedencia').value,
+            estado_civil: document.getElementById('gt_civil').value,
+            fecha_nacimiento: document.getElementById('gt_fecha_nac').value,            
             // Paso 2
             padre_nombre: document.getElementById('gt_padre').value,
             padre_telefono: document.getElementById('gt_tlf_padre').value,
@@ -852,14 +872,26 @@ if (formTotal) {
             });
 
             if(res.ok) {
-                alert("Perfil actualizado correctamente");
-                cerrarModalTotal();
-                cargarTablaCoach(); // Refrescar la tabla
+                alert("✅ Perfil maestro actualizado correctamente");
+                
+                // Cerrar modal manualmente (necesario tras usar cloneNode)
+                document.getElementById('modalGestionTotal').style.display = 'none';
+                
+                // Recargar las tablas para ver los cambios
+                if(typeof cargarTablaCoach === 'function') cargarTablaCoach();
+                if(typeof cargarTablaGlobalDirector === 'function') cargarTablaGlobalDirector();
             } else {
-                alert("Error al actualizar");
+                alert("❌ Error al guardar.");
             }
-        } catch(e) { console.error(e); }
+        } catch(e) { 
+            console.error(e); 
+            alert("❌ Error de conexión"); 
+        }
     });
+
+    // IMPORTANTE: Al clonar, los botones "Siguiente/Atrás" dentro del form pueden perder su función.
+    // Como esos botones usan 'onclick="..."' en el HTML, deberían seguir funcionando bien.
+    // Pero si el botón de cerrar (X) deja de servir, avísame.
 }
 
 // --- EVENTO GUARDAR (MODAL BÁSICO / OJO) ---
