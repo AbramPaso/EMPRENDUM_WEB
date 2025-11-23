@@ -74,8 +74,37 @@
 
         // 3. CAMPAÑA INVIERNO
         const datosCampana = {
-            1: { campos: [{id: 1, nombre: 'MVY'}, {id: 2, nombre: 'AVCN'}], zonas: ['Zona 1', 'Zona 2', 'Zona 3', 'Zona 4'] },
-            2: { campos: [{id: 3, nombre: 'AVNOR'}, {id: 4, nombre: 'AVSO'}], zonas: ['Zona 1', 'Zona 2'] }
+            // ID 1 = UVOC (Occidental)
+            1: { 
+                campos: [
+                    {id: 1, nombre: 'AVCN'}, {id: 2, nombre: 'MVY'}, 
+                    {id: 3, nombre: 'AVCOC'}, {id: 4, nombre: 'AVLLOC'}, 
+                    {id: 5, nombre: 'MVP'}, {id: 6, nombre: 'AVSOC'}, {id: 7, nombre: 'AVOC'}
+                ], 
+                // Zonas UVOC (IDs 4 al 8 según la BD)
+                zonas: [
+                    {id: 4, nombre: 'Zona 1 (Carabobo-Cojedes)'},
+                    {id: 5, nombre: 'Zona 2 (Yaracuy-Lara)'},
+                    {id: 6, nombre: 'Zona 3 (Barinas-Portuguesa)'},
+                    {id: 7, nombre: 'Zona 4 (Táchira-Mérida)'},
+                    {id: 8, nombre: 'Zona 5 (Zulia-Falcón)'}
+                ] 
+            },
+            // ID 2 = UVO (Oriental)
+            2: { 
+                campos: [
+                    {id: 8, nombre: 'AVC'}, {id: 9, nombre: 'AVCOR'}, 
+                    {id: 10, nombre: 'AVCS'}, {id: 11, nombre: 'MIVELLACEN'}, 
+                    {id: 12, nombre: 'MIVENOR'}, {id: 13, nombre: 'AVOR'}, 
+                    {id: 14, nombre: 'AVSOR'}, {id: 15, nombre: 'MIVESUB'}
+                ], 
+                // Zonas UVO (IDs 1 al 3 según la BD)
+                zonas: [
+                    {id: 1, nombre: 'Zona 1 (Capital/Llanos)'},
+                    {id: 2, nombre: 'Zona 2 (Oriente)'},
+                    {id: 3, nombre: 'Zona 3 (Bolívar)'}
+                ] 
+            }
         };
 
         function filtrarCampos() {
@@ -89,8 +118,17 @@
             if (datosCampana[unionId]) {
                 selectCampo.disabled = false;
                 selectZona.disabled = false;
-                datosCampana[unionId].campos.forEach(c => selectCampo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`);
-                datosCampana[unionId].zonas.forEach(z => selectZona.innerHTML += `<option value="${z}">${z}</option>`);
+                
+                // Llenamos los Campos
+                datosCampana[unionId].campos.forEach(c => {
+                    selectCampo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+                });
+
+                // Llenamos las Zonas (AHORA USAMOS VALUE=ID, NO EL NOMBRE)
+                datosCampana[unionId].zonas.forEach(z => {
+                    // Enviamos el ID de la zona como value
+                    selectZona.innerHTML += `<option value="${z.id}">${z.nombre}</option>`;
+                });
             } else {
                 selectCampo.disabled = true;
                 selectZona.disabled = true;
