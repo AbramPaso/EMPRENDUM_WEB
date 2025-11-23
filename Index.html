@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Inicio - Emprendum</title>
+    <title>Inicio - Emprendum</title>
     <link rel="icon" type="image/png" href="image/Logo_individual_azul.png">
     <link rel="stylesheet" href="styles/style.css">
     <link href="styles/bootstrap.min.css" rel="stylesheet">
@@ -13,189 +13,144 @@
 
     <header class="header">
         <nav class="navbar">
-        <a href="Index.html" class="nav-logo">
-            <img src="image/logo.png" alt="Emprendum" class="logo-img">
-        </a>
-    <ul class="nav-menu">
-        <li class="nav-item">
-            <a href="Index.html" class="nav-link">Inicio</a>
-        </li>
-        <li class="nav-item">
-            <a href="Nuestra-Historia.html" class="nav-link">Nuestra Historia</a>
-        </li>
-        <li class="nav-item">
-            <a href="universitarios.html" class="nav-link">Universitarios</a>
-        </li>
-        <li class="nav-item">
-            <a href="Contacto.html" class="nav-link">Contacto</a>
-        </li>
-    </ul>
-    <div class="hamburger">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-    </div>
-</nav>
+            <a href="Index.html" class="nav-logo">
+                <img src="image/logo.png" alt="Emprendum" class="logo-img">
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="Index.html" class="nav-link">Inicio</a></li>
+                <li class="nav-item"><a href="Nuestra-Historia.html" class="nav-link">Nuestra Historia</a></li>
+                <li class="nav-item"><a href="universitarios.html" class="nav-link">Universitarios</a></li>
+                <li class="nav-item"><a href="Contacto.html" class="nav-link">Contacto</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+        </nav>
     </header>
 
     <main>
         <section class="hero">
-    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        </div>
-
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="image/image_carrusel1.jpg" class="d-block w-100" alt="Imagen de emprendimiento 1">
-                <div class="carousel-caption d-flex h-100 justify-content-between align-items-center">
-                    <div class="flex-cod">
-                        <div class="left">
-                            <span>Libros <br> con causa</span>
-                            <span class="description">Hay historias que se escriben cuando adquieres un libro</span>
-                            <button class="btn-cod">
-                                conoce como
-                            </button>
-                        </div>
-                        <div class="right">
-                            <div class="cite">
-                                "Quiero ayudara los que más necesitan <span class="tag">salud y bienestar"</span>
+            <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="image/image_carrusel1.jpg" class="d-block w-100" alt="Slide 1">
+                        <div class="carousel-caption d-flex h-100 justify-content-between align-items-center">
+                            <div class="flex-cod">
+                                <div class="left">
+                                    <span>Formación <br> Integral</span>
+                                    <span class="description">Crecimiento espiritual y profesional.</span>
+                                    <a href="universitarios.html" class="btn-cod" style="text-decoration:none;">Ver Más</a>
+                                </div>
                             </div>
-                            <div class="d-flex flex-column align-items-end">
-                                <span class="colportor-name">Perro Nose</span>
-                                <span class="colportor-rol">Educación Canina</span>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="image/imagen_carrusel2.jpg" class="d-block w-100" alt="Slide 2">
+                        <div class="carousel-caption d-flex h-100 justify-content-center align-items-center">
+                             <div class="flex-cod">
+                                <div class="left">
+                                    <span>Misión y <br> Servicio</span>
+                                    <span class="description">Evangelismo a través de la literatura.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                         <img src="image/imagen_carrusel3.jpeg" class="d-block w-100" alt="Slide 3">
+                         <div class="carousel-caption d-flex h-100 justify-content-center align-items-center">
+                             <div class="flex-cod">
+                                <div class="left">
+                                    <span>Liderazgo <br> Efectivo</span>
+                                    <span class="description">Desarrollando habilidades para el futuro.</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
             </div>
-
-            <div class="carousel-item">
-                <img src="image/imagen_carrusel2.jpg" class="d-block w-100" alt="Imagen de emprendimiento 2">
-                <div class="carousel-caption d-flex flex-column h-100 justify-content-center align-items-center">
-                    <div class="flex-cod">
-                        <div class="left">
-                            <span>Hola <br> Como Estas</span>
-                            <span class="description">Hay historias que se escriben cuando adquieres un libro</span>
-                            <button class="btn-cod" href="#link">
-                                conoce como
-                            </button>
-                        </div>
-                        <div class="right">
-                            <div class="cite">
-                                "Quiero ayudara los que más necesitan <span class="tag">salud y bienestar"</span>
-                            </div>
-                            <div class="d-flex flex-column align-items-end">
-                                <span class="colportor-name">Perro Nose</span>
-                                <span class="colportor-rol">Educación Canina</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="carousel-item">
-                <img src="image/imagen_carrusel3.jpeg" class="d-block w-100" alt="Imagen de emprendimiento 3">
-                <div class="carousel-caption d-flex flex-column h-100 justify-content-center align-items-center">
-                    <div class="flex-cod">
-                        <div class="left">
-                            <span>Perro <br> Como Estas</span>
-                            <span class="description">Hay historias que se escriben cuando adquieres un libro</span>
-                            <button class="btn-cod" href="#link">
-                                conoce como
-                            </button>
-                        </div>
-                        <div class="right">
-                            <div class="cite">
-                                "Quiero ayudara los que más necesitan <span class="tag">salud y bienestar"</span>
-                            </div>
-                            <div class="d-flex flex-column align-items-end">
-                                <span class="colportor-name">Perro Nose</span>
-                                <span class="colportor-rol">Educación Canina</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
-        </button>
-    </div>
-</section>
+        </section>
 
         <section class="info-section">
-            <h2>¿Quiénes Somos?</h2>
-            <p>Somos un ecosistema de emprendimiento que busca impulsar y desarrollar ideas de negocio innovadoras en la comunidad universitaria. Fomentamos la creatividad, el liderazgo y el trabajo en equipo.</p>
-            
+            <h2>EMPRENDUM</h2>
+            [cite_start]<p>Un programa integral diseñado para fomentar el crecimiento espiritual y profesional de los estudiantes a través de prácticas colportoriles innovadoras[cite: 3].</p>
+        </section>
+
+        <section class="benefits-section" style="background-color: #fff;">
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <i class="fas fa-chart-line benefit-icon"></i>
+                    <h3>Ventas</h3>
+                    [cite_start]<p>Fortalecemos habilidades comerciales para tu vida profesional[cite: 4].</p>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-bible benefit-icon"></i>
+                    <h3>Evangelismo</h3>
+                    [cite_start]<p>Llevamos un mensaje de esperanza a diversos hogares y comunidades[cite: 7].</p>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-users benefit-icon"></i>
+                    <h3>Liderazgo</h3>
+                    [cite_start]<p>Formamos líderes comprometidos con la misión de la iglesia[cite: 4].</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-banner" style="background-image: url('image/Photo_ejemplo1.jpg'); margin-bottom: 0;">
+            <div class="cta-overlay"></div>
+            <div class="cta-content">
+                <h2>"Instrumentos de Transformación"</h2>
+                [cite_start]<p>Alcanzando altos estándares en ventas y liderazgo, comprometidos con la misión[cite: 10].</p>
+                <a href="Nuestra-Historia.html" class="cta-button">Conoce nuestra Visión</a>
+            </div>
         </section>
 
     </main>
 
-<footer class="main-footer">
-    <div class="footer-grid-container">
-        
-        <div class="footer-col logo-info">
-            <div class="logo-area">
-                <img src="image/logo.png" alt="Logo EMPRENDUM" class="footer-logo">
-                
+    <footer class="main-footer">
+        <div class="footer-grid-container">
+            <div class="footer-col logo-info">
+                <div class="logo-area">
+                    <img src="image/logo.png" alt="Logo EMPRENDUM" class="footer-logo">
+                </div>
+                <p class="lema">"Mientras eras un <span class="destacado">INSTRUMENTO de transformación</span> eres transformado"</p>
+                <img src="image/Iunav2.png" alt="Quiero ser un agente" class="agent-logo">
             </div>
-            <p class="lema">"Mientras eras un <span class="destacado">INSTRUMENTO de transformación</span> eres transformado"</p>
-            <a href="https://campusvirtual.iunav.edu.ve/" target="_blank"><img src="image/Iunav2.png" alt="Quiero ser un agente" class="agent-logo" ></a>
-        </div>
-
-        <div class="footer-col">
-            <h3>Explorar</h3>
-            <ul>
-                <li><a href="Index.html">Inicio</a></li>
-                <li><a href="sistema-colportor/login.html">Súmate al esfuerzo</a></li>
-                
-            </ul>
-        </div>
-
-        <div class="footer-col">
-            <h3>Conócenos</h3>
-            <ul>
-                <li><a href="Nuestra-Historia.html">¿Quienes Somos?</a></li>
-                <li><a href="https://t.me/emprendumiunav">Contacto</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-col">
-            <h3>Ubicacion</h3>
-            <ul>
-                <li><a>Carretera Panamericana, vía Salom, sector Las Lagunas</a></li>
-                <li><a>telefono: 0412321321</a></li>
-                <li><a>Gmail: aaaaa@gmail.com </a></li>
-            </ul>
-        </div>
-
-      
-        <div class="footer-col social-copy">
-            <h3>SÍGUENOS</h3>
-            <div class="social-links">
-                <a href="https://www.facebook.com/profile.php?id=61571423455524" target="_blank"><img src="image/facebook.PNG" alt="Facebook"></a>
-                <a href="https://www.instagram.com/emprendumiunav?igsh=Y3d6Mmx6c3NvZzRx " target="_blank"><img src="image/instagram.PNG" alt="Instagram"></a>
-                <a href="#"><img src="image/tuiter .PNG" alt="twitter"></a>
-                <a href="#"><img src="image/threads.PNG" alt="threads"></a>
-                <a href="https://t.me/emprendumiunav" target="_blank"><img src="image/telegram.PNG" alt="telegram"></a>
+            <div class="footer-col">
+                <h3>Explorar</h3>
+                <ul>
+                    <li><a href="Index.html">Inicio</a></li>
+                    <li><a href="universitarios.html">Súmate al esfuerzo</a></li>
+                </ul>
             </div>
-            
-            <img src="image/redes-iunav.png" alt="Logo UM" class="iunav-logo">
-            <p class="copyright">© 2025 EMPRENDUM</p>
+            <div class="footer-col">
+                <h3>Conócenos</h3>
+                <ul>
+                    <li><a href="Nuestra-Historia.html">¿Quiénes Somos?</a></li>
+                    <li><a href="Contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col social-copy">
+                <h3>SÍGUENOS</h3>
+                <div class="social-links">
+                    <a href="#"><img src="image/facebook.PNG" alt="Facebook"></a>
+                    <a href="#"><img src="image/instagram.PNG" alt="Instagram"></a>
+                    <a href="#"><img src="image/telegram.PNG" alt="Telegram"></a>
+                </div>
+                <p class="copyright">© 2025 EMPRENDUM</p>
+            </div>
         </div>
-        
-    </div>
-</footer>
+    </footer>
 
     <script src="script/script.js"></script>
     <script src="styles/bootstrap.bundle.min.js"></script>
