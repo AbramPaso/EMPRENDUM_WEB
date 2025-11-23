@@ -316,7 +316,7 @@
     </div>
 
         <!-- MODAL PARA EL COUCH-->
-<div id="modalGestion" class="modal">
+    <div id="modalGestion" class="modal">
     <div class="modal-content" style="max-width: 450px; width: 95%; padding: 20px;">
         <span class="close-modal" onclick="cerrarModalGestion()">&times;</span>
         
@@ -372,6 +372,94 @@
             <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
                 <button type="button" onclick="cerrarModalGestion()" style="padding: 8px 15px; border: none; background: #eee; color: #555; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Cancelar</button>
                 <button type="submit" class="btn-primary" style="padding: 8px 15px; font-size: 0.9rem;">Guardar</button>
+            </div>
+        </form>
+    </div>
+    </div>
+
+    <!-- MODAL EDICIÓN AVANZADA -->
+<div id="modalGestionTotal" class="modal">
+    <div class="modal-content" style="max-width: 500px; width: 95%; padding: 20px;">
+        <span class="close-modal" onclick="cerrarModalTotal()">&times;</span>
+        
+        <h3 style="color: #005a87; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+            <i class="fas fa-user-cog"></i> Editar Colportor
+        </h3>
+
+        <form id="formGestionTotal">
+            <input type="hidden" id="gt_id_usuario">
+
+            <div id="paso-1">
+                <h5 style="color: #666; margin-bottom: 10px;">Paso 1: Datos Personales</h5>
+                <div class="form-group full-width"><label>Nombre Completo</label><input type="text" id="gt_nombre" required></div>
+                <div class="form-grid">
+                    <div><label>Cédula</label><input type="text" id="gt_cedula"></div>
+                    <div><label>Teléfono</label><input type="text" id="gt_telefono"></div>
+                </div>
+                <div class="form-grid">
+                    <div><label>Carrera</label><input type="text" id="gt_carrera"></div>
+                    <div><label>Religión</label><input type="text" id="gt_religion"></div>
+                </div>
+                <div class="form-group full-width"><label>Lugar Procedencia</label><input type="text" id="gt_procedencia"></div>
+                
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="button" class="btn-primary" onclick="cambiarPaso(2)">Siguiente <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <div id="paso-2" style="display: none;">
+                <h5 style="color: #666; margin-bottom: 10px;">Paso 2: Familia y Salud</h5>
+                <div class="form-grid">
+                    <div><label>Nombre Padre</label><input type="text" id="gt_padre"></div>
+                    <div><label>Tlf Padre</label><input type="text" id="gt_tlf_padre"></div>
+                </div>
+                <div class="form-grid">
+                    <div><label>Nombre Madre</label><input type="text" id="gt_madre"></div>
+                    <div><label>Tlf Madre</label><input type="text" id="gt_tlf_madre"></div>
+                </div>
+                <div class="form-group full-width"><label>Dirección Exacta</label><input type="text" id="gt_direccion"></div>
+                <div class="form-group full-width"><label>Padecimientos / Alergias</label><input type="text" id="gt_salud"></div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                    <button type="button" style="background: #ccc; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;" onclick="cambiarPaso(1)">Atrás</button>
+                    <button type="button" class="btn-primary" onclick="cambiarPaso(3)">Siguiente <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <div id="paso-3" style="display: none;">
+                <h5 style="color: #666; margin-bottom: 10px;">Paso 3: Campaña y Seguridad</h5>
+                
+                <div style="background: #e3f2fd; padding: 10px; border-radius: 6px; margin-bottom: 15px;">
+                    <label style="color: #005a87; font-weight:bold;">📍 Asignación (Invierno 2025)</label>
+                    
+                    <label style="font-size: 0.8rem; display:block; margin-top:5px;">Unión</label>
+                    <select id="gt_union" style="width: 100%; padding: 5px;" onchange="filtrarCamposGestion()">
+                        <option value="">Sin Asignar</option>
+                        <option value="1">UVOC (Occidental)</option>
+                        <option value="2">UVO (Oriental)</option>
+                    </select>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px;">
+                        <div>
+                            <label style="font-size: 0.8rem;">Campo</label>
+                            <select id="gt_campo" style="width: 100%; padding: 5px;" disabled></select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem;">Zona</label>
+                            <select id="gt_zona" style="width: 100%; padding: 5px;" disabled></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: #fff5f5; padding: 10px; border-radius: 6px; border: 1px dashed #d9534f;">
+                    <label style="color: #d9534f; font-weight:bold;">Cambiar Contraseña</label>
+                    <input type="text" id="gt_password" placeholder="Nueva clave (Opcional)" style="width: 100%; margin-top:5px; border:1px solid #ffcccc;">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                    <button type="button" style="background: #ccc; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;" onclick="cambiarPaso(2)">Atrás</button>
+                    <button type="submit" class="btn-primary" style="background: #28a745;">💾 Guardar Todo</button>
+                </div>
             </div>
         </form>
     </div>

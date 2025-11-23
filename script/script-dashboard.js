@@ -149,32 +149,64 @@ async function cargarGraficasDirector() {
 
 // --- LÓGICA DE TABLA (Coach y Director) ---
 async function cargarTablaCoach() {
-  const res = await fetch(`${API_BASE}/reports/coach-team`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  const usuarios = await res.json();
+  try {
+    const res = await fetch(`${API_BASE}/reports/coach-team`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const usuarios = await res.json();
 
-  const tbody = document.getElementById("tabla-coach-body");
-  tbody.innerHTML = "";
+    const tbody = document.getElementById("tabla-coach-body");
+    tbody.innerHTML = "";
 
-  usuarios.forEach((u) => {
-    const tr = document.createElement("tr");
-    tr.style.borderBottom = "1px solid #eee";
-    tr.innerHTML = `
+    // VERIFICAMOS SI SOY DIRECTOR (Rol 1)
+    // Asumimos que 'usuarioActual' se llenó en cargarEstadisticas()
+    const soyDirector = (usuarioActual && usuarioActual.rol === 1);
+
+    usuarios.forEach((u) => {
+      const tr = document.createElement("tr");
+      tr.style.borderBottom = "1px solid #eee";
+
+      // PREPARAMOS LOS BOTONES
+      let botones = ``;
+
+      // 1. BOTÓN OJO (👁️): Visible para TODOS (Abre modal básico)
+      botones += `
+        <button onclick="abrirModalBasico(${u.id})" style="cursor:pointer; background:none; border:none; color:#005a87; font-size: 1.1rem; margin-right:8px;" title="Ver y Editar Datos Básicos">
+            <i class="fas fa-eye"></i>
+        </button>
+      `;
+
+      // 2. BOTÓN ENGRANAJE (⚙️): SOLO para DIRECTOR (Abre modal avanzado)
+      if (soyDirector) {
+        botones += `
+        <button onclick="abrirModalCompleto(${u.id})" style="cursor:pointer; background:none; border:none; color:#d9534f; font-size: 1.1rem; margin-right:8px;" title="Editar Todo">
+            <i class="fas fa-cogs"></i>
+        </button>
+    `;
+      }
+
+      // 3. BOTÓN PDF: Visible para TODOS
+      botones += `
+        <button onclick="alert('Descargar PDF de ${u.nombre_completo}')" style="cursor:pointer; background:none; border:none; color:#d9534f;">
+            <i class="fas fa-file-pdf"></i>
+        </button>
+      `;
+
+      // RENDERIZAR FILA
+      tr.innerHTML = `
             <td style="padding: 10px; font-weight:bold;">${u.nombre_completo}</td>
             <td style="padding: 10px;">${u.total_colecciones} col.</td>
             <td style="padding: 10px; color: green;">$${u.total_dinero}</td>
             <td style="padding: 10px;">
-                <button onclick="abrirModalGestion(${u.id})" style="cursor:pointer; background:none; border:none; color:#005a87; font-size: 1.1rem;" title="Gestionar">
-                    <i class="fas fa-eye"></i>
-                </button>
-                <button onclick="alert('Descargar PDF de ${u.nombre_completo}')" style="cursor:pointer; background:none; border:none; color:#d9534f; margin-left:10px;">
-                    <i class="fas fa-file-pdf"></i>
-                </button>
+                ${botones}
             </td>
         `;
-    tbody.appendChild(tr);
-  });
+      tbody.appendChild(tr);
+    });
+
+  } catch (error) {
+    console.error("Error cargando tabla:", error);
+  }
 }
 
 //NUEVA FUNCIÓN
@@ -682,3 +714,182 @@ document
       e.target.reset();
     }
   });
+  
+
+  // --- 1. ABRIR MODAL BÁSICO (OJO) ---
+async function abrirModalBasico(id) {
+    // Reutilizamos el modal 'modalGestion' que ya tenías para cosas básicas
+    // Asegúrate de que en el HTML ese modal NO tenga los inputs de Zona/Campo/Unión
+    try {
+        const res = await fetch(`${API_BASE}/users/gestion/detalle/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const u = await res.json();
+
+        // Llenar Stats
+        document.getElementById('gest_colecciones').innerText = u.total_colecciones || 0;
+        document.getElementById('gest_monto').innerText = '$' + (u.total_dinero || 0);
+        document.getElementById('gest_horas').innerText = u.total_horas || 0;
+        document.getElementById('gest_estudios').innerText = u.total_estudios || 0;
+
+        // Llenar Datos Personales
+        document.getElementById('gest_id_usuario').value = u.id;
+        document.getElementById('gest_nombre').value = u.nombre_completo;
+        document.getElementById('gest_telefono').value = u.telefono || '';
+        document.getElementById('gest_carrera').value = u.carrera || '';
+        document.getElementById('gest_password').value = ''; 
+
+        // IMPORTANTE: Asegúrate de borrar los inputs de zona del HTML de este modal si quedaron ahí.
+        
+        document.getElementById('modalGestion').style.display = 'flex';
+    } catch (e) { console.error(e); }
+}
+
+// --- 2. ABRIR MODAL AVANZADO (ENGRANAJE) ---
+
+let pasoActual = 1;
+
+// 1. ABRIR EL MODAL Y LLENAR TODO
+async function abrirModalCompleto(id) {
+    try {
+        const res = await fetch(`${API_BASE}/users/gestion/detalle/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const u = await res.json();
+
+        // Resetear al Paso 1
+        pasoActual = 1;
+        mostrarPaso(1);
+        document.getElementById('gt_id_usuario').value = u.id;
+
+        // --- PASO 1: DATOS PERSONALES ---
+        document.getElementById('gt_nombre').value = u.nombre_completo || '';
+        document.getElementById('gt_cedula').value = u.cedula || '';
+        document.getElementById('gt_telefono').value = u.telefono || '';
+        document.getElementById('gt_carrera').value = u.carrera || '';
+        document.getElementById('gt_religion').value = u.religion || '';
+        document.getElementById('gt_procedencia').value = u.lugar_procedencia || '';
+
+        // --- PASO 2: FAMILIA (Datos Extra) ---
+        // Nota: Asegúrate que tu backend envíe estos campos (padre_nombre, etc.)
+        document.getElementById('gt_padre').value = u.padre_nombre || '';
+        document.getElementById('gt_tlf_padre').value = u.padre_telefono || '';
+        document.getElementById('gt_madre').value = u.madre_nombre || '';
+        document.getElementById('gt_tlf_madre').value = u.madre_telefono || '';
+        document.getElementById('gt_direccion').value = u.direccion_origen || '';
+        document.getElementById('gt_salud').value = u.padecimiento_medico || '';
+
+        // --- PASO 3: CAMPAÑA Y SEGURIDAD ---
+        document.getElementById('gt_password').value = '';
+
+        // Configurar los Selects de Campaña
+        const unionId = u.union_trabajo_id || '';
+        document.getElementById('gt_union').value = unionId;
+        
+        // Disparamos el filtro manualmente para llenar los selects de Campo y Zona
+        filtrarCamposGestion(); 
+
+        // Esperamos un momento o asignamos directamente si hay datos
+        if(unionId) {
+            document.getElementById('gt_campo').value = u.campo_trabajo_id || '';
+            document.getElementById('gt_zona').value = u.zona_id || '';
+        }
+
+        // Mostrar el Modal
+        document.getElementById('modalGestionTotal').style.display = 'flex';
+
+    } catch (e) { 
+        console.error(e); 
+        alert("Error cargando datos del colportor."); 
+    }
+}
+
+// 2. CONTROL DE PASOS (Siguiente / Atrás)
+function cambiarPaso(nuevoPaso) {
+    pasoActual = nuevoPaso;
+    mostrarPaso(pasoActual);
+}
+
+function mostrarPaso(paso) {
+    // Ocultar todos
+    document.getElementById('paso-1').style.display = 'none';
+    document.getElementById('paso-2').style.display = 'none';
+    document.getElementById('paso-3').style.display = 'none';
+    // Mostrar el actual
+    document.getElementById(`paso-${paso}`).style.display = 'block';
+}
+
+function cerrarModalTotal() {
+    document.getElementById('modalGestionTotal').style.display = 'none';
+}
+
+// 3. SELECTS DINÁMICOS (Igual que en Invierno 2025)
+function filtrarCamposGestion() {
+    const unionId = document.getElementById('gt_union').value;
+    const selectCampo = document.getElementById('gt_campo');
+    const selectZona = document.getElementById('gt_zona');
+    
+    selectCampo.innerHTML = '<option value="">Seleccione...</option>';
+    selectZona.innerHTML = '<option value="">Seleccione...</option>';
+    
+    // Usamos la variable global 'datosCampana' que ya tienes definida arriba
+    if (datosCampana[unionId]) {
+        selectCampo.disabled = false;
+        selectZona.disabled = false;
+        
+        datosCampana[unionId].campos.forEach(c => {
+            selectCampo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+        });
+
+        datosCampana[unionId].zonas.forEach(z => {
+            selectZona.innerHTML += `<option value="${z.id}">${z.nombre}</option>`;
+        });
+    } else {
+        selectCampo.disabled = true;
+        selectZona.disabled = true;
+    }
+}
+
+// 4. GUARDAR TODO (SUBMIT)
+const formTotal = document.getElementById('formGestionTotal');
+if (formTotal) {
+    formTotal.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(!confirm("¿Estás seguro de guardar todos los cambios?")) return;
+
+        const id = document.getElementById('gt_id_usuario').value;
+        const datos = {
+            // Paso 1
+            nombre_completo: document.getElementById('gt_nombre').value,
+            cedula: document.getElementById('gt_cedula').value,
+            telefono: document.getElementById('gt_telefono').value,
+            carrera: document.getElementById('gt_carrera').value,
+            religion: document.getElementById('gt_religion').value,
+            lugar_procedencia: document.getElementById('gt_procedencia').value,
+            // Paso 2
+            padre_nombre: document.getElementById('gt_padre').value,
+            padre_telefono: document.getElementById('gt_tlf_padre').value,
+            madre_nombre: document.getElementById('gt_madre').value,
+            madre_telefono: document.getElementById('gt_tlf_madre').value,
+            direccion_origen: document.getElementById('gt_direccion').value,
+            padecimiento: document.getElementById('gt_salud').value,
+            // Paso 3
+            union_id: document.getElementById('gt_union').value,
+            campo_id: document.getElementById('gt_campo').value,
+            zona_id: document.getElementById('gt_zona').value,
+            nueva_password: document.getElementById('gt_password').value
+        };
+
+        try {
+            const res = await fetch(`${API_BASE}/users/gestion/update/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(datos)
+            });
+
+            if(res.ok) {
+                alert("Perfil actualizado correctamente");
+                cerrarModalTotal();
+                cargarTablaCoach(); // Refrescar la tabla
+            } else {
+                alert("Error al actualizar");
+            }
+        } catch(e) { console.error(e); }
+    });
+}
