@@ -193,8 +193,8 @@ async function cargarTablaCoach(esDirector = false) {
 
       // Botón PDF (Todos)
       botones += `
-        <button onclick="alert('Descargar PDF')" style="cursor:pointer; background:none; border:none; color:#d9534f;">
-            <i class="fas fa-file-pdf"></i>
+        <button onclick="abrirModalDescarga(${u.id}, '${u.nombre_completo}')" style="cursor:pointer; background:none; border:none; color:#e74c3c; font-size: 1.1rem;" title="Descargar PDF">
+           <i class="fas fa-file-pdf"></i>
         </button>
       `;
 
@@ -996,7 +996,7 @@ async function cargarTablaGlobalDirector() {
                     <button onclick="abrirModalCompleto(${u.id})" style="cursor:pointer; background:none; border:none; color:#d9534f; font-size: 1.1rem; margin-right: 5px;" title="Gestión Maestra">
                         <i class="fas fa-cogs"></i>
                     </button>
-                    <button onclick="alert('Descargar PDF')" style="cursor:pointer; background:none; border:none; color:#e74c3c; font-size: 1.1rem;">
+                    <button onclick="abrirModalDescarga(${u.id}, '${u.nombre_completo}')" style="cursor:pointer; background:none; border:none; color:#e74c3c; font-size: 1.1rem;" title="Descargar PDF">
                         <i class="fas fa-file-pdf"></i>
                     </button>
                 </td>
@@ -1059,5 +1059,104 @@ async function actualizarTablas() {
         console.log("✅ Datos refrescados correctamente.");
     } catch (e) {
         console.error("Error al refrescar tablas:", e);
+    }
+}
+
+// --- LÓGICA DE DESCARGAS ---
+
+// 1. ABRIR MODAL DE DESCARGA
+function abrirModalDescarga(id, nombre) {
+    document.getElementById('descarga_user_id').value = id;
+    document.getElementById('descarga_user_name').value = nombre;
+    document.getElementById('span-nombre-descarga').innerText = nombre.split(' ')[0]; // Solo el primer nombre
+    
+    // Poner mes actual por defecto
+    const fecha = new Date();
+    document.getElementById('descarga_mes').value = fecha.getMonth() + 1; // +1 porque Enero es 0
+    document.getElementById('descarga_anio').value = fecha.getFullYear();
+
+    document.getElementById('modalDescarga').style.display = 'flex';
+}
+
+// 2. DESCARGAR INDIVIDUAL
+async function descargarIndividual() {
+    const userId = document.getElementById('descarga_user_id').value;
+    const mes = document.getElementById('descarga_mes').value;
+    const anio = document.getElementById('descarga_anio').value;
+
+    try {
+        const res = await fetch(`${API_BASE}/reports/get-report`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ userId, mes, anio })
+        });
+
+        const data = await res.json();
+
+        if (data.found) {
+            // Abrir el archivo en nueva pestaña
+            // Ajustamos la ruta para que sea válida en el navegador
+            const urlLimpia = `http://localhost:3000/${data.url.replace(/\\/g, '/')}`;
+            window.open(urlLimpia, '_blank');
+        } else {
+            alert("❌ " + data.message);
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Error al buscar el archivo.");
+    }
+}
+
+// 3. DESCARGAR MASIVO (ZIP)
+async function descargarMasivo() {
+    const mes = document.getElementById('descarga_mes').value;
+    const anio = document.getElementById('descarga_anio').value;
+
+    if(!confirm(`¿Generar archivo ZIP con los informes del ${mes}/${anio}?`)) return;
+
+    // Feedback visual (cambiar texto botón)
+    const btn = document.querySelector('#modalDescarga button[onclick="descargarMasivo()"]');
+    const textoOriginal = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Comprimiendo...';
+    btn.disabled = true;
+
+    try {
+        // Hacemos la petición pidiendo el archivo (blob)
+        const res = await fetch(`${API_BASE}/reports/download-zip`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({ mes, anio })
+        });
+
+        if (res.ok) {
+            // 1. Convertimos la respuesta en un "Blob" (Archivo binario)
+            const blob = await res.blob();
+            
+            // 2. Creamos un enlace invisible para forzar la descarga
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Informes_Mes_${mes}_${anio}.zip`; // Nombre del archivo
+            document.body.appendChild(a);
+            a.click(); // Simulamos el clic
+            a.remove(); // Limpiamos
+            window.URL.revokeObjectURL(url);
+
+            alert("✅ Archivo ZIP descargado exitosamente.");
+        } else {
+            const errorData = await res.json();
+            alert("⚠️ " + (errorData.message || "No se pudo descargar."));
+        }
+
+    } catch (e) {
+        console.error(e);
+        alert("Error de conexión al descargar.");
+    } finally {
+        // Restaurar botón
+        btn.innerHTML = textoOriginal;
+        btn.disabled = false;
     }
 }

@@ -180,7 +180,7 @@
                         </div>
                         <div class="form-group full-width">
                             <label>Archivo</label>
-                            <input type="file" id="archivo_informe" required>
+                            <input type="file" id="archivo_informe" accept=".pdf,.doc,.docx" required>
                         </div>
                     </div>
                     <button type="submit" class="btn-primary" style="background-color: var(--success);"><i class="fas fa-upload"></i> Subir Archivo</button>
@@ -498,6 +498,48 @@
             </form>
         </div>
     </div>
+
+    <!-- MODAL DE DESCARGA -->
+    <div id="modalDescarga" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <span class="close-modal" onclick="document.getElementById('modalDescarga').style.display='none'">&times;</span>
+        
+        <h3 style="color: #e74c3c; margin-bottom: 15px;">
+            <i class="fas fa-file-pdf"></i> Descargar Informes
+        </h3>
+        <p id="descarga-msg" style="color: #666; margin-bottom: 20px;">Selecciona la fecha del informe</p>
+
+        <input type="hidden" id="descarga_user_id">
+        <input type="hidden" id="descarga_user_name">
+
+        <div class="form-group">
+            <label style="text-align: left;">Mes</label>
+            <select id="descarga_mes" style="width: 100%; padding: 10px;">
+                <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+                <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+                <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+                <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label style="text-align: left;">Año</label>
+            <input type="number" id="descarga_anio" value="2025" style="width: 100%; padding: 10px;">
+        </div>
+
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+        <div style="display: grid; gap: 10px;">
+            <button onclick="descargarIndividual()" class="btn-primary" style="background-color: #e74c3c; width: 100%; justify-content: center;">
+                <i class="fas fa-download"></i> Descargar de <span id="span-nombre-descarga">Usuario</span>
+            </button>
+
+            <button onclick="descargarMasivo()" class="btn-primary" style="background-color: #34495e; width: 100%; justify-content: center;">
+                <i class="fas fa-users"></i> Descargar TODO el Mes (ZIP/Lista)
+            </button>
+        </div>
+    </div>
+</div>
 
     <script src="../script/script-dashboard.js"></script>
 </body>
