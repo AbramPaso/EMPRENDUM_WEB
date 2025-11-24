@@ -3,238 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Colportor - EMPRENDUM</title>
+    <title>Panel de Control - EMPRENDUM</title>
     <link rel="icon" type="image/png" href="../image/Logo_individual.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .help-icon { color: #005a87; cursor: help; margin-left: 5px; font-size: 0.9rem; }
-        .disabled-look { background-color: #e9ecef; color: #6c757d; }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="logo-text">EMPRENDUM <span>APP</span></div>
+            <div class="logo-text">EMPRENDUM <span>PRO</span></div>
         </div>
         <ul class="nav-links">
-            <li><a href="#" onclick="mostrarSeccion('inicio')" id="nav-inicio" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a></li>
-            <li><a href="#" onclick="mostrarSeccion('reportes')" id="nav-reportes"><i class="fas fa-file-invoice-dollar"></i> <span>Reportes</span></a></li>
-            <li><a href="#" onclick="mostrarSeccion('colportaje')" id="nav-colportaje"><i class="fas fa-map-marked-alt"></i> <span>Invierno 2025</span></a></li>
-            <li><a href="#" onclick="mostrarSeccion('perfil')" id="nav-perfil"><i class="fas fa-user"></i> <span>Mi Perfil</span></a></li>
-            <li><a href="#" onclick="mostrarSeccion('companeros')" id="nav-companeros"><i class="fas fa-users"></i> <span>Compañeros</span></a></li>
+            <li><a href="#" onclick="mostrarSeccion('inicio')" id="nav-inicio" class="active"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a></li>
+            <li><a href="#" onclick="mostrarSeccion('reportes')" id="nav-reportes"><i class="fas fa-file-invoice"></i> <span>Reportes</span></a></li>
+            <li><a href="#" onclick="mostrarSeccion('colportaje')" id="nav-colportaje"><i class="fas fa-map-marked-alt"></i> <span>Campaña 2025</span></a></li>
+            <li><a href="#" onclick="mostrarSeccion('perfil')" id="nav-perfil"><i class="fas fa-user-circle"></i> <span>Mi Perfil</span></a></li>
+            <li><a href="#" onclick="mostrarSeccion('companeros')" id="nav-companeros"><i class="fas fa-users"></i> <span>Equipo</span></a></li>
         </ul>
         <div class="logout-btn">
-            <a href="#" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> <span>Salir</span></a>
+            <a href="#" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span></a>
         </div>
     </aside>
 
     <main class="main-content">
 
-        <!-- 1. INICIO -->
         <section id="inicio" class="section-view active">
-    <div class="section-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <h2>Panel de Control</h2>
-            <span id="rol-badge" style="padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; color: white; background: #ccc;">Cargando...</span>
-        </div>
-    </div>
-
-    <div id="vista-colportor" class="stats-grid" style="display: none;">
-        <div class="stat-card">
-            <h3>Ventas ($)</h3>
-            <div class="number" id="stat-monto">0.00</div>
-        </div>
-        <div class="stat-card">
-            <h3>Colecciones</h3>
-            <div class="number" id="stat-colecciones">0</div>
-        </div>
-        <div class="stat-card">
-            <h3>Horas</h3>
-            <div class="number" id="stat-horas">0</div>
-        </div>
-    </div>
-
-<div id="vista-director" style="display: none;">
-        
-        <div class="stats-grid" style="margin-top: 15px; margin-bottom: 25px;">
-            <div class="stat-card" style="border-left: 5px solid #d9534f;">
-                <h3>Total Empresa ($)</h3>
-                <div class="number" id="dir-total-dinero">0.00</div>
-            </div>
-            <div class="stat-card" style="border-left: 5px solid #f0ad4e;">
-                <h3>Total Colecciones</h3>
-                <div class="number" id="dir-total-libros">0</div>
-            </div>
-            <div class="stat-card" style="border-left: 5px solid #0275d8;">
-                <h3>Total Horas</h3>
-                <div class="number" id="dir-total-horas">0</div>
-            </div>
-        </div>
-
-        <div class="charts-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-            <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                <h4 style="text-align:center; color:#005a87; margin-top:0;">Ventas por Zona ($)</h4>
-                <canvas id="graficaZonas"></canvas>
-            </div>
-            <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                <h4 style="text-align:center; color:#005a87; margin-top:0;">Ventas por Unión ($)</h4>
-                <canvas id="graficaUniones"></canvas>
-            </div>
-        </div>
-
-        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 30px; border-top: 4px solid #28a745;">
-            <h3 style="color: #28a745; margin-top:0; margin-bottom: 15px;">
-                <i class="fas fa-list-ol"></i> Resumen Financiero Detallado
-            </h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="section-header">
                 <div>
-                    <h5 style="border-bottom: 1px solid #eee; padding-bottom: 5px;">Por Zona</h5>
-                    <ul id="lista-resumen-zonas" style="list-style: none; padding: 0; font-size: 0.9rem;"></ul>
+                    <h2>Panel de Control</h2>
+                    <p style="color: #64748b; margin-top: 5px;">Bienvenido al sistema de gestión integral.</p>
                 </div>
-                <div>
-                    <h5 style="border-bottom: 1px solid #eee; padding-bottom: 5px;">Por Unión</h5>
-                    <ul id="lista-resumen-uniones" style="list-style: none; padding: 0; font-size: 0.9rem;"></ul>
+                <span id="rol-badge" style="border-radius: 20px; color: white; font-weight: bold; padding: 8px 15px;">Cargando...</span>
+            </div>
+
+            <div id="vista-colportor" class="stats-grid" style="display: none;">
+                <div class="stat-card">
+                    <h3><i class="fas fa-dollar-sign" style="color: var(--success);"></i> Ventas Totales</h3>
+                    <div class="number" id="stat-monto">0.00</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-book" style="color: var(--primary-blue);"></i> Colecciones</h3>
+                    <div class="number" id="stat-colecciones">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-clock" style="color: var(--accent-yellow);"></i> Horas</h3>
+                    <div class="number" id="stat-horas">0</div>
                 </div>
             </div>
-        </div>
 
-        <div class="form-container" style="margin-bottom: 30px; border-top: 4px solid #f0ad4e;">
-            <h3 style="color: #f0ad4e; margin-bottom: 15px;"><i class="fas fa-star"></i> Gestión de Liderazgo (Coaches)</h3>
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: #f0ad4e; color: white; text-align: left;">
-                            <th style="padding: 12px;">Coach</th>
-                            <th style="padding: 12px;">Zona Asignada</th>
-                            <th style="padding: 12px;">Equipo</th>
-                            <th style="padding: 12px;">Entregado ($)</th>
-                            <th style="padding: 12px;">Colecciones</th>
-                            <th style="padding: 12px; text-align: center;">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-coaches-body"></tbody>
-                </table>
-            </div>
-        </div>
+            <div id="vista-director" style="display: none;">
+                
+                <div class="stats-grid">
+                    <div class="stat-card" style="border-bottom: 4px solid var(--primary-dark);">
+                        <h3>Finanzas Globales</h3>
+                        <div class="number" id="dir-total-dinero">0.00</div>
+                    </div>
+                    <div class="stat-card" style="border-bottom: 4px solid var(--accent-yellow);">
+                        <h3>Colecciones Globales</h3>
+                        <div class="number" id="dir-total-libros">0</div>
+                    </div>
+                    <div class="stat-card" style="border-bottom: 4px solid var(--primary-blue);">
+                        <h3>Horas Globales</h3>
+                        <div class="number" id="dir-total-horas">0</div>
+                    </div>
+                </div>
 
-        <div class="form-container" style="border-top: 4px solid #005a87;">
-            <h3 style="color: #005a87; margin-bottom: 15px;"><i class="fas fa-users"></i> Equipo General (Todos)</h3>
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: #005a87; color: white; text-align: left;">
-                            <th style="padding: 12px;">Nombre y Rango</th>
-                            <th style="padding: 12px;">Colecciones</th>
-                            <th style="padding: 12px;">Dinero ($)</th>
-                            <th style="padding: 12px;">Zona</th>
-                            <th style="padding: 12px; text-align: center;">Gestión</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-director-colportores-body"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                    <div class="form-container" style="margin:0;">
+                        <h3>Ventas por Zona</h3>
+                        <canvas id="graficaZonas"></canvas>
+                    </div>
+                    <div class="form-container" style="margin:0;">
+                        <h3>Ventas por Unión</h3>
+                        <canvas id="graficaUniones"></canvas>
+                    </div>
+                </div>
 
-    <div id="vista-coach" style="display: none; margin-top: 20px;">
-        <div class="form-container">
-            <h3><i class="fas fa-users"></i> Mi Equipo de Trabajo</h3>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
-                <thead>
-                    <tr style="background: #005a87; color: white; text-align: left;">
-                        <th style="padding: 10px;">Nombre</th>
-                        <th style="padding: 10px;">Total Ventas</th>
-                        <th style="padding: 10px;">Dinero</th>
-                        <th style="padding: 10px;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-coach-body">
-                    </tbody>
-            </table>
-        </div>
-    </div>
-
-</section>
-
-        <!-- 2. REPORTES -->
-        <section id="reportes" class="section-view">
-            <div class="section-header"><h2>Gestión de Reportes</h2></div>
-            
-            <div class="form-container">
-                <h3><i class="fas fa-calendar-week"></i> Reporte Semanal</h3>
-                <form id="formReporteSemanal">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Semana #</label>
-                            <input type="number" id="sem_numero" placeholder="Ej: 42" required>
+                <div class="form-container">
+                    <h3><i class="fas fa-list-alt"></i> Desglose Financiero</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div>
+                            <h5 style="color: var(--text-muted); border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">POR ZONA</h5>
+                            <ul id="lista-resumen-zonas" style="list-style: none; padding: 0; color: var(--text-main);"></ul>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Colecciones</label>
-                            <input type="number" id="sem_colecciones" placeholder="0" required>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <label>
-                                Monto total depositado 
-                                <i class="fas fa-question-circle help-icon" title="Reportar el dinero enviado en la semana, no el valor de las colecciones entregadas."></i>
-                            </label>
-                            <input type="number" step="0.01" id="sem_monto" placeholder="0.00" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Horas Trabajadas</label>
-                            <input type="number" step="0.5" id="sem_horas" placeholder="0" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Estudios Bíblicos</label>
-                            <input type="number" id="sem_estudios" placeholder="0" required>
+                        <div>
+                            <h5 style="color: var(--text-muted); border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">POR UNIÓN</h5>
+                            <ul id="lista-resumen-uniones" style="list-style: none; padding: 0; color: var(--text-main);"></ul>
                         </div>
                     </div>
-                    <button type="submit" class="btn-primary">Enviar Reporte</button>
-                </form>
+                </div>
+
+                <div class="form-container">
+                    <h3 style="color: var(--accent-yellow);"><i class="fas fa-crown"></i> Gestión de Liderazgo (Coaches)</h3>
+                    <div style="overflow-x: auto;">
+                        <table id="tabla-liderazgo">
+                            <thead>
+                                <tr>
+                                    <th>Coach</th>
+                                    <th>Zona</th>
+                                    <th>Equipo</th>
+                                    <th>Dinero ($)</th>
+                                    <th>Colecciones</th>
+                                    <th style="text-align: center;">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-coaches-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3 style="color: var(--primary-dark);"><i class="fas fa-users"></i> Equipo General</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Colportor / Rango</th>
+                                    <th style="text-align:center;">Colecciones</th>
+                                    <th style="color: var(--success);">Dinero ($)</th>
+                                    <th>Zona</th>
+                                    <th style="text-align: center;">Gestión</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-director-colportores-body"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
+            <div id="vista-coach" style="display: none; margin-top: 20px;">
+                <div class="form-container">
+                    <h3><i class="fas fa-user-friends"></i> Mi Equipo Asignado</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Total Ventas</th>
+                                    <th>Dinero</th>
+                                    <th style="text-align: center;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-coach-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reportes" class="section-view">
+            <div class="section-header"><h2>Gestión de Reportes</h2></div>
             <div class="form-container">
-                <h3>
-                    <i class="fas fa-file-upload"></i> Informe Mensual 
-                    <i class="fas fa-question-circle help-icon" title="Enviar al final del mes, cuando el coach lo requiera."></i>
-                </h3>
+                <h3>Nuevo Reporte Semanal</h3>
+                <form id="formReporteSemanal">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Semana #</label><input type="number" id="sem_numero" placeholder="Ej: 1" required></div>
+                        <div class="form-group"><label>Colecciones</label><input type="number" id="sem_colecciones" placeholder="0" required></div>
+                        <div class="form-group full-width"><label>Monto Depositado ($)</label><input type="number" step="0.01" id="sem_monto" placeholder="0.00" required></div>
+                        <div class="form-group"><label>Horas</label><input type="number" step="0.5" id="sem_horas" required></div>
+                        <div class="form-group"><label>Estudios Bíblicos</label><input type="number" id="sem_estudios" required></div>
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Enviar Reporte</button>
+                </form>
+            </div>
+            <div class="form-container">
+                <h3>Informe Mensual (PDF)</h3>
                 <form id="formInformeMensual">
                     <div class="form-grid">
                         <div class="form-group full-width">
-                            <label>Mes a reportar</label>
+                            <label>Mes</label>
                             <select id="mes_reporte">
-                                <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
-                                <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
-                                <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
-                                <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
-                            </select>
+                                <option value="1">Enero</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+                                </select>
                         </div>
                         <div class="form-group full-width">
-                            <label>Archivo (PDF/DOC)</label>
+                            <label>Archivo</label>
                             <input type="file" id="archivo_informe" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn-primary" style="background-color: #28a745;">Subir Informe</button>
+                    <button type="submit" class="btn-primary" style="background-color: var(--success);"><i class="fas fa-upload"></i> Subir Archivo</button>
                 </form>
             </div>
         </section>
 
-        <!-- 3. COLPORTAJE INVIERNO -->
         <section id="colportaje" class="section-view">
-            <div class="section-header">
-                <h2>Campaña Invierno - 2025</h2>
-                <p>Configura tu asignación actual de trabajo</p>
-            </div>
+            <div class="section-header"><h2>Configuración de Campaña</h2></div>
             <div class="form-container">
                 <form id="formCampana">
                     <div class="form-grid">
                         <div class="form-group full-width">
-                            <label>Unión de Trabajo</label>
+                            <label>Unión</label>
                             <select id="camp_union" onchange="filtrarCampos()">
                                 <option value="">Seleccione...</option>
                                 <option value="1">UVOC (Occidental)</option>
@@ -242,20 +202,16 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Campo de Trabajo</label>
-                            <select id="camp_campo" disabled>
-                                <option value="">Seleccione unión primero</option>
-                            </select>
+                            <label>Campo</label>
+                            <select id="camp_campo" disabled></select>
                         </div>
                         <div class="form-group">
-                            <label>Zona Asignada</label>
-                            <select id="camp_zona" disabled>
-                                <option value="">Seleccione unión primero</option>
-                            </select>
+                            <label>Zona</label>
+                            <select id="camp_zona" disabled></select>
                         </div>
                         <div class="form-group full-width">
                             <label>Ciudad Específica</label>
-                            <input type="text" id="camp_ciudad" placeholder="Ej: Barquisimeto Centro">
+                            <input type="text" id="camp_ciudad" placeholder="Ej: Barquisimeto">
                         </div>
                     </div>
                     <button type="submit" class="btn-primary">Guardar Asignación</button>
@@ -263,56 +219,45 @@
             </div>
         </section>
 
-        <!-- 4. PERFIL -->
         <section id="perfil" class="section-view">
             <div class="profile-header">
-              <img id="headerFoto" src="../image/usuario-icon.webp" class="profile-pic-large">
+                <img id="headerFoto" src="../image/usuario-icon.webp" class="profile-pic-large">
                 <div class="profile-info-text">
-                    <h3 id="headerNombre">Cargando...</h3>
-                    <p id="headerCarrera">Estudiante</p>
+                    <h3 id="headerNombre">Usuario</h3>
+                    <p id="headerCarrera" style="color: var(--text-muted);">Estudiante</p>
                 </div>
-                <button class="edit-toggle-btn" onclick="toggleEditProfile()"><i class="fas fa-pen"></i> Editar</button>
+                <button class="btn-primary" onclick="toggleEditProfile()"><i class="fas fa-pen"></i> Editar</button>
             </div>
 
-            <!-- VISTA LECTURA -->
             <div id="viewProfileMode" class="form-container">
-                <h3>Datos Generales</h3>
+                <h3>Información Personal</h3>
                 <div class="form-grid">
-                    <div><strong>Cédula:</strong> <span id="view_cedula">--</span></div>
-                    <div><strong>Teléfono:</strong> <span id="view_telefono">--</span></div>
-                    <div><strong>Origen:</strong> <span id="view_procedencia">--</span></div>
-                    <div><strong>Religión:</strong> <span id="view_religion">--</span></div>
-                    <div><strong>Estado Civil:</strong> <span id="view_civil">--</span></div>
-                    <div class="full-width">
-                        <strong>Pensamiento:</strong> 
-                        <p id="view_pensamiento" style="font-style: italic; color: #666; margin-top: 5px;">--</p>
-                    </div>
+                    <div><small>Cédula</small><div id="view_cedula" style="font-weight:500;">--</div></div>
+                    <div><small>Teléfono</small><div id="view_telefono" style="font-weight:500;">--</div></div>
+                    <div><small>Origen</small><div id="view_procedencia">--</div></div>
+                    <div><small>Religión</small><div id="view_religion">--</div></div>
+                    <div><small>Estado Civil</small><div id="view_civil">--</div></div>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+                    <small>Pensamiento</small>
+                    <p id="view_pensamiento" style="font-style: italic; margin-top: 5px;">--</p>
                 </div>
             </div>
 
-            <!-- VISTA EDICIÓN -->
             <div id="editProfileMode" style="display: none;">
                 <div class="form-container">
-                    <h3>Foto y Biografía</h3>
+                    <h3>Editar Biografía</h3>
                     <form id="formBio">
-                        <div class="form-group full-width">
-                            <label>Foto de Perfil</label>
-                            <input type="file" id="foto_perfil_input">
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Pensamiento</label>
-                            <textarea id="pensamiento_input"></textarea>
-                        </div>
-                        <button type="submit" class="btn-primary">Actualizar Bio</button>
+                        <div class="form-group full-width"><label>Foto</label><input type="file" id="foto_perfil_input"></div>
+                        <div class="form-group full-width"><label>Pensamiento</label><textarea id="pensamiento_input" rows="3"></textarea></div>
+                        <button type="submit" class="btn-primary">Actualizar</button>
                     </form>
                 </div>
-
                 <div class="form-container">
-                    <h3>Datos Personales y de Registro</h3>
-                    <p style="color: #d9534f; font-size: 0.8rem; margin-bottom: 15px;">⚠ Estás modificando tu ficha de registro inicial.</p>
+                    <h3>Editar Datos de Registro</h3>
                     <form id="formPersonales">
                         <div class="form-grid">
-                            <div class="form-group"><label>Nombre Completo</label><input type="text" id="reg_nombre"></div>
+                            <div class="form-group"><label>Nombre</label><input type="text" id="reg_nombre"></div>
                             <div class="form-group"><label>Cédula</label><input type="text" id="reg_cedula"></div>
                             <div class="form-group"><label>Teléfono</label><input type="text" id="reg_telefono"></div>
                             <div class="form-group"><label>Carrera</label><input type="text" id="reg_carrera"></div>
@@ -323,245 +268,170 @@
                                     <option value="Casado">Casado</option>
                                 </select>
                             </div>
-                            
-                            <!-- Datos de Procedencia (Registro) -->
-                            <div class="form-group full-width" style="border-top: 1px solid #eee; padding-top:10px; margin-top:10px;">
-                                <label style="color:#005a87;">Lugar de Procedencia (Origen)</label>
-                            </div>
-                            <div class="form-group"><label>Unión Origen</label>
-                                <select id="reg_union"><option value="1">UVOC</option><option value="2">UVO</option></select>
-                            </div>
-                            <div class="form-group"><label>Campo Origen</label>
-                                <select id="reg_campo"><option value="1">MVY</option><option value="2">AVCN</option></select>
-                            </div>
-                            <div class="form-group full-width"><label>Ciudad de Origen</label><input type="text" id="reg_lugar_procedencia"></div>
-                            <div class="form-group full-width"><label>Dirección Exacta</label><input type="text" id="reg_direccion"></div>
-
-                            <!-- Familiares -->
-                            <div class="form-group full-width" style="border-top: 1px solid #eee; padding-top:10px; margin-top:10px;">
-                                <label style="color:#005a87;">Familiares y Salud</label>
-                            </div>
-                            <div class="form-group"><label>Padre</label><input type="text" id="padre_nombre"></div>
-                            <div class="form-group"><label>Tlf Padre</label><input type="text" id="padre_telefono"></div>
-                            <div class="form-group"><label>Madre</label><input type="text" id="madre_nombre"></div>
-                            <div class="form-group"><label>Tlf Madre</label><input type="text" id="madre_telefono"></div>
-                            <div class="form-group"><label>Cónyuge</label><input type="text" id="conyuge_nombre"></div>
-                            <div class="form-group"><label>Alergias/Salud</label><input type="text" id="padecimiento"></div>
                         </div>
-                        <button type="submit" class="btn-primary" style="background-color: #555;">Guardar Todo</button>
+                        <button type="submit" class="btn-primary" style="margin-top: 20px;">Guardar Cambios</button>
                     </form>
                 </div>
             </div>
         </section>
 
-        <!-- 5. COMPAÑEROS -->
         <section id="companeros" class="section-view">
-            <div class="section-header"><h2>Compañeros de Misión</h2></div>
-            <div class="colleagues-grid" id="listaCompaneros">
-                <div style="text-align:center; padding:20px;"><p>Cargando lista...</p></div>
-            </div>
+            <div class="section-header"><h2>Directorio de Equipo</h2></div>
+            <div class="colleagues-grid" id="listaCompaneros"></div>
         </section>
+
     </main>
 
-    <!-- MODAL -->
     <div id="modalCompanero" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="cerrarModal()">&times;</span>
-            <img id="modalFoto" src="" class="profile-pic-large" style="margin: 0 auto 1rem;">
-            <h3 id="modalNombre">--</h3>
-            <span id="modalCarrera" style="background: #eee; padding: 2px 10px; border-radius: 10px;">--</span>
-            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-            <p><strong>Colportando en:</strong> <span id="modalLugar">--</span></p>
-            <p><strong>Teléfono:</strong> <span id="modalTelefono">--</span></p>
-            <div style="margin-top: 15px; font-style: italic; color: #555; background: #f9f9f9; padding: 10px; border-radius: 8px;">
+            <div style="text-align: center;">
+                <img id="modalFoto" src="" class="profile-pic-large" style="width: 80px; height: 80px; margin-bottom: 15px;">
+                <h3 id="modalNombre" style="color: var(--primary-dark);">--</h3>
+                <span id="modalCarrera" style="background: #e2e8f0; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;">--</span>
+            </div>
+            <div style="margin-top: 20px; display: grid; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                    <span style="color: var(--text-muted);">Ubicación:</span>
+                    <span id="modalLugar" style="font-weight: 500;">--</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                    <span style="color: var(--text-muted);">Teléfono:</span>
+                    <span id="modalTelefono" style="font-weight: 500;">--</span>
+                </div>
+            </div>
+            <div style="margin-top: 20px; font-style: italic; color: var(--text-muted); text-align: center;">
                 "<span id="modalPensamiento">--</span>"
             </div>
         </div>
     </div>
 
-        <!-- MODAL PARA EL COUCH-->
     <div id="modalGestion" class="modal">
-    <div class="modal-content" style="max-width: 450px; width: 95%; padding: 20px;">
-        <span class="close-modal" onclick="cerrarModalGestion()">&times;</span>
-        
-        <h3 style="color: #005a87; margin-top: 0; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-            <i class="fas fa-user-edit"></i> Gestión de Colportor
-        </h3>
-        
-        <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; text-align: center;">
-                <div class="stat-mini">
-                    <div style="font-size: 0.7rem; color: #666;">Colec.</div>
-                    <div id="gest_colecciones" style="font-size: 1rem; font-weight:bold; color: #005a87;">0</div>
-                </div>
-                <div class="stat-mini">
-                    <div style="font-size: 0.7rem; color: #666;">Dinero</div>
-                    <div id="gest_monto" style="font-size: 1rem; font-weight:bold; color: #28a745;">0</div>
-                </div>
-                <div class="stat-mini">
-                    <div style="font-size: 0.7rem; color: #666;">Horas</div>
-                    <div id="gest_horas" style="font-size: 1rem; font-weight:bold; color: #555;">0</div>
-                </div>
-                <div class="stat-mini">
-                    <div style="font-size: 0.7rem; color: #666;">Estudios</div>
-                    <div id="gest_estudios" style="font-size: 1rem; font-weight:bold; color: #555;">0</div>
-                </div>
+        <div class="modal-content">
+            <span class="close-modal" onclick="cerrarModalGestion()">&times;</span>
+            <h3 style="color: var(--primary-blue); margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
+                <i class="fas fa-edit"></i> Edición Rápida
+            </h3>
+            
+            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; gap: 5px;">
+                <div><small>Colec.</small><div id="gest_colecciones" style="font-weight:bold; color: var(--primary-dark);">0</div></div>
+                <div><small>Dinero</small><div id="gest_monto" style="font-weight:bold; color: var(--success);">0</div></div>
+                <div><small>Horas</small><div id="gest_horas" style="font-weight:bold;">0</div></div>
+                <div><small>Est.</small><div id="gest_estudios" style="font-weight:bold;">0</div></div>
             </div>
+
+            <form id="formGestionColportor">
+                <input type="hidden" id="gest_id_usuario">
+                <div class="form-group"><label>Nombre</label><input type="text" id="gest_nombre" required></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Teléfono</label><input type="text" id="gest_telefono"></div>
+                    <div class="form-group"><label>Carrera</label><input type="text" id="gest_carrera"></div>
+                </div>
+                <div style="background: #fff1f2; padding: 10px; border: 1px dashed #f43f5e; border-radius: 6px; margin-top: 10px;">
+                    <label style="color: #e11d48;">Nueva Contraseña</label>
+                    <input type="text" id="gest_password" placeholder="Opcional" style="background: white;">
+                </div>
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn-primary" style="background: #94a3b8;" onclick="cerrarModalGestion()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar</button>
+                </div>
+            </form>
         </div>
-
-        <form id="formGestionColportor">
-            <input type="hidden" id="gest_id_usuario"> 
-            
-            <div class="form-group full-width" style="margin-bottom: 10px;">
-                <label style="font-size: 0.85rem;">Nombre Completo</label>
-                <input type="text" id="gest_nombre" required style="padding: 8px; font-size: 0.9rem;">
-            </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                <div class="form-group" style="margin:0;">
-                    <label style="font-size: 0.85rem;">Teléfono</label>
-                    <input type="text" id="gest_telefono" style="padding: 8px; font-size: 0.9rem;">
-                </div>
-                <div class="form-group" style="margin:0;">
-                    <label style="font-size: 0.85rem;">Carrera</label>
-                    <input type="text" id="gest_carrera" style="padding: 8px; font-size: 0.9rem;">
-                </div>
-            </div>
-
-            <div style="background: #fff5f5; padding: 10px; border-radius: 6px; border: 1px dashed #d9534f; margin-top: 15px;">
-                <label style="font-size: 0.8rem; color: #d9534f; font-weight: bold;">Cambiar Contraseña (Opcional)</label>
-                <input type="text" id="gest_password" placeholder="Escribe para cambiar..." style="padding: 6px; font-size: 0.85rem; width: 100%; border: 1px solid #ffcccc; margin-top: 5px;">
-            </div>
-
-            <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
-                <button type="button" onclick="cerrarModalGestion()" style="padding: 8px 15px; border: none; background: #eee; color: #555; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Cancelar</button>
-                <button type="submit" class="btn-primary" style="padding: 8px 15px; font-size: 0.9rem;">Guardar</button>
-            </div>
-        </form>
-    </div>
     </div>
 
-    <!-- MODAL EDICIÓN AVANZADA -->
-<div id="modalGestionTotal" class="modal">
-    <div class="modal-content" style="max-width: 500px; width: 95%; padding: 20px;">
-        <span class="close-modal" onclick="cerrarModalTotal()">&times;</span>
-        
-        <h3 style="color: #005a87; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-            <i class="fas fa-user-cog"></i> Editar Colportor
-        </h3>
+    <div id="modalGestionTotal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="cerrarModalTotal()">&times;</span>
+            <h3 style="color: var(--accent-yellow); margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
+                <i class="fas fa-cogs"></i> Gestión Maestra
+            </h3>
 
-        <form id="formGestionTotal">
-            <input type="hidden" id="gt_id_usuario">
+            <form id="formGestionTotal">
+                <input type="hidden" id="gt_id_usuario">
 
-            <div id="paso-1">
-                <h5 style="color: #666; margin-bottom: 10px;">Paso 1: Datos Personales</h5>
-                <div class="form-group full-width"><label>Nombre Completo</label><input type="text" id="gt_nombre" required></div>
-                <div class="form-grid">
-                    <div><label>Cédula</label><input type="text" id="gt_cedula"></div>
-                    <div><label>Teléfono</label><input type="text" id="gt_telefono"></div>
-                </div>
-                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                 <div>
-                    <label style="font-size:0.8rem">Carrera</label>
-                    <input type="text" id="gt_carrera" style="width: 100%; padding: 6px;">
-                 </div>
-    <div>
-        <label style="font-size:0.8rem">Religión</label>
-        <input type="text" id="gt_religion" style="width: 100%; padding: 6px;">
-    </div>
-</div>
-
-<div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-    <div>
-        <label style="font-size:0.8rem">Estado Civil</label>
-        <select id="gt_civil" style="width: 100%; padding: 6px;">
-            <option value="Soltero">Soltero</option>
-            <option value="Casado">Casado</option>
-            <option value="Divorciado">Divorciado</option>
-            <option value="Viudo">Viudo</option>
-        </select>
-    </div>
-    <div>
-        <label style="font-size:0.8rem">Fecha Nacimiento</label>
-        <input type="date" id="gt_fecha_nac" style="width: 100%; padding: 6px;">
-    </div>
-</div>
-                <div class="form-group full-width"><label>Lugar Procedencia</label><input type="text" id="gt_procedencia"></div>
-                
-                <div style="text-align: right; margin-top: 15px;">
-                    <button type="button" class="btn-primary" onclick="cambiarPaso(2)">Siguiente <i class="fas fa-arrow-right"></i></button>
-                </div>
-            </div>
-
-            <div id="paso-2" style="display: none;">
-                <h5 style="color: #666; margin-bottom: 10px;">Paso 2: Familia y Salud</h5>
-                <div class="form-grid">
-                    <div><label>Nombre Padre</label><input type="text" id="gt_padre"></div>
-                    <div><label>Tlf Padre</label><input type="text" id="gt_tlf_padre"></div>
-                </div>
-                <div class="form-grid">
-                    <div><label>Nombre Madre</label><input type="text" id="gt_madre"></div>
-                    <div><label>Tlf Madre</label><input type="text" id="gt_tlf_madre"></div>
-                </div>
-                <div class="form-group full-width"><label>Dirección Exacta</label><input type="text" id="gt_direccion"></div>
-                <div class="form-group full-width"><label>Padecimientos / Alergias</label><input type="text" id="gt_salud"></div>
-
-                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-                    <button type="button" style="background: #ccc; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;" onclick="cambiarPaso(1)">Atrás</button>
-                    <button type="button" class="btn-primary" onclick="cambiarPaso(3)">Siguiente <i class="fas fa-arrow-right"></i></button>
-                </div>
-            </div>
-
-            <div id="paso-3" style="display: none;">
-                <h5 style="color: #666; margin-bottom: 10px;">Paso 3: Autoridad, Campaña y Seguridad</h5>
-                
-                <div style="background: #fff3cd; padding: 10px; border-radius: 6px; border: 1px dashed #ffc107; margin-bottom: 15px;">
-                    <label style="color: #856404; font-weight:bold;">⭐ Rango de Autoridad</label>
-                    <select id="gt_rol" style="width: 100%; padding: 6px; margin-top: 5px; font-weight: bold; border: 1px solid #ffeeba;">
-                        <option value="3">Colportor (Vendedor)</option>
-                        <option value="2">Coach (Líder de Zona)</option>
-                        <option value="1">Director</option>
-                    </select>
-                    <small style="color: #856404; font-size: 0.7rem; display:block; margin-top:2px;">* Si eliges "Coach", asígnale su Zona abajo.</small>
-                </div>
-
-                <div style="background: #e3f2fd; padding: 10px; border-radius: 6px; margin-bottom: 15px;">
-                    <label style="color: #005a87; font-weight:bold;">📍 Asignación (Invierno 2025)</label>
-                    
-                    <label style="font-size: 0.8rem; display:block; margin-top:5px;">Unión</label>
-                    <select id="gt_union" style="width: 100%; padding: 5px;" onchange="filtrarCamposGestion()">
-                        <option value="">Sin Asignar</option>
-                        <option value="1">UVOC (Occidental)</option>
-                        <option value="2">UVO (Oriental)</option>
-                    </select>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px;">
-                        <div>
-                            <label style="font-size: 0.8rem;">Campo</label>
-                            <select id="gt_campo" style="width: 100%; padding: 5px;" disabled></select>
+                <div id="paso-1">
+                    <h5 style="color: var(--text-muted); margin-bottom: 15px;">1. Datos Personales</h5>
+                    <div class="form-group full-width"><label>Nombre</label><input type="text" id="gt_nombre" required></div>
+                    <div class="form-grid">
+                        <div><label>Cédula</label><input type="text" id="gt_cedula"></div>
+                        <div><label>Teléfono</label><input type="text" id="gt_telefono"></div>
+                    </div>
+                    <div class="form-grid">
+                        <div><label>Carrera</label><input type="text" id="gt_carrera"></div>
+                        <div><label>Religión</label><input type="text" id="gt_religion"></div>
+                    </div>
+                    <div class="form-grid">
+                        <div><label>Estado Civil</label>
+                            <select id="gt_civil">
+                                <option value="Soltero">Soltero</option>
+                                <option value="Casado">Casado</option>
+                            </select>
                         </div>
-                        <div>
-                            <label style="font-size: 0.8rem;">Zona</label>
-                            <select id="gt_zona" style="width: 100%; padding: 5px;" disabled></select>
-                        </div>
+                        <div><label>Fecha Nacimiento</label><input type="date" id="gt_fecha_nac"></div>
+                    </div>
+                    <div class="form-group full-width"><label>Procedencia</label><input type="text" id="gt_procedencia"></div>
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button type="button" class="btn-primary" onclick="cambiarPaso(2)">Siguiente <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
 
-                <div style="background: #fff5f5; padding: 10px; border-radius: 6px; border: 1px dashed #d9534f;">
-                    <label style="color: #d9534f; font-weight:bold;">Cambiar Contraseña</label>
-                    <input type="text" id="gt_password" placeholder="Nueva clave (Opcional)" style="width: 100%; margin-top:5px; border:1px solid #ffcccc;">
+                <div id="paso-2" style="display: none;">
+                    <h5 style="color: var(--text-muted); margin-bottom: 15px;">2. Familia y Salud</h5>
+                    <div class="form-grid">
+                        <div><label>Padre</label><input type="text" id="gt_padre"></div>
+                        <div><label>Tlf Padre</label><input type="text" id="gt_tlf_padre"></div>
+                    </div>
+                    <div class="form-grid">
+                        <div><label>Madre</label><input type="text" id="gt_madre"></div>
+                        <div><label>Tlf Madre</label><input type="text" id="gt_tlf_madre"></div>
+                    </div>
+                    <div class="form-group full-width"><label>Dirección</label><input type="text" id="gt_direccion"></div>
+                    <div class="form-group full-width"><label>Salud/Alergias</label><input type="text" id="gt_salud"></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                        <button type="button" class="btn-primary" style="background: #94a3b8;" onclick="cambiarPaso(1)">Atrás</button>
+                        <button type="button" class="btn-primary" onclick="cambiarPaso(3)">Siguiente <i class="fas fa-arrow-right"></i></button>
+                    </div>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-                    <button type="button" style="background: #ccc; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;" onclick="cambiarPaso(2)">Atrás</button>
-                    <button type="submit" class="btn-primary" style="background: #28a745;">💾 Guardar Todo</button>
+                <div id="paso-3" style="display: none;">
+                    <h5 style="color: var(--text-muted); margin-bottom: 15px;">3. Autoridad y Zona</h5>
+                    
+                    <div style="background: #fffbeb; padding: 15px; border: 1px solid #fcd34d; border-radius: 8px; margin-bottom: 15px;">
+                        <label style="color: #b45309;">Rango de Autoridad</label>
+                        <select id="gt_rol" style="margin-top: 5px; border-color: #fcd34d;">
+                            <option value="3">Colportor</option>
+                            <option value="2">Coach</option>
+                            <option value="1">Director</option>
+                        </select>
+                    </div>
+
+                    <div style="background: #eff6ff; padding: 15px; border: 1px solid #bfdbfe; border-radius: 8px; margin-bottom: 15px;">
+                        <label style="color: #1e40af;">Asignación de Campaña</label>
+                        <select id="gt_union" style="margin-top: 10px;" onchange="filtrarCamposGestion()">
+                            <option value="">Unión...</option>
+                            <option value="1">UVOC</option>
+                            <option value="2">UVO</option>
+                        </select>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                            <select id="gt_campo" disabled><option>Campo...</option></select>
+                            <select id="gt_zona" disabled><option>Zona...</option></select>
+                        </div>
+                    </div>
+
+                    <div style="background: #fff1f2; padding: 10px; border: 1px dashed #f43f5e; border-radius: 6px;">
+                        <label style="color: #e11d48;">Cambiar Contraseña</label>
+                        <input type="text" id="gt_password" placeholder="Nueva clave..." style="background: white;">
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                        <button type="button" class="btn-primary" style="background: #94a3b8;" onclick="cambiarPaso(2)">Atrás</button>
+                        <button type="submit" class="btn-primary" style="background: var(--success);">Guardar Todo</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 
-<script src="../script/script-dashboard.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../script/script-dashboard.js"></script>
 </body>
 </html>

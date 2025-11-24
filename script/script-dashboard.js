@@ -119,7 +119,7 @@ async function cargarGraficasDirector() {
       type: "bar",
       data: {
         labels: data.zonas.map((d) => d.label),
-        datasets: [{ label: "Recaudado ($)", data: data.zonas.map((d) => d.total), backgroundColor: "#005a87" }],
+        datasets: [{ label: "Recaudado ($)", data: data.zonas.map((d) => d.total), backgroundColor: "#0f172a" }],
       },
     });
 
@@ -129,7 +129,7 @@ async function cargarGraficasDirector() {
       type: "bar", // Ahora es Barra
       data: {
         labels: data.uniones.map((d) => d.label),
-        datasets: [{ label: "Ventas por Unión ($)", data: data.uniones.map((d) => d.total), backgroundColor: ["#d9534f", "#f0ad4e"] }],
+        datasets: [{ label: "Ventas por Unión ($)", data: data.uniones.map((d) => d.total), backgroundColor: ["#f59e0b", "#0f172a"] }],
       },
     });
 

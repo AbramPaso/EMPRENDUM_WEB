@@ -3,41 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - EMPRENDUM</title>
+    <title>Iniciar Sesión - EMPRENDUM PRO</title>
     <link rel="icon" type="image/png" href="../image/Logo_individual.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="auth-body">
 
     <div class="auth-container">
-        <div class="form-card small">
+        <div class="form-card">
             
             <div class="auth-header">
-                <!-- Asegúrate de que la ruta de la imagen sea correcta -->
                 <img src="../image/Logo_individual.png" alt="Logo" class="auth-logo">
                 <h2 class="form-title">Bienvenido</h2>
-                <p style="color: #666; font-size: 0.9rem;">Ingresa tus credenciales para continuar</p>
+                <p class="auth-subtitle">Accede a tu panel de gestión</p>
             </div>
 
             <form id="loginForm">
                 <div class="form-group">
-                    <label><i class="fas fa-id-card"></i> Cédula de Identidad</label>
-                    <input type="text" id="cedula" placeholder="Ej: 12345678" required>
+                    <label for="cedula"><i class="fas fa-id-badge"></i> Cédula de Identidad</label>
+                    <input type="text" id="cedula" placeholder="Ingrese su cédula" required autocomplete="username">
                 </div>
                 
                 <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Contraseña</label>
-                    <input type="password" id="password" placeholder="********" required>
+                    <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
+                    <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
                 </div>
 
-                <button type="submit" class="btn-submit">Ingresar</button>
+                <button type="submit" class="btn-submit">
+                    Iniciar Sesión <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
+                </button>
                 
-                <div style="text-align: center; margin-top: 20px; font-size: 0.9rem;">
-                    <p>¿No tienes cuenta? <a href="registro.html" style="color: #005a87; font-weight: bold; text-decoration: none;">Regístrate aquí</a></p>
+                <div class="auth-footer">
+                    <p>¿Eres nuevo en el equipo? <a href="registro.html" class="auth-link">Crear Cuenta</a></p>
                 </div>
             </form>
         </div>
+        <p style="text-align: center; color: rgba(255,255,255,0.3); margin-top: 20px; font-size: 0.8rem;">
+            © 2025 Emprendum System. Todos los derechos reservados.
+        </p>
     </div>
 
     <script>
@@ -47,13 +51,14 @@
             const cedulaElement = document.getElementById('cedula');
             const passwordElement = document.getElementById('password');
 
-            if (!cedulaElement || !passwordElement) {
-                console.error("Error: Inputs no encontrados.");
-                return;
-            }
-
             const cedula = cedulaElement.value;
             const password = passwordElement.value;
+
+            // Animación simple en botón
+            const btn = document.querySelector('.btn-submit');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+            btn.disabled = true;
 
             try {
                 const response = await fetch('http://localhost:3000/api/auth/login', {
@@ -67,14 +72,17 @@
                 if (response.ok) {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('userData', JSON.stringify(data.user));
-                    // Redirección limpia
                     window.location.href = 'dashboard.html';
                 } else {
-                    alert('Error: ' + (data.message || 'Credenciales incorrectas'));
+                    alert('⚠️ ' + (data.message || 'Credenciales incorrectas'));
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
                 }
             } catch (error) {
-                console.error("Error de conexión:", error);
-                alert("No se pudo conectar con el servidor.");
+                console.error("Error:", error);
+                alert("❌ No se pudo conectar con el servidor.");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         });
     </script>
