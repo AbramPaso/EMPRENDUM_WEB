@@ -557,6 +557,7 @@ document
       padre_telefono: document.getElementById("padre_telefono").value,
       madre_nombre: document.getElementById("madre_nombre").value,
       madre_telefono: document.getElementById("madre_telefono").value,
+      rol_id: document.getElementById('gt_rol').value,
       direccion_origen: document.getElementById("reg_direccion").value,
       conyuge_nombre: document.getElementById("conyuge_nombre").value,
       padecimiento: document.getElementById("padecimiento").value,
@@ -721,6 +722,7 @@ async function abrirModalCompleto(id) {
         const res = await fetch(`${API_BASE}/users/gestion/detalle/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
         const u = await res.json();
 
+        document.getElementById('gt_rol').value = u.rol_id || 3;
         // Resetear al Paso 1
         pasoActual = 1;
         mostrarPaso(1);
@@ -861,7 +863,8 @@ if (formTotal) {
             union_id: document.getElementById('gt_union').value,
             campo_id: document.getElementById('gt_campo').value,
             zona_id: document.getElementById('gt_zona').value,
-            nueva_password: document.getElementById('gt_password').value
+            nueva_password: document.getElementById('gt_password').value,
+            rol_id: document.getElementById('gt_rol').value,
         };
 
         try {
@@ -952,4 +955,37 @@ if (formBasico) {
             document.getElementById('modalGestion').style.display = 'none';
         };
     }
+}
+
+// --- CARGAR TABLA GLOBAL (SOLO DIRECTOR) ---
+async function cargarTablaGlobalDirector() {
+    try {
+        const res = await fetch(`${API_BASE}/users/gestion/todos`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const usuarios = await res.json();
+        
+        const tbody = document.getElementById('tabla-director-body');
+        if(!tbody) return; // Seguridad por si la tabla no está visible
+        tbody.innerHTML = '';
+
+        usuarios.forEach(u => {
+            // Lógica de Iconos según rango
+            let iconoRol = '<i class="fas fa-user" style="color:#aaa" title="Colportor"></i>'; 
+            if(u.rol_id === 2) iconoRol = '<i class="fas fa-star" style="color:#f0ad4e" title="Coach"></i>';
+            if(u.rol_id === 1) iconoRol = '<i class="fas fa-crown" style="color:#d9534f" title="Director"></i>';
+
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = "1px solid #eee";
+            tr.innerHTML = `
+                <td style="padding: 10px;">${iconoRol} <strong>${u.nombre_completo}</strong></td>
+                <td style="padding: 10px;">${u.zona_nombre || '<span style="color:#ccc">Sin Zona</span>'}</td>
+                <td style="padding: 10px; font-weight:bold; color: green;">$${u.total_dinero}</td>
+                <td style="padding: 10px; text-align: center;">
+                    <button onclick="abrirModalCompleto(${u.id})" style="cursor:pointer; background:none; border:none; color:#d9534f; font-size: 1.1rem;">
+                        <i class="fas fa-cogs"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (e) { console.error("Error tabla global:", e); }
 }
