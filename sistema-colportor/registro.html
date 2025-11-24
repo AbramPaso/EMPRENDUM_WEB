@@ -3,33 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - EMPRENDUM</title>
+    <title>Registro - EMPRENDUM PRO</title>
     <link rel="icon" type="image/png" href="../image/Logo_individual.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="auth-body">
 
-    <div class="auth-container">
+    <div class="auth-container wide">
         <div class="form-card">
             
             <div class="auth-header">
-                <img src="../image/Logo_individual.png" alt="Logo" class="auth-logo">
-                <h2 class="form-title">Registro de Nuevo Ingreso</h2>
-                <p style="color: #666;">Únete al equipo de colportores</p>
+                <h2 class="form-title">Registro de Colportor</h2>
+                <p class="auth-subtitle">Completa tu ficha técnica para ingresar al sistema</p>
             </div>
 
             <form id="registroForm">
                 
                 <div class="form-grid">
+                    <div class="full-width">
+                        <h4 style="color: var(--accent-yellow); margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            1. Datos Personales
+                        </h4>
+                    </div>
+
                     <div class="form-group full-width">
                         <label><i class="fas fa-user"></i> Nombre y Apellido Completo</label>
-                        <input type="text" name="nombre" placeholder="Ej: Juan Pérez" required>
+                        <input type="text" name="nombre" placeholder="Ej: Alejandro Magno" required>
                     </div>
 
                     <div class="form-group">
                         <label><i class="fas fa-id-card"></i> Cédula</label>
-                        <input type="text" name="cedula" placeholder="Ej: 12345678" required>
+                        <input type="text" name="cedula" placeholder="Ej: 20333444" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Fecha de Nacimiento</label>
+                        <input type="date" name="fecha_nacimiento" required style="cursor: pointer;">
                     </div>
 
                     <div class="form-group">
@@ -46,12 +56,8 @@
                             <option value="Soltero">Soltero(a)</option>
                             <option value="Casado">Casado(a)</option>
                             <option value="Divorciado">Divorciado(a)</option>
+                            <option value="Viudo">Viudo(a)</option>
                         </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label><i class="fas fa-calendar-alt"></i> Fecha de Nacimiento</label>
-                        <input type="date" name="fecha_nacimiento" required>
                     </div>
 
                     <div class="form-group">
@@ -60,18 +66,24 @@
                     </div>
                     
                     <div class="form-group">
-                        <label><i class="fas fa-phone"></i> Teléfono Personal</label>
-                        <input type="tel" name="telefono" placeholder="0414-1234567" required>
+                        <label><i class="fas fa-phone"></i> Teléfono / WhatsApp</label>
+                        <input type="tel" name="telefono" placeholder="0414-0000000" required>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group full-width">
                         <label><i class="fas fa-graduation-cap"></i> Carrera / Profesión</label>
-                        <input type="text" name="carrera" placeholder="Ej: Teología">
+                        <input type="text" name="carrera" placeholder="¿Qué Carrera estudias?" required>
                     </div>
 
-                    <div class="form-group">
-                        <label><i class="fas fa-map-marker-alt"></i> Lugar de Procedencia</label>
-                        <input type="text" name="lugar_procedencia" placeholder="Ciudad de origen">
+                    <div class="full-width">
+                        <h4 style="color: var(--accent-yellow); margin: 15px 0; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            2. Origen y Procedencia
+                        </h4>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label><i class="fas fa-map-marker-alt"></i> Lugar de Procedencia (Ciudad/Estado)</label>
+                        <input type="text" name="lugar_procedencia" placeholder="Ej: Yaritagua, Yaracuy">
                     </div>
 
                     <div class="form-group">
@@ -89,19 +101,29 @@
                             <option value="">Seleccione...</option>
                             <option value="1">MVY (Misión Yaracuy)</option>
                             <option value="2">AVCN (Asoc. Centro Norte)</option>
+                            <option value="3">AVNOR (Asoc. Nororiental)</option>
+                            <option value="4">AVSO (Asoc. Sur Oriental)</option>
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label><i class="fas fa-key"></i> Crear Contraseña</label>
-                        <input type="password" name="password" placeholder="********" required>
+                    <div class="full-width">
+                        <h4 style="color: var(--accent-yellow); margin: 15px 0; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            3. Seguridad
+                        </h4>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label><i class="fas fa-key"></i> Contraseña de Acceso</label>
+                        <input type="password" name="password" placeholder="Recuerda tu contraseña" required>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit" style="margin-top: 20px;">Completar Registro</button>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-check-circle"></i> Completar Registro
+                </button>
                 
-                <div style="text-align: center; margin-top: 20px; font-size: 0.9rem;">
-                    <p>¿Ya tienes cuenta? <a href="login.html" style="color: #005a87; font-weight: bold; text-decoration: none;">Inicia sesión aquí</a></p>
+                <div class="auth-footer">
+                    <p>¿Ya eres parte del equipo? <a href="login.html" class="auth-link">Inicia sesión</a></p>
                 </div>
             </form>
         </div>
@@ -114,33 +136,38 @@
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
 
-            // Mapeo de nombre para el backend
-            if(data.nombre && !data.nombre_completo) {
-                data.nombre_completo = data.nombre;
-            }
+            if(data.nombre && !data.nombre_completo) data.nombre_completo = data.nombre;
+
+            // Feedback visual al usuario
+            const btn = document.querySelector('.btn-submit');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
+            btn.disabled = true;
 
             try {
                 const response = await fetch('http://localhost:3000/api/auth/register', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
 
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert('¡Registro exitoso! Ahora serás redirigido para iniciar sesión.');
+                    alert('✅ ¡Registro exitoso! Bienvenido al equipo.');
                     window.location.href = 'login.html';
                 } else {
-                    alert('Error: ' + (result.message || 'Ocurrió un problema al registrarte.'));
+                    alert('⚠️ Error: ' + (result.message || 'Verifica tus datos.'));
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Completar Registro';
+                    btn.disabled = false;
                 }
             } catch (error) {
-                console.error('Error de conexión:', error);
-                alert('No se pudo conectar con el servidor.');
+                console.error('Error:', error);
+                alert('❌ Error de conexión.');
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Completar Registro';
+                btn.disabled = false;
             }
         });
     </script>
 </body>
 </html>
+                

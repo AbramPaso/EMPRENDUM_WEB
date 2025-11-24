@@ -244,20 +244,38 @@
                 </div>
             </div>
 
-            <div id="editProfileMode" style="display: none;">
+<div id="editProfileMode" style="display: none;">
+                
                 <div class="form-container">
-                    <h3>Editar Biografía</h3>
+                    <h3 style="color: var(--primary-blue);"><i class="fas fa-camera"></i> Foto y Biografía</h3>
                     <form id="formBio">
-                        <div class="form-group full-width"><label>Foto</label><input type="file" id="foto_perfil_input"></div>
-                        <div class="form-group full-width"><label>Pensamiento</label><textarea id="pensamiento_input" rows="3"></textarea></div>
-                        <button type="submit" class="btn-primary">Actualizar</button>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Foto de Perfil</label>
+                                <input type="file" id="foto_perfil_input">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Pensamiento / Frase</label>
+                                <textarea id="pensamiento_input" rows="2" placeholder="Escribe algo que te inspire..."></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">Actualizar Bio</button>
                     </form>
                 </div>
+
                 <div class="form-container">
-                    <h3>Editar Datos de Registro</h3>
+                    <h3 style="color: var(--primary-dark);"><i class="fas fa-id-card"></i> Ficha Personal Completa</h3>
+                    <p style="color: #e11d48; font-size: 0.8rem; margin-bottom: 20px; background: #fff1f2; padding: 10px; border-radius: 6px; border: 1px dashed #f43f5e;">
+                        <i class="fas fa-exclamation-triangle"></i> Estás modificando tu ficha de registro original.
+                    </p>
+                    
                     <form id="formPersonales">
+                        
+                        <h4 style="color: var(--text-muted); border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 15px;">
+                            Datos Básicos
+                        </h4>
                         <div class="form-grid">
-                            <div class="form-group"><label>Nombre</label><input type="text" id="reg_nombre"></div>
+                            <div class="form-group"><label>Nombre Completo</label><input type="text" id="reg_nombre"></div>
                             <div class="form-group"><label>Cédula</label><input type="text" id="reg_cedula"></div>
                             <div class="form-group"><label>Teléfono</label><input type="text" id="reg_telefono"></div>
                             <div class="form-group"><label>Carrera</label><input type="text" id="reg_carrera"></div>
@@ -266,10 +284,59 @@
                                 <select id="reg_civil">
                                     <option value="Soltero">Soltero</option>
                                     <option value="Casado">Casado</option>
+                                    <option value="Divorciado">Divorciado</option>
+                                    <option value="Viudo">Viudo</option>
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" class="btn-primary" style="margin-top: 20px;">Guardar Cambios</button>
+
+                        <h4 style="color: var(--text-muted); border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin: 20px 0 15px 0;">
+                            Origen y Procedencia
+                        </h4>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Unión Origen</label>
+                                <select id="reg_union">
+                                    <option value="1">UVOC (Occidental)</option>
+                                    <option value="2">UVO (Oriental)</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Campo Origen</label>
+                                <select id="reg_campo">
+                                    <option value="1">MVY</option>
+                                    <option value="2">AVCN</option>
+                                    <option value="3">AVNOR</option>
+                                    <option value="4">AVSO</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width"><label>Ciudad de Origen</label><input type="text" id="reg_lugar_procedencia"></div>
+                            <div class="form-group full-width"><label>Dirección Exacta (Casa)</label><input type="text" id="reg_direccion"></div>
+                        </div>
+
+                        <h4 style="color: var(--text-muted); border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin: 20px 0 15px 0;">
+                            Familiares y Contacto
+                        </h4>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Nombre Padre</label><input type="text" id="padre_nombre"></div>
+                            <div class="form-group"><label>Tlf Padre</label><input type="text" id="padre_telefono"></div>
+                            <div class="form-group"><label>Nombre Madre</label><input type="text" id="madre_nombre"></div>
+                            <div class="form-group"><label>Tlf Madre</label><input type="text" id="madre_telefono"></div>
+                            <div class="form-group full-width"><label>Nombre Cónyuge (Si aplica)</label><input type="text" id="conyuge_nombre"></div>
+                        </div>
+
+                        <h4 style="color: var(--text-muted); border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin: 20px 0 15px 0;">
+                            Salud
+                        </h4>
+                        <div class="form-group full-width">
+                            <label>Padecimientos / Alergias</label>
+                            <input type="text" id="padecimiento">
+                        </div>
+
+                        <div style="text-align: right; margin-top: 20px;">
+                            <button type="button" class="btn-primary" style="background: #94a3b8; margin-right: 10px;" onclick="toggleEditProfile()">Cancelar</button>
+                            <button type="submit" class="btn-primary" style="background-color: var(--success);">
+                                <i class="fas fa-save"></i> Guardar Cambios
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
