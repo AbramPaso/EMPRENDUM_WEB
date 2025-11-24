@@ -39,7 +39,6 @@ async function cargarEstadisticas() {
       const data = await res.json();
       const rol = data.rol_detectado;
       
-      // Guardamos el rol en la variable global para usarlo en otras funciones
       if (typeof usuarioActual === 'undefined') usuarioActual = {}; 
       usuarioActual.rol = rol; 
 
@@ -66,16 +65,18 @@ async function cargarEstadisticas() {
       // CASO 1: DIRECTOR (Vista Completa)
       if (rol === 1) {
         document.getElementById("vista-director").style.display = "block";
-        cargarGraficasDirector();      // Gráficas Globales
-        cargarTablaCoaches();          // Tabla de Liderazgo
-        cargarTablaCoach(true);        // Tabla de Colportores (true = usar tabla director)
+        cargarGraficasDirector();      
+        cargarTablaCoaches();          
+        
+        // AQUÍ ES EL LUGAR CORRECTO: Solo si es Director cargamos su tabla global
+        cargarTablaGlobalDirector();   // <--- ESTA ES LA LÍNEA CLAVE QUE FALTABA
       }
 
       // CASO 2: COACH (Vista Equipo)
       else if (rol === 2) {
         document.getElementById("vista-coach").style.display = "block";
-        cargarTablaCoach(false);       // Tabla de Colportores (false = usar tabla coach)
-        document.getElementById("vista-colportor").style.display = "flex"; // Resumen personal opcional
+        cargarTablaCoach(false);       
+        document.getElementById("vista-colportor").style.display = "flex"; 
         llenarTarjetas(data);
       }
 
@@ -883,9 +884,8 @@ if (formTotal) {
                 document.getElementById('modalGestionTotal').style.display = 'none';
                 
                 // Recargar las tablas para ver los cambios
-                if(typeof cargarTablaCoach === 'function') cargarTablaCoach();
-                if(typeof cargarTablaGlobalDirector === 'function') cargarTablaGlobalDirector();
-            } else {
+                await actualizarTablas();
+              } else {
                 alert("❌ Error al guardar.");
             }
         } catch(e) { 
@@ -932,9 +932,8 @@ if (formBasico) {
                 alert("Datos básicos actualizados");
                 document.getElementById('modalGestion').style.display = 'none';
                 // Refrescamos todo
-                if(typeof cargarTablaCoaches === 'function') cargarTablaCoaches();
-                if(typeof cargarTablaGlobalDirector === 'function') cargarTablaGlobalDirector();
-            } else {
+               await actualizarTablas();
+              } else {
                 alert("Error al actualizar");
             }
         } catch (error) { console.error(error); alert("Error de conexión"); }
@@ -1037,4 +1036,28 @@ async function cargarTablaCoaches() {
             `;
         });
     } catch(e) { console.error("Error tabla coaches:", e); }
+}
+
+// --- FUNCIÓN MAESTRA PARA REFRESCAR TODO ---
+async function actualizarTablas() {
+    console.log("🔄 Refrescando datos del sistema...");
+    
+    try {
+        // Si soy DIRECTOR, recargo todo mi panel
+        if (usuarioActual.rol === 1) {
+            await cargarGraficasDirector();      // 1. Gráficas y Totales ($)
+            await cargarTablaCoaches();          // 2. Tabla Amarilla (Liderazgo)
+            await cargarTablaGlobalDirector();   // 3. Tabla Azul (General)
+        } 
+        // Si soy COACH, recargo mi tabla
+        else if (usuarioActual.rol === 2) {
+            await cargarTablaCoach(false);       // Tabla de mi equipo
+            // Opcional: Refrescar tarjetas personales si las usas
+            const res = await fetch(`${API_BASE}/reports/dashboard-stats`, { headers: { Authorization: `Bearer ${token}` } });
+            if(res.ok) llenarTarjetas(await res.json());
+        }
+        console.log("✅ Datos refrescados correctamente.");
+    } catch (e) {
+        console.error("Error al refrescar tablas:", e);
+    }
 }
