@@ -28,9 +28,9 @@ function mostrarSeccion(idSeccion) {
 
 // 1. CARGAR STATS
 
+// --- FUNCIÓN PRINCIPAL DE CARGA ---
 async function cargarEstadisticas() {
   try {
-    // 1. Obtenemos stats básicas para saber el ROL
     const res = await fetch(`${API_BASE}/reports/dashboard-stats`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -38,7 +38,10 @@ async function cargarEstadisticas() {
     if (res.ok) {
       const data = await res.json();
       const rol = data.rol_detectado;
-      usuarioActual.rol = rol; // Guardamos el rol globalmente
+      
+      // Guardamos el rol en la variable global para usarlo en otras funciones
+      if (typeof usuarioActual === 'undefined') usuarioActual = {}; 
+      usuarioActual.rol = rol; 
 
       // --- ACTUALIZAR BADGE ---
       const badge = document.getElementById("rol-badge");
@@ -53,39 +56,37 @@ async function cargarEstadisticas() {
         badge.style.background = "#0275d8";
       }
 
-      // --- OCULTAR TODO PRIMERO ---
+      // --- OCULTAR TODO ---
       document.getElementById("vista-colportor").style.display = "none";
       document.getElementById("vista-director").style.display = "none";
       document.getElementById("vista-coach").style.display = "none";
 
       // --- MOSTRAR SEGÚN ROL ---
 
-      // CASO 1: DIRECTOR (Gráficas)
+      // CASO 1: DIRECTOR (Vista Completa)
       if (rol === 1) {
         document.getElementById("vista-director").style.display = "block";
-        cargarGraficasDirector();
-        // El director también puede ver la tabla del coach si quiere, pero abajo
-        document.getElementById("vista-coach").style.display = "block";
-        cargarTablaCoach();
+        cargarGraficasDirector();      // Gráficas Globales
+        cargarTablaCoaches();          // Tabla de Liderazgo
+        cargarTablaCoach(true);        // Tabla de Colportores (true = usar tabla director)
       }
 
-      // CASO 2: COACH (Tabla)
+      // CASO 2: COACH (Vista Equipo)
       else if (rol === 2) {
         document.getElementById("vista-coach").style.display = "block";
-        cargarTablaCoach();
-        // Opcional: mostrar tarjetas resumen también
-        document.getElementById("vista-colportor").style.display = "flex";
+        cargarTablaCoach(false);       // Tabla de Colportores (false = usar tabla coach)
+        document.getElementById("vista-colportor").style.display = "flex"; // Resumen personal opcional
         llenarTarjetas(data);
       }
 
-      // CASO 3: COLPORTOR (Tarjetas)
+      // CASO 3: COLPORTOR (Vista Simple)
       else {
         document.getElementById("vista-colportor").style.display = "flex";
         llenarTarjetas(data);
       }
     }
   } catch (e) {
-    console.error(e);
+    console.error("Error cargando estadisticas:", e);
   }
 }
 
@@ -98,115 +99,116 @@ function llenarTarjetas(data) {
 }
 
 // --- LÓGICA DE GRÁFICAS (Solo Director) ---
+// --- GRÁFICAS DEL DIRECTOR ---
 async function cargarGraficasDirector() {
-  const res = await fetch(`${API_BASE}/reports/director-charts`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  const data = await res.json();
+  try {
+    const res = await fetch(`${API_BASE}/reports/director-charts`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
 
-  // Gráfica de Dinero
-  new Chart(document.getElementById("graficaDinero"), {
-    type: "bar", // Barras
-    data: {
-      labels: data.dinero.map((d) => d.zona),
-      datasets: [
-        {
-          label: "Dólares Recaudados",
-          data: data.dinero.map((d) => d.total),
-          backgroundColor: [
-            "#005a87",
-            "#28a745",
-            "#ffc107",
-            "#dc3545",
-            "#17a2b8",
-          ],
-        },
-      ],
-    },
-  });
+    // 1. LLENAR TARJETAS GLOBALES (Si existen en el HTML)
+    if(data.global) {
+        if(document.getElementById('dir-total-dinero')) 
+            document.getElementById('dir-total-dinero').innerText = '$' + parseFloat(data.global.gran_total_dinero).toFixed(2);
+        if(document.getElementById('dir-total-libros'))
+            document.getElementById('dir-total-libros').innerText = data.global.gran_total_libros;
+        if(document.getElementById('dir-total-horas'))
+            document.getElementById('dir-total-horas').innerText = data.global.gran_total_horas;
+    }
 
-  // Gráfica de Libros
-  new Chart(document.getElementById("graficaLibros"), {
-    type: "doughnut", // Torta / Donut
-    data: {
-      labels: data.libros.map((d) => d.zona),
-      datasets: [
-        {
-          label: "Colecciones",
-          data: data.libros.map((d) => d.total),
-          backgroundColor: [
-            "#005a87",
-            "#28a745",
-            "#ffc107",
-            "#dc3545",
-            "#17a2b8",
-          ],
-        },
-      ],
-    },
-  });
+    // 2. GRÁFICA DE ZONAS (Barras)
+    if(window.chartZonas) window.chartZonas.destroy(); // Destruir si existe para no sobreescribir
+    window.chartZonas = new Chart(document.getElementById("graficaZonas"), {
+      type: "bar",
+      data: {
+        labels: data.zonas.map((d) => d.label),
+        datasets: [{
+            label: "Recaudado ($)",
+            data: data.zonas.map((d) => d.total),
+            backgroundColor: "#005a87",
+        }],
+      },
+    });
+
+    // 3. GRÁFICA DE UNIONES (Torta) - Reemplaza a la de libros si quieres ver Uniones
+    // O usa "graficaUniones" si agregaste ese canvas en el HTML nuevo
+    const canvasUniones = document.getElementById("graficaUniones") || document.getElementById("graficaLibros");
+    
+    if(window.chartUniones) window.chartUniones.destroy();
+    window.chartUniones = new Chart(canvasUniones, {
+      type: "pie", // Torta
+      data: {
+        labels: data.uniones.map((d) => d.label),
+        datasets: [{
+            label: "Ventas por Unión",
+            data: data.uniones.map((d) => d.total),
+            backgroundColor: ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
+        }],
+      },
+    });
+
+  } catch (e) { console.error("Error gráficas:", e); }
 }
 
 // --- LÓGICA DE TABLA (Coach y Director) ---
-async function cargarTablaCoach() {
+// --- TABLA DE COLPORTORES (Multiuso) ---
+async function cargarTablaCoach(esDirector = false) {
   try {
+    // Si es Director, pedimos TODOS. Si es Coach, pedimos SU equipo.
+    // Nota: Tu backend '/reports/coach-team' ya maneja esto según el rol del token.
     const res = await fetch(`${API_BASE}/reports/coach-team`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const usuarios = await res.json();
 
-    const tbody = document.getElementById("tabla-coach-body");
+    // ELEGIR DÓNDE RENDERIZAR
+    // Si es director, busca el ID de la tabla global. Si no, la tabla normal.
+    const idTabla = esDirector ? "tabla-director-colportores-body" : "tabla-coach-body";
+    const tbody = document.getElementById(idTabla);
+    
+    if (!tbody) return; // Seguridad
     tbody.innerHTML = "";
-
-    // VERIFICAMOS SI SOY DIRECTOR (Rol 1)
-    // Asumimos que 'usuarioActual' se llenó en cargarEstadisticas()
-    const soyDirector = (usuarioActual && usuarioActual.rol === 1);
 
     usuarios.forEach((u) => {
       const tr = document.createElement("tr");
       tr.style.borderBottom = "1px solid #eee";
 
-      // PREPARAMOS LOS BOTONES
       let botones = ``;
-
-      // 1. BOTÓN OJO (👁️): Visible para TODOS (Abre modal básico)
+      
+      // Botón OJO (Todos)
       botones += `
-        <button onclick="abrirModalBasico(${u.id})" style="cursor:pointer; background:none; border:none; color:#005a87; font-size: 1.1rem; margin-right:8px;" title="Ver y Editar Datos Básicos">
+        <button onclick="abrirModalBasico(${u.id})" style="cursor:pointer; background:none; border:none; color:#005a87; font-size: 1.1rem; margin-right:8px;">
             <i class="fas fa-eye"></i>
         </button>
       `;
 
-      // 2. BOTÓN ENGRANAJE (⚙️): SOLO para DIRECTOR (Abre modal avanzado)
-      if (soyDirector) {
+      // Botón TUERCA (Solo Director)
+      if (usuarioActual.rol === 1) {
         botones += `
-        <button onclick="abrirModalCompleto(${u.id})" style="cursor:pointer; background:none; border:none; color:#d9534f; font-size: 1.1rem; margin-right:8px;" title="Editar Todo">
+        <button onclick="abrirModalCompleto(${u.id})" style="cursor:pointer; background:none; border:none; color:#d9534f; font-size: 1.1rem; margin-right:8px;">
             <i class="fas fa-cogs"></i>
         </button>
-    `;
+        `;
       }
 
-      // 3. BOTÓN PDF: Visible para TODOS
+      // Botón PDF (Todos)
       botones += `
-        <button onclick="alert('Descargar PDF de ${u.nombre_completo}')" style="cursor:pointer; background:none; border:none; color:#d9534f;">
+        <button onclick="alert('Descargar PDF')" style="cursor:pointer; background:none; border:none; color:#d9534f;">
             <i class="fas fa-file-pdf"></i>
         </button>
       `;
 
-      // RENDERIZAR FILA
       tr.innerHTML = `
             <td style="padding: 10px; font-weight:bold;">${u.nombre_completo}</td>
             <td style="padding: 10px;">${u.total_colecciones} col.</td>
             <td style="padding: 10px; color: green;">$${u.total_dinero}</td>
-            <td style="padding: 10px;">
-                ${botones}
-            </td>
+            <td style="padding: 10px;">${botones}</td>
         `;
       tbody.appendChild(tr);
     });
 
-  } catch (error) {
-    console.error("Error cargando tabla:", error);
-  }
+  } catch (error) { console.error("Error tabla colportores:", error); }
 }
 
 //NUEVA FUNCIÓN
@@ -753,6 +755,7 @@ async function abrirModalCompleto(id) {
         document.getElementById('gt_salud').value = u.padecimiento_medico || '';
 
         // --- PASO 3: CAMPAÑA Y SEGURIDAD ---
+        document.getElementById('gt_rol').value = u.rol_id || 3;
         document.getElementById('gt_password').value = '';
 
         // Configurar los Selects de Campaña
@@ -865,6 +868,7 @@ if (formTotal) {
             zona_id: document.getElementById('gt_zona').value,
             nueva_password: document.getElementById('gt_password').value,
             rol_id: document.getElementById('gt_rol').value,
+            
         };
 
         try {
@@ -988,4 +992,32 @@ async function cargarTablaGlobalDirector() {
             tbody.appendChild(tr);
         });
     } catch (e) { console.error("Error tabla global:", e); }
+}
+
+
+// --- TABLA DE COACHES ---
+async function cargarTablaCoaches() {
+    try {
+        const res = await fetch(`${API_BASE}/users/lista-coaches`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const coaches = await res.json();
+        
+        const tbody = document.getElementById('tabla-coaches-body');
+        if(!tbody) return;
+        tbody.innerHTML = '';
+
+        coaches.forEach(c => {
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px;"><strong>${c.nombre_completo}</strong></td>
+                    <td style="padding: 10px;">${c.zona_nombre || 'Sin Asignar'}</td>
+                    <td style="padding: 10px;">${c.colportores_a_cargo} a cargo</td>
+                    <td style="padding: 10px;">
+                        <button onclick="abrirModalCompleto(${c.id})" style="cursor:pointer; background:none; border:none; color:#e67e22; font-size:1.1rem;">
+                            <i class="fas fa-user-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch(e) { console.error("Error tabla coaches:", e); }
 }
