@@ -102,50 +102,48 @@ function llenarTarjetas(data) {
 // --- GRÁFICAS DEL DIRECTOR ---
 async function cargarGraficasDirector() {
   try {
-    const res = await fetch(`${API_BASE}/reports/director-charts`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await fetch(`${API_BASE}/reports/director-charts`, { headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
 
-    // 1. LLENAR TARJETAS GLOBALES (Si existen en el HTML)
+    // 1. TARJETAS GLOBALES
     if(data.global) {
-        if(document.getElementById('dir-total-dinero')) 
-            document.getElementById('dir-total-dinero').innerText = '$' + parseFloat(data.global.gran_total_dinero).toFixed(2);
-        if(document.getElementById('dir-total-libros'))
-            document.getElementById('dir-total-libros').innerText = data.global.gran_total_libros;
-        if(document.getElementById('dir-total-horas'))
-            document.getElementById('dir-total-horas').innerText = data.global.gran_total_horas;
+        if(document.getElementById('dir-total-dinero')) document.getElementById('dir-total-dinero').innerText = '$' + parseFloat(data.global.gran_total_dinero).toFixed(2);
+        if(document.getElementById('dir-total-libros')) document.getElementById('dir-total-libros').innerText = data.global.gran_total_libros;
+        if(document.getElementById('dir-total-horas')) document.getElementById('dir-total-horas').innerText = data.global.gran_total_horas;
     }
 
-    // 2. GRÁFICA DE ZONAS (Barras)
-    if(window.chartZonas) window.chartZonas.destroy(); // Destruir si existe para no sobreescribir
+    // 2. GRÁFICA ZONAS (Barra)
+    if(window.chartZonas) window.chartZonas.destroy();
     window.chartZonas = new Chart(document.getElementById("graficaZonas"), {
       type: "bar",
       data: {
         labels: data.zonas.map((d) => d.label),
-        datasets: [{
-            label: "Recaudado ($)",
-            data: data.zonas.map((d) => d.total),
-            backgroundColor: "#005a87",
-        }],
+        datasets: [{ label: "Recaudado ($)", data: data.zonas.map((d) => d.total), backgroundColor: "#005a87" }],
       },
     });
 
-    // 3. GRÁFICA DE UNIONES (Torta) - Reemplaza a la de libros si quieres ver Uniones
-    // O usa "graficaUniones" si agregaste ese canvas en el HTML nuevo
-    const canvasUniones = document.getElementById("graficaUniones") || document.getElementById("graficaLibros");
-    
+    // 3. GRÁFICA UNIONES (Barra - CAMBIO SOLICITADO)
     if(window.chartUniones) window.chartUniones.destroy();
-    window.chartUniones = new Chart(canvasUniones, {
-      type: "pie", // Torta
+    window.chartUniones = new Chart(document.getElementById("graficaUniones"), {
+      type: "bar", // Ahora es Barra
       data: {
         labels: data.uniones.map((d) => d.label),
-        datasets: [{
-            label: "Ventas por Unión",
-            data: data.uniones.map((d) => d.total),
-            backgroundColor: ["#d9534f", "#5bc0de", "#5cb85c", "#f0ad4e"],
-        }],
+        datasets: [{ label: "Ventas por Unión ($)", data: data.uniones.map((d) => d.total), backgroundColor: ["#d9534f", "#f0ad4e"] }],
       },
+    });
+
+    // 4. RESUMEN DETALLADO (TEXTO) - NUEVO
+    const listaZonas = document.getElementById('lista-resumen-zonas');
+    const listaUniones = document.getElementById('lista-resumen-uniones');
+    listaZonas.innerHTML = '';
+    listaUniones.innerHTML = '';
+
+    data.zonas.forEach(z => {
+        listaZonas.innerHTML += `<li style="padding: 5px 0; border-bottom: 1px dashed #eee; display:flex; justify-content:space-between;"><span>${z.label}</span> <span style="font-weight:bold; color:#005a87;">$${parseFloat(z.total).toFixed(2)}</span></li>`;
+    });
+
+    data.uniones.forEach(u => {
+        listaUniones.innerHTML += `<li style="padding: 5px 0; border-bottom: 1px dashed #eee; display:flex; justify-content:space-between;"><span>${u.label}</span> <span style="font-weight:bold; color:#d9534f;">$${parseFloat(u.total).toFixed(2)}</span></li>`;
     });
 
   } catch (e) { console.error("Error gráficas:", e); }
@@ -901,14 +899,11 @@ if (formTotal) {
     // Pero si el botón de cerrar (X) deja de servir, avísame.
 }
 
-// --- EVENTO GUARDAR (MODAL BÁSICO / OJO) ---
-// Coloca esto AL FINAL de tu archivo script-dashboard.js
 
+// --- EVENTO GUARDAR (MODAL BÁSICO / OJO) ---
 const formBasico = document.getElementById('formGestionColportor');
 
 if (formBasico) {
-    // TRUCO ANTI-DUPLICADOS:
-    // Clonamos el formulario para borrar cualquier "evento fantasma" anterior.
     const newForm = formBasico.cloneNode(true);
     formBasico.parentNode.replaceChild(newForm, formBasico);
 
@@ -916,7 +911,6 @@ if (formBasico) {
         e.preventDefault();
         
         const id = document.getElementById('gest_id_usuario').value;
-        
         const datos = {
             nombre_completo: document.getElementById('gest_nombre').value,
             telefono: document.getElementById('gest_telefono').value,
@@ -924,68 +918,87 @@ if (formBasico) {
             nueva_password: document.getElementById('gest_password').value
         };
 
-        if(!confirm("¿Estás seguro de guardar los cambios básicos?")) return;
+        if(!confirm("¿Guardar cambios básicos?")) return;
 
         try {
-            const res = await fetch(`${API_BASE}/users/gestion/update/${id}`, {
+            // USAMOS LA NUEVA RUTA QUE SOLO TOCA LO BASICO
+            const res = await fetch(`${API_BASE}/users/gestion/update-basic/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(datos)
             });
 
             if(res.ok) {
-                alert("Datos actualizados correctamente");
-                
-                // Cerrar modal manualmente porque cloneNode rompe el onclick del HTML a veces
+                alert("Datos básicos actualizados");
                 document.getElementById('modalGestion').style.display = 'none';
-                
-                // Recargar tablas si existen las funciones
-                if(typeof cargarTablaCoach === 'function') cargarTablaCoach();
+                // Refrescamos todo
+                if(typeof cargarTablaCoaches === 'function') cargarTablaCoaches();
                 if(typeof cargarTablaGlobalDirector === 'function') cargarTablaGlobalDirector();
             } else {
                 alert("Error al actualizar");
             }
-        } catch (error) {
-            console.error(error);
-            alert("Error de conexión");
-        }
+        } catch (error) { console.error(error); alert("Error de conexión"); }
     });
     
-    // IMPORTANTE: Como clonamos el form, hay que reconectar el botón Cancelar
-    // Busca el botón que dice "Cancelar" dentro del nuevo form y dale vida de nuevo
+    // Reconectar botón cancelar
     const btnCancelar = newForm.querySelector('button[type="button"]');
-    if(btnCancelar) {
-        btnCancelar.onclick = function() {
-            document.getElementById('modalGestion').style.display = 'none';
-        };
-    }
+    if(btnCancelar) btnCancelar.onclick = function() { document.getElementById('modalGestion').style.display = 'none'; };
 }
 
 // --- CARGAR TABLA GLOBAL (SOLO DIRECTOR) ---
 async function cargarTablaGlobalDirector() {
     try {
+        // Esta ruta ya trae a TODOS (Coaches y Colportores)
         const res = await fetch(`${API_BASE}/users/gestion/todos`, { headers: { 'Authorization': `Bearer ${token}` } });
         const usuarios = await res.json();
         
-        const tbody = document.getElementById('tabla-director-body');
-        if(!tbody) return; // Seguridad por si la tabla no está visible
+        const tbody = document.getElementById('tabla-director-colportores-body');
+        if(!tbody) return; 
         tbody.innerHTML = '';
 
         usuarios.forEach(u => {
-            // Lógica de Iconos según rango
-            let iconoRol = '<i class="fas fa-user" style="color:#aaa" title="Colportor"></i>'; 
-            if(u.rol_id === 2) iconoRol = '<i class="fas fa-star" style="color:#f0ad4e" title="Coach"></i>';
-            if(u.rol_id === 1) iconoRol = '<i class="fas fa-crown" style="color:#d9534f" title="Director"></i>';
+            // LÓGICA DE ICONOS (Aquí es donde diferenciamos)
+            let iconoRol = '<i class="fas fa-user" style="color:#ccc; margin-right:5px;" title="Colportor"></i>'; 
+            
+            // Si es Coach (Rol 2), le ponemos la estrella
+            if (u.rol_id === 2) {
+                iconoRol = '<i class="fas fa-star" style="color:#f0ad4e; margin-right:5px;" title="Coach"></i>';
+            }
+            // Si es Director (Rol 1 - por si acaso aparece), corona
+            if (u.rol_id === 1) {
+                iconoRol = '<i class="fas fa-crown" style="color:#d9534f; margin-right:5px;" title="Director"></i>';
+            }
+
+            // Formato de Zona
+            const nombreZona = u.zona_nombre 
+                ? `<span style="color:#005a87; font-weight:500;">${u.zona_nombre}</span>` 
+                : '<span style="color:#ccc;">--</span>';
 
             const tr = document.createElement('tr');
             tr.style.borderBottom = "1px solid #eee";
+            
             tr.innerHTML = `
-                <td style="padding: 10px;">${iconoRol} <strong>${u.nombre_completo}</strong></td>
-                <td style="padding: 10px;">${u.zona_nombre || '<span style="color:#ccc">Sin Zona</span>'}</td>
-                <td style="padding: 10px; font-weight:bold; color: green;">$${u.total_dinero}</td>
+                <td style="padding: 10px;">
+                    ${iconoRol} <strong>${u.nombre_completo}</strong>
+                </td>
+                <td style="padding: 10px; font-weight:bold; text-align: center;">
+                    ${u.total_colecciones || 0}
+                </td>
+                <td style="padding: 10px; font-weight:bold; color: green;">
+                    $${u.total_dinero || '0.00'}
+                </td>
+                <td style="padding: 10px;">
+                    ${nombreZona}
+                </td>
                 <td style="padding: 10px; text-align: center;">
-                    <button onclick="abrirModalCompleto(${u.id})" style="cursor:pointer; background:none; border:none; color:#d9534f; font-size: 1.1rem;">
+                    <button onclick="abrirModalBasico(${u.id})" style="cursor:pointer; background:none; border:none; color:#005a87; font-size: 1.1rem; margin-right: 5px;" title="Ver Ficha">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button onclick="abrirModalCompleto(${u.id})" style="cursor:pointer; background:none; border:none; color:#d9534f; font-size: 1.1rem; margin-right: 5px;" title="Gestión Maestra">
                         <i class="fas fa-cogs"></i>
+                    </button>
+                    <button onclick="alert('Descargar PDF')" style="cursor:pointer; background:none; border:none; color:#e74c3c; font-size: 1.1rem;">
+                        <i class="fas fa-file-pdf"></i>
                     </button>
                 </td>
             `;
@@ -1008,10 +1021,14 @@ async function cargarTablaCoaches() {
         coaches.forEach(c => {
             tbody.innerHTML += `
                 <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 10px;"><strong>${c.nombre_completo}</strong></td>
-                    <td style="padding: 10px;">${c.zona_nombre || 'Sin Asignar'}</td>
-                    <td style="padding: 10px;">${c.colportores_a_cargo} a cargo</td>
                     <td style="padding: 10px;">
+                        <strong>${c.nombre_completo}</strong>
+                    </td>
+                    <td style="padding: 10px;">${c.zona_nombre || 'Sin Asignar'}</td>
+                    <td style="padding: 10px;">${c.equipo_cantidad} a cargo</td>
+                    <td style="padding: 10px; font-weight:bold; color: green;">$${c.total_zona_dinero}</td>
+                    <td style="padding: 10px; font-weight:bold;">${c.total_zona_colecciones}</td>
+                    <td style="padding: 10px; text-align: center;">
                         <button onclick="abrirModalCompleto(${c.id})" style="cursor:pointer; background:none; border:none; color:#e67e22; font-size:1.1rem;">
                             <i class="fas fa-user-edit"></i>
                         </button>
