@@ -87,23 +87,19 @@
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-church"></i> Unión de Origen</label>
-                        <select name="union_id">
-                            <option value="">Seleccione...</option>
-                            <option value="1">UVOC (Venezolana Occidental)</option>
-                            <option value="2">UVO (Venezolana Oriental)</option>
-                        </select>
+                    <label><i class="fas fa-church"></i> Unión de Origen</label>
+                        <select name="union_id" id="reg_union" onchange="filtrarCamposRegistro()">
+                           <option value="">Seleccione...</option>
+                          <option value="1">UVOC (Occidental)</option>
+                           <option value="2">UVO (Oriental)</option>
+                       </select>
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-map"></i> Campo de Origen</label>
-                        <select name="campo_id">
-                            <option value="">Seleccione...</option>
-                            <option value="1">MVY (Misión Yaracuy)</option>
-                            <option value="2">AVCN (Asoc. Centro Norte)</option>
-                            <option value="3">AVNOR (Asoc. Nororiental)</option>
-                            <option value="4">AVSO (Asoc. Sur Oriental)</option>
-                        </select>
+                       <label><i class="fas fa-map"></i> Campo de Origen</label>
+                         <select name="campo_id" id="reg_campo" disabled>
+                             <option value="">Seleccione unión primero</option>
+                         </select>
                     </div>
 
                     <div class="full-width">
@@ -130,6 +126,39 @@
     </div>
 
     <script>
+const datosOrigen = {
+            1: [ // UVOC
+                {id: 1, nombre: 'AVCO'}, {id: 2, nombre: 'AVCN'}, 
+                {id: 3, nombre: 'AVLLOC'}, {id: 4, nombre: 'AVOC'}, 
+                {id: 5, nombre: 'AVSOC'}, {id: 6, nombre: 'MVAE'}, 
+                {id: 7, nombre: 'MVAC'}, {id: 8, nombre: 'MVNOC'}, 
+                {id: 9, nombre: 'MVP'}, {id: 10, nombre: 'MVY'}
+            ],
+            2: [ // UVO
+                {id: 11, nombre: 'MVSUB'}, {id: 12, nombre: 'MVNOR'}, 
+                {id: 13, nombre: 'AVCOR'}, {id: 14, nombre: 'MIVELLACEN'}, 
+                {id: 15, nombre: 'AVOR'}, {id: 16, nombre: 'AVC'}, 
+                {id: 17, nombre: 'AVCS'}, {id: 18, nombre: 'AVSOR'}
+            ]
+        };
+
+        function filtrarCamposRegistro() {
+            const unionId = document.getElementById('reg_union').value;
+            const selectCampo = document.getElementById('reg_campo');
+            
+            selectCampo.innerHTML = '<option value="">Seleccione...</option>';
+            
+            if (datosOrigen[unionId]) {
+                selectCampo.disabled = false;
+                datosOrigen[unionId].forEach(c => {
+                    selectCampo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+                });
+            } else {
+                selectCampo.disabled = true;
+                selectCampo.innerHTML = '<option value="">Seleccione unión primero</option>';
+            }
+        }
+
         document.getElementById('registroForm').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             

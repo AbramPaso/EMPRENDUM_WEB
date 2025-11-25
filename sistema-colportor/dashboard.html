@@ -295,19 +295,17 @@
                         </h4>
                         <div class="form-grid">
                             <div class="form-group"><label>Unión Origen</label>
-                                <select id="reg_union">
-                                    <option value="1">UVOC (Occidental)</option>
-                                    <option value="2">UVO (Oriental)</option>
-                                </select>
-                            </div>
-                            <div class="form-group"><label>Campo Origen</label>
-                                <select id="reg_campo">
-                                    <option value="1">MVY</option>
-                                    <option value="2">AVCN</option>
-                                    <option value="3">AVNOR</option>
-                                    <option value="4">AVSO</option>
-                                </select>
-                            </div>
+    <select id="reg_union" onchange="filtrarProcedenciaPerfil()">
+        <option value="">Seleccione...</option>
+        <option value="1">UVOC (Occidental)</option>
+        <option value="2">UVO (Oriental)</option>
+    </select>
+</div>
+<div class="form-group"><label>Campo Origen</label>
+    <select id="reg_campo" disabled>
+        <option value="">Seleccione Campo...</option>
+    </select>
+</div>
                             <div class="form-group full-width"><label>Ciudad de Origen</label><input type="text" id="reg_lugar_procedencia"></div>
                             <div class="form-group full-width"><label>Dirección Exacta (Casa)</label><input type="text" id="reg_direccion"></div>
                         </div>

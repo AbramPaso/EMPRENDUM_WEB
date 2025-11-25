@@ -1,3 +1,19 @@
+const datosProcedencia = {
+    1: [ // UVOC
+        {id: 1, nombre: 'AVCO'}, {id: 2, nombre: 'AVCN'}, 
+        {id: 3, nombre: 'AVLLOC'}, {id: 4, nombre: 'AVOC'}, 
+        {id: 5, nombre: 'AVSOC'}, {id: 6, nombre: 'MVAE'}, 
+        {id: 7, nombre: 'MVAC'}, {id: 8, nombre: 'MVNOC'}, 
+        {id: 9, nombre: 'MVP'}, {id: 10, nombre: 'MVY'}
+    ],
+    2: [ // UVO
+        {id: 11, nombre: 'MVSUB'}, {id: 12, nombre: 'MVNOR'}, 
+        {id: 13, nombre: 'AVCOR'}, {id: 14, nombre: 'MIVELLACEN'}, 
+        {id: 15, nombre: 'AVOR'}, {id: 16, nombre: 'AVC'}, 
+        {id: 17, nombre: 'AVCS'}, {id: 18, nombre: 'AVSOR'}
+    ]
+};
+
 const API_BASE = "http://localhost:3000/api";
 const token = localStorage.getItem("token");
 let usuarioActual = {};
@@ -463,25 +479,42 @@ async function cargarPerfil() {
     });
     const data = await res.json();
 
-    // --- Textos del Header ---
+    // --- 1. LÓGICA DE SELECTS (Unión y Campo) ---
+    // Usamos los IDs 'reg_union' y 'reg_campo' que definimos en el HTML
+    const unionInput = document.getElementById('reg_union');
+    const campoInput = document.getElementById('reg_campo');
+
+    if (unionInput && data.union_procedencia_id) {
+        // A. Asignamos la Unión
+        unionInput.value = data.union_procedencia_id;
+        
+        // B. ¡IMPORTANTE! Ejecutamos el filtro manual para llenar las opciones del Campo
+        // (Asegúrate de tener la función filtrarProcedenciaPerfil definida en tu archivo)
+        filtrarProcedenciaPerfil(); 
+
+        // C. Ahora que el select de Campo tiene opciones, le asignamos el valor
+        if (data.campo_procedencia_id && campoInput) {
+            campoInput.value = data.campo_procedencia_id;
+        }
+    }
+
+    // --- 2. Textos del Header ---
     document.getElementById("headerNombre").innerText = data.nombre_completo || "Usuario";
-    // Verificamos si existe el elemento antes de llenarlo (por seguridad)
     if(document.getElementById("nombreUsuarioDash")) {
         document.getElementById("nombreUsuarioDash").innerText = (data.nombre_completo || "Usuario").split(" ")[0];
     }
     document.getElementById("headerCarrera").innerText = data.carrera || "Estudiante";
 
-    // --- IMAGEN DE PERFIL (Optimizada) ---
+    // --- 3. IMAGEN DE PERFIL ---
     const imgPerfil = document.getElementById('headerFoto');
     if(data.foto_perfil_url) {
         imgPerfil.src = `http://localhost:3000/${data.foto_perfil_url.replace(/\\/g, '/')}`;
     } else {
         imgPerfil.src = '../image/usuario-icon.webp';
     }
-    // Si la imagen falla al cargar, ponemos el icono por defecto
     imgPerfil.onerror = function() { this.src = '../image/usuario-icon.webp'; };
 
-    // --- Vista de Lectura ---
+    // --- 4. Vista de Lectura ---
     document.getElementById("view_cedula").innerText = data.cedula || "";
     document.getElementById("view_telefono").innerText = data.telefono || "";
     document.getElementById("view_procedencia").innerText = data.lugar_procedencia || "";
@@ -489,7 +522,7 @@ async function cargarPerfil() {
     document.getElementById("view_civil").innerText = data.estado_civil || "Soltero";
     document.getElementById("view_pensamiento").innerText = data.pensamiento_bio || "Sin pensamiento definido.";
 
-    // --- Formularios de Edición ---
+    // --- 5. Formularios de Edición ---
     document.getElementById("pensamiento_input").value = data.pensamiento_bio || "";
     document.getElementById("reg_nombre").value = data.nombre_completo || "";
     document.getElementById("reg_cedula").value = data.cedula || "";
@@ -544,6 +577,8 @@ document
   .getElementById("formPersonales")
   .addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    // console.log(document.getElementById("reg_union").value + document.getElementById("reg_campo").value)
     const datos = {
       nombre_completo: document.getElementById("reg_nombre").value,
       cedula: document.getElementById("reg_cedula").value,
@@ -1158,5 +1193,31 @@ async function descargarMasivo() {
         // Restaurar botón
         btn.innerHTML = textoOriginal;
         btn.disabled = false;
+    }
+}
+
+function filtrarProcedenciaPerfil() {
+    // Ahora buscamos DIRECTAMENTE los IDs que acabamos de poner en el HTML
+    const unionSelect = document.getElementById('reg_union');
+    const campoSelect = document.getElementById('reg_campo');
+
+    // Si no existen (por ejemplo en otra vista), no hacemos nada
+    if (!unionSelect || !campoSelect) return;
+
+    const unionId = unionSelect.value;
+    
+    // Limpiar select
+    campoSelect.innerHTML = '<option value="">Seleccione...</option>';
+    
+    if (datosProcedencia[unionId]) {
+        campoSelect.disabled = false;
+        datosProcedencia[unionId].forEach(c => {
+            const option = document.createElement('option');
+            option.value = c.id;
+            option.textContent = c.nombre;
+            campoSelect.appendChild(option);
+        });
+    } else {
+        campoSelect.disabled = true;
     }
 }
