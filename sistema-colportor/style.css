@@ -578,3 +578,66 @@ input:focus, select:focus, textarea:focus {
 .section-view { display: none; animation: fadeIn 0.4s; }
 .section-view.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* --- TABLA DE REPORTES PRO --- */
+.table-pro {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-pro thead tr {
+    background-color: #f8fafc; /* Gris muy suave */
+}
+
+.table-pro th {
+    font-weight: 600;
+    color: var(--primary-dark);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-pro td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
+/* Zebra Striping Sutil */
+.table-pro tbody tr:nth-child(even) {
+    background-color: #fcfcfc;
+}
+
+/* Hover Effect Elegante */
+.table-pro tbody tr:hover {
+    background-color: #eff6ff; /* Azul muy pálido al pasar mouse */
+}
+
+/* Badge para la Semana */
+.badge-week {
+    background-color: var(--primary-light);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Valores Numéricos Destacados */
+.value-money {
+    color: var(--success);
+    font-weight: 600;
+    font-family: 'Consolas', monospace; /* Monospaced para alinear números */
+}
+
+.value-hours {
+    color: var(--primary-blue);
+    font-weight: 500;
+}

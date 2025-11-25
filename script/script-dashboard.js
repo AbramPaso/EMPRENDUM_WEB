@@ -40,6 +40,7 @@ function mostrarSeccion(idSeccion) {
   if (idSeccion === "companeros") cargarCompaneros();
   if (idSeccion === "perfil") cargarPerfil();
   if (idSeccion === "colportaje") cargarCampana();
+  if (idSeccion === "reportes") cargarHistorialReportes();
 }
 
 // 1. CARGAR STATS
@@ -342,6 +343,7 @@ document
         alert("Reporte Enviado Exitosamente");
         e.target.reset();
         await cargarEstadisticas();
+        await cargarHistorialReportes();
         mostrarSeccion("inicio");
       } else {
         alert("Error al enviar el reporte.");
@@ -1220,4 +1222,50 @@ function filtrarProcedenciaPerfil() {
     } else {
         campoSelect.disabled = true;
     }
+}
+
+// --- CARGAR HISTORIAL DE REPORTES (TABLA) ---
+async function cargarHistorialReportes() {
+    try {
+        const res = await fetch(`${API_BASE}/reports/my-reports`, { headers: { Authorization: `Bearer ${token}` } });
+        const reportes = await res.json();
+        
+        const tbody = document.getElementById('tabla-historial-reportes');
+        if(!tbody) return;
+        tbody.innerHTML = '';
+
+        if (reportes.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;">No hay reportes registrados aún.</td></tr>';
+            return;
+        }
+
+        reportes.forEach(r => {
+            const tr = document.createElement('tr');
+            
+            // Formateamos la fecha un poco más limpia si es necesario
+            // (Asumiendo que r.fecha_formato viene DD/MM/YYYY)
+            
+            tr.innerHTML = `
+                <td>
+                    <span class="badge-week">Semana ${r.semana_numero}</span>
+                </td>
+                <td style="color: var(--text-muted); font-size: 0.85rem;">
+                    <i class="far fa-calendar-alt" style="margin-right:5px;"></i> ${r.fecha_formato}
+                </td>
+                <td style="text-align: center; font-weight: 500;">
+                    ${r.colecciones_vendidas}
+                </td>
+                <td style="text-align: right;">
+                    <span class="value-money">$${parseFloat(r.monto_dolares).toFixed(2)}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="value-hours">${r.horas_trabajadas} h</span>
+                </td>
+                <td style="text-align: center; color: var(--text-muted);">
+                    ${r.estudios_biblicos}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (e) { console.error("Error historial:", e); }
 }
