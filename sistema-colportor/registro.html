@@ -18,7 +18,7 @@
                 <p class="auth-subtitle">Completa tu ficha técnica para ingresar al sistema</p>
             </div>
 
-            <form id="registroForm">
+<form id="registroForm">
                 
                 <div class="form-grid">
                     <div class="full-width">
@@ -29,22 +29,24 @@
 
                     <div class="form-group full-width">
                         <label><i class="fas fa-user"></i> Nombre y Apellido Completo</label>
-                        <input type="text" name="nombre" placeholder="Ej: Alejandro Magno" required>
+                        <input type="text" name="nombre" id="reg_nombre" placeholder="Ej: Alejandro Magno" required>
+                        <small style="color: #64748b; font-size: 0.75rem;">Solo letras y espacios.</small>
                     </div>
 
                     <div class="form-group">
                         <label><i class="fas fa-id-card"></i> Cédula</label>
-                        <input type="text" name="cedula" placeholder="Ej: 20333444" required>
+                        <input type="number" name="cedula" id="reg_cedula" placeholder="Ej: 20333444" min="1" required>
                     </div>
 
                     <div class="form-group">
                         <label><i class="fas fa-calendar-alt"></i> Fecha de Nacimiento</label>
-                        <input type="date" name="fecha_nacimiento" required style="cursor: pointer;">
+                        <input type="date" name="fecha_nacimiento" id="reg_fecha" required style="cursor: pointer;">
                     </div>
 
                     <div class="form-group">
                         <label><i class="fas fa-venus-mars"></i> Sexo</label>
-                        <select name="sexo">
+                        <select name="sexo" required>
+                            <option value="">Seleccione...</option>
                             <option value="M">Masculino</option>
                             <option value="F">Femenino</option>
                         </select>
@@ -52,7 +54,8 @@
 
                     <div class="form-group">
                         <label><i class="fas fa-ring"></i> Estado Civil</label>
-                        <select name="estado_civil">
+                        <select name="estado_civil" required>
+                            <option value="">Seleccione...</option>
                             <option value="Soltero">Soltero(a)</option>
                             <option value="Casado">Casado(a)</option>
                             <option value="Divorciado">Divorciado(a)</option>
@@ -62,17 +65,17 @@
 
                     <div class="form-group">
                         <label><i class="fas fa-pray"></i> Religión</label>
-                        <input type="text" name="religion" placeholder="Ej: Adventista">
+                        <input type="text" name="religion" id="reg_religion" placeholder="Ej: Adventista" required>
                     </div>
                     
                     <div class="form-group">
                         <label><i class="fas fa-phone"></i> Teléfono / WhatsApp</label>
-                        <input type="tel" name="telefono" placeholder="0414-0000000" required>
+                        <input type="number" name="telefono" id="reg_telefono" placeholder="04140000000" min="1" required>
                     </div>
 
                     <div class="form-group full-width">
                         <label><i class="fas fa-graduation-cap"></i> Carrera / Profesión</label>
-                        <input type="text" name="carrera" placeholder="¿Qué Carrera estudias?" required>
+                        <input type="text" name="carrera" id="reg_carrera" placeholder="¿Qué estudias o ejerces?" required>
                     </div>
 
                     <div class="full-width">
@@ -83,21 +86,21 @@
 
                     <div class="form-group full-width">
                         <label><i class="fas fa-map-marker-alt"></i> Lugar de Procedencia (Ciudad/Estado)</label>
-                        <input type="text" name="lugar_procedencia" placeholder="Ej: Yaritagua, Yaracuy">
+                        <input type="text" name="lugar_procedencia" id="reg_lugar" placeholder="Ej: Yaritagua, Yaracuy" required>
                     </div>
 
                     <div class="form-group">
-                    <label><i class="fas fa-church"></i> Unión de Origen</label>
-                        <select name="union_id" id="reg_union" onchange="filtrarCamposRegistro()">
+                        <label><i class="fas fa-church"></i> Unión de Origen</label>
+                        <select name="union_id" id="reg_union" onchange="filtrarCamposRegistro()" required>
                            <option value="">Seleccione...</option>
-                          <option value="1">UVOC (Occidental)</option>
+                           <option value="1">UVOC (Occidental)</option>
                            <option value="2">UVO (Oriental)</option>
                        </select>
                     </div>
 
                     <div class="form-group">
                        <label><i class="fas fa-map"></i> Campo de Origen</label>
-                         <select name="campo_id" id="reg_campo" disabled>
+                         <select name="campo_id" id="reg_campo" disabled required>
                              <option value="">Seleccione unión primero</option>
                          </select>
                     </div>
@@ -110,7 +113,8 @@
 
                     <div class="form-group full-width">
                         <label><i class="fas fa-key"></i> Contraseña de Acceso</label>
-                        <input type="password" name="password" placeholder="Recuerda tu contraseña" required>
+                        <input type="password" name="password" id="reg_password" placeholder="Mínimo 4 caracteres" required>
+                        <small style="color: #64748b; font-size: 0.75rem;">Minimo 4 Caracteres.</small>
                     </div>
                 </div>
 
@@ -125,8 +129,9 @@
         </div>
     </div>
 
-    <script>
-const datosOrigen = {
+<script>
+        // 1. CONFIGURACIÓN DE CAMPOS (MAESTROS)
+        const datosOrigen = {
             1: [ // UVOC
                 {id: 1, nombre: 'AVCO'}, {id: 2, nombre: 'AVCN'}, 
                 {id: 3, nombre: 'AVLLOC'}, {id: 4, nombre: 'AVOC'}, 
@@ -151,7 +156,10 @@ const datosOrigen = {
             if (datosOrigen[unionId]) {
                 selectCampo.disabled = false;
                 datosOrigen[unionId].forEach(c => {
-                    selectCampo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+                    const option = document.createElement('option');
+                    option.value = c.id;
+                    option.textContent = c.nombre;
+                    selectCampo.appendChild(option);
                 });
             } else {
                 selectCampo.disabled = true;
@@ -159,17 +167,79 @@ const datosOrigen = {
             }
         }
 
+        // 2. BLOQUEAR FECHAS FUTURAS EN EL INPUT
+        document.addEventListener('DOMContentLoaded', () => {
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('reg_fecha').setAttribute('max', hoy);
+        });
+
+        // 3. ENVÍO Y VALIDACIONES
         document.getElementById('registroForm').addEventListener('submit', async (e) => {
             e.preventDefault(); 
+            
+            // --- CAPTURA DE VALORES ---
+            const nombre = document.getElementById('reg_nombre').value;
+            const carrera = document.getElementById('reg_carrera').value;
+            const religion = document.getElementById('reg_religion').value;
+            const cedula = document.getElementById('reg_cedula').value;
+            const telefono = document.getElementById('reg_telefono').value;
+            const password = document.getElementById('reg_password').value;
+            const fecha = document.getElementById('reg_fecha').value;
+
+            // --- VALIDACIONES DE SEGURIDAD ---
+
+            // A. Solo Letras (Regex)
+            const soloLetrasRegex = /^[a-zA-ZÀ-ÿ\s]+$/;
+
+            if (!soloLetrasRegex.test(nombre)) {
+                alert("⚠️ El Nombre solo puede contener letras."); return;
+            }
+            if (!soloLetrasRegex.test(carrera)) {
+                alert("⚠️ La Carrera solo puede contener letras."); return;
+            }
+            if (!soloLetrasRegex.test(religion)) {
+                alert("⚠️ La Religión solo puede contener letras."); return;
+            }
+
+            // B. Validar Cédula (Positivo y Min 7 dígitos) -> ¡AQUÍ ESTÁ EL CAMBIO!
+            if (cedula.length < 7) {
+                alert("⚠️ La Cédula debe tener al menos 7 dígitos."); return;
+            }
+            if (cedula <= 0) {
+                alert("⚠️ La Cédula debe ser un número positivo."); return;
+            }
+
+            // C. Validar Teléfono (Positivo y longitud razonable, ej: 10 u 11 dígitos)
+            if (telefono.length < 10) {
+                alert("⚠️ El Teléfono parece muy corto (Mínimo 10 dígitos)."); return;
+            }
+            if (telefono <= 0) {
+                alert("⚠️ El Teléfono debe ser válido."); return;
+            }
+
+            // D. Validar Fecha (No Futura)
+            const fechaSeleccionada = new Date(fecha);
+            const fechaHoy = new Date();
+            if (fechaSeleccionada > fechaHoy) {
+                alert("⚠️ La fecha de nacimiento no puede ser en el futuro."); return;
+            }
+
+            // E. Validar Contraseña (Min 4)
+            if (password.length < 4) {
+                alert("⚠️ La contraseña debe tener al menos 4 caracteres."); return;
+            }
+
+            // --- SI PASA TODO, ENVIAMOS AL BACKEND ---
             
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
 
             if(data.nombre && !data.nombre_completo) data.nombre_completo = data.nombre;
 
-            // Feedback visual al usuario
+            // Feedback visual
             const btn = document.querySelector('.btn-submit');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
+            const btnTextoOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
             btn.disabled = true;
 
             try {
@@ -186,13 +256,13 @@ const datosOrigen = {
                     window.location.href = 'login.html';
                 } else {
                     alert('⚠️ Error: ' + (result.message || 'Verifica tus datos.'));
-                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Completar Registro';
+                    btn.innerHTML = btnTextoOriginal;
                     btn.disabled = false;
                 }
             } catch (error) {
                 console.error('Error:', error);
                 alert('❌ Error de conexión.');
-                btn.innerHTML = '<i class="fas fa-check-circle"></i> Completar Registro';
+                btn.innerHTML = btnTextoOriginal;
                 btn.disabled = false;
             }
         });
