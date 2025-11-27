@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="../image/Logo_individual.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="auth-body">
 
@@ -44,8 +45,8 @@
         </p>
     </div>
 
-    <script>
-        
+<script>
+       
         const cedulaInput = document.getElementById('cedula');
         
         cedulaInput.addEventListener('keydown', function(e) {
@@ -55,24 +56,34 @@
             }
         });
 
-        // 2. LOGICA DE LOGIN
+  
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const cedulaVal = cedulaInput.value.trim();
             const passwordVal = document.getElementById('password').value;
 
-            // Validación Previa (Front-end)
+        
             if (cedulaVal.length < 7) {
-                alert(" La cédula debe tener al menos 7 dígitos.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cédula incompleta',
+                    text: 'La cédula debe tener al menos 7 dígitos.',
+                    confirmButtonColor: '#0f172a'
+                });
                 return;
             }
             if (cedulaVal <= 0) {
-                alert("Cédula inválida.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cédula inválida',
+                    text: 'Ingrese un número positivo válido.',
+                    confirmButtonColor: '#0f172a'
+                });
                 return;
             }
 
-            // Animación simple en botón
+     
             const btn = document.querySelector('.btn-submit');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validando...';
@@ -92,17 +103,34 @@
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('userData', JSON.stringify(data.user));
                     
-                    
-                    window.location.href = 'dashboard.html';
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Bienvenido!',
+                        text: 'Ingresando al sistema...',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = 'dashboard.html';
+                    });
+
                 } else {
-                    // Error de credenciales
-                    alert(' ' + (data.message || 'Credenciales incorrectas'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Acceso Denegado',
+                        text: data.message || 'Credenciales incorrectas',
+                        confirmButtonColor: '#d9534f'
+                    });
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert(" No se pudo conectar con el servidor.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Conexión',
+                    text: 'No se pudo conectar con el servidor.',
+                    confirmButtonColor: '#d9534f'
+                });
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }

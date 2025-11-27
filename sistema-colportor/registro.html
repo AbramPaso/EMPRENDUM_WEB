@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="../image/Logo_individual.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="auth-body">
 
@@ -18,7 +19,7 @@
                 <p class="auth-subtitle">Completa tu ficha técnica para ingresar al sistema</p>
             </div>
 
-<form id="registroForm">
+            <form id="registroForm">
                 
                 <div class="form-grid">
                     <div class="full-width">
@@ -114,7 +115,6 @@
                     <div class="form-group full-width">
                         <label><i class="fas fa-key"></i> Contraseña de Acceso</label>
                         <input type="password" name="password" id="reg_password" placeholder="Mínimo 4 caracteres" required>
-                        <small style="color: #64748b; font-size: 0.75rem;">Minimo 4 Caracteres.</small>
                     </div>
                 </div>
 
@@ -129,8 +129,8 @@
         </div>
     </div>
 
-<script>
-        // 1. CONFIGURACIÓN DE CAMPOS (MAESTROS)
+    <script>
+        // 1. CONFIGURACIÓN DE CAMPOS
         const datosOrigen = {
             1: [ // UVOC
                 {id: 1, nombre: 'AVCO'}, {id: 2, nombre: 'AVCN'}, 
@@ -167,79 +167,85 @@
             }
         }
 
-        // 2. BLOQUEAR FECHAS FUTURAS EN EL INPUT
+        // 2. BLOQUEO DE CARACTERES EN TIEMPO REAL (PRO) 🔥
+        
+        // Función auxiliar para bloquear teclas numéricas o inválidas
+        const bloquearCaracteres = (input, tipo) => {
+            input.addEventListener('keydown', function(e) {
+                // Permitir teclas de control (borrar, tab, flechas)
+                if (['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+
+                if (tipo === 'texto') {
+                    // Solo permitir letras y espacios
+                    if (!/^[a-zA-ZÀ-ÿ\s]$/.test(e.key)) {
+                        e.preventDefault();
+                    }
+                } else if (tipo === 'numero') {
+                    // Bloquear signos y exponentes (e, -, +, .)
+                    if (['e', 'E', '-', '+', '.'].includes(e.key)) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        };
+
+        // Aplicar bloqueos
+        bloquearCaracteres(document.getElementById('reg_nombre'), 'texto');
+        bloquearCaracteres(document.getElementById('reg_carrera'), 'texto');
+        bloquearCaracteres(document.getElementById('reg_religion'), 'texto');
+        bloquearCaracteres(document.getElementById('reg_lugar'), 'texto');
+
+        bloquearCaracteres(document.getElementById('reg_cedula'), 'numero');
+        bloquearCaracteres(document.getElementById('reg_telefono'), 'numero');
+
+        // 3. BLOQUEO DE FECHA (Cargar máximo hoy)
         document.addEventListener('DOMContentLoaded', () => {
             const hoy = new Date().toISOString().split('T')[0];
             document.getElementById('reg_fecha').setAttribute('max', hoy);
         });
 
-        // 3. ENVÍO Y VALIDACIONES
+        // 4. HELPER DE ALERTAS
+        const mostrarAlerta = (titulo, texto, icon = 'warning') => {
+            Swal.fire({
+                icon: icon,
+                title: titulo,
+                text: texto,
+                confirmButtonColor: '#0f172a'
+            });
+        };
+
+        // 5. ENVÍO Y VALIDACIÓN FINAL
         document.getElementById('registroForm').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
-            // --- CAPTURA DE VALORES ---
-            const nombre = document.getElementById('reg_nombre').value;
-            const carrera = document.getElementById('reg_carrera').value;
-            const religion = document.getElementById('reg_religion').value;
+            const nombre = document.getElementById('reg_nombre').value.trim();
             const cedula = document.getElementById('reg_cedula').value;
             const telefono = document.getElementById('reg_telefono').value;
             const password = document.getElementById('reg_password').value;
             const fecha = document.getElementById('reg_fecha').value;
 
-            // --- VALIDACIONES DE SEGURIDAD ---
+            // --- VALIDACIONES FINALES ---
+            if (nombre.length < 3) return mostrarAlerta("Nombre Inválido", "El nombre es muy corto.");
+            
+            if (cedula.length < 7) return mostrarAlerta("Cédula Incompleta", "Debe tener al menos 7 dígitos.");
+            if (cedula <= 0) return mostrarAlerta("Cédula Inválida", "Debe ser un número positivo.");
 
-            // A. Solo Letras (Regex)
-            const soloLetrasRegex = /^[a-zA-ZÀ-ÿ\s]+$/;
-
-            if (!soloLetrasRegex.test(nombre)) {
-                alert("⚠️ El Nombre solo puede contener letras."); return;
-            }
-            if (!soloLetrasRegex.test(carrera)) {
-                alert("⚠️ La Carrera solo puede contener letras."); return;
-            }
-            if (!soloLetrasRegex.test(religion)) {
-                alert("⚠️ La Religión solo puede contener letras."); return;
-            }
-
-            // B. Validar Cédula (Positivo y Min 7 dígitos) -> ¡AQUÍ ESTÁ EL CAMBIO!
-            if (cedula.length < 7) {
-                alert("⚠️ La Cédula debe tener al menos 7 dígitos."); return;
-            }
-            if (cedula <= 0) {
-                alert("⚠️ La Cédula debe ser un número positivo."); return;
-            }
-
-            // C. Validar Teléfono (Positivo y longitud razonable, ej: 10 u 11 dígitos)
-            if (telefono.length < 10) {
-                alert("⚠️ El Teléfono parece muy corto (Mínimo 10 dígitos)."); return;
-            }
-            if (telefono <= 0) {
-                alert("⚠️ El Teléfono debe ser válido."); return;
-            }
-
-            // D. Validar Fecha (No Futura)
+            if (telefono.length < 10) return mostrarAlerta("Teléfono Incompleto", "Verifique el número (min 10 dígitos).");
+            
             const fechaSeleccionada = new Date(fecha);
             const fechaHoy = new Date();
-            if (fechaSeleccionada > fechaHoy) {
-                alert("⚠️ La fecha de nacimiento no puede ser en el futuro."); return;
-            }
+            if (fechaSeleccionada > fechaHoy) return mostrarAlerta("Fecha Incorrecta", "No puedes nacer en el futuro.");
 
-            // E. Validar Contraseña (Min 4)
-            if (password.length < 4) {
-                alert("⚠️ La contraseña debe tener al menos 4 caracteres."); return;
-            }
+            if (password.length < 4) return mostrarAlerta("Contraseña Insegura", "Debe tener al menos 4 caracteres.", 'error');
 
-            // --- SI PASA TODO, ENVIAMOS AL BACKEND ---
-            
+            // --- ENVÍO AL BACKEND ---
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
-
             if(data.nombre && !data.nombre_completo) data.nombre_completo = data.nombre;
 
-            // Feedback visual
             const btn = document.querySelector('.btn-submit');
             const btnTextoOriginal = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
             btn.disabled = true;
 
             try {
@@ -252,16 +258,22 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert('✅ ¡Registro exitoso! Bienvenido al equipo.');
-                    window.location.href = 'login.html';
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Registro Exitoso!',
+                        text: 'Bienvenido al equipo. Por favor inicia sesión.',
+                        confirmButtonColor: '#10b981'
+                    }).then(() => {
+                        window.location.href = 'login.html';
+                    });
                 } else {
-                    alert('⚠️ Error: ' + (result.message || 'Verifica tus datos.'));
+                    mostrarAlerta("Error de Registro", result.message || 'Verifica tus datos.', 'error');
                     btn.innerHTML = btnTextoOriginal;
                     btn.disabled = false;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('❌ Error de conexión.');
+                mostrarAlerta("Error Crítico", "No hay conexión con el servidor.", 'error');
                 btn.innerHTML = btnTextoOriginal;
                 btn.disabled = false;
             }
@@ -269,4 +281,3 @@
     </script>
 </body>
 </html>
-                
