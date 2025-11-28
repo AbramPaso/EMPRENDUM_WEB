@@ -1,3 +1,45 @@
+// Helper para alertas bonitas
+const mostrarAlerta = (titulo, texto, icon = 'success') => {
+    Swal.fire({
+        icon: icon,
+        title: titulo,
+        text: texto,
+        confirmButtonColor: '#0f172a',
+        timer: icon === 'success' ? 2000 : undefined
+    });
+};
+
+// Función para proteger inputs (Solo letras / Solo números)
+function protegerInputsPerfil() {
+    const inputsTexto = ['reg_nombre', 'reg_carrera', 'reg_religion', 'padre_nombre', 'madre_nombre', 'conyuge_nombre'];
+    const inputsNumero = ['reg_cedula', 'reg_telefono', 'padre_telefono', 'madre_telefono'];
+
+    inputsTexto.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) {
+            el.addEventListener('keydown', e => {
+                // Permitir teclas de control
+                if(['Backspace','Delete','Tab','ArrowLeft','ArrowRight'].includes(e.key)) return;
+                // Solo letras y espacios
+                if(!/^[a-zA-ZÀ-ÿ\s]$/.test(e.key)) e.preventDefault();
+            });
+        }
+    });
+
+    inputsNumero.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) {
+            el.addEventListener('keydown', e => {
+                if(['Backspace','Delete','Tab','ArrowLeft','ArrowRight'].includes(e.key)) return;
+                // Bloquear e, E, +, -, .
+                if(['e','E','+','-','.'].includes(e.key)) e.preventDefault();
+            });
+        }
+    });
+}
+
+
+
 const datosProcedencia = {
     1: [ // UVOC
         {id: 1, nombre: 'AVCO'}, {id: 2, nombre: 'AVCN'}, 
@@ -309,50 +351,102 @@ if (formGestion) {
 
 
 // 2. ENVIAR REPORTE SEMANAL (DINÁMICO)
-document
-  .getElementById("formReporteSemanal")
-  .addEventListener("submit", async (e) => {
-    e.preventDefault();
+// ==========================================
+// 2. ENVIAR REPORTE SEMANAL (CON VALIDACIÓN ANTI-NEGATIVOS)
+// ==========================================
 
-    const currentYear = new Date().getFullYear();
-    const inputColecciones = document.getElementById("sem_colecciones").value;
-    const inputMonto = document.getElementById("sem_monto").value;
-    const inputHoras = document.getElementById("sem_horas").value;
-    const inputEstudios = document.getElementById("sem_estudios").value;
+const formReporte = document.getElementById("formReporteSemanal");
 
-    const datos = {
-      semana_numero: document.getElementById("sem_numero").value,
-      anio: currentYear,
-      colecciones: inputColecciones,
-      monto: inputMonto,
-      horas: inputHoras,
-      estudios: inputEstudios,
-    };
+if (formReporte) {
+    
+    // A. Protección en tiempo real (No permite escribir signos menos)
+    const inputsNumericos = ['sem_numero', 'sem_colecciones', 'sem_monto', 'sem_horas', 'sem_estudios'];
+    
+    inputsNumericos.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('keydown', (e) => {
+                // Permitir teclas de control
+                if (['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Enter'].includes(e.key)) return;
+                // Bloquear signos matemáticos y exponente
+                if (['e', 'E', '-', '+'].includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        }
+    });
 
-    try {
-      const res = await fetch(`${API_BASE}/reports/create-weekly`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(datos),
-      });
+    // B. Clonar para limpiar eventos viejos
+    const newFormReporte = formReporte.cloneNode(true);
+    formReporte.parentNode.replaceChild(newFormReporte, formReporte);
 
-      if (res.ok) {
-        alert("Reporte Enviado Exitosamente");
-        e.target.reset();
-        await cargarEstadisticas();
-        await cargarHistorialReportes();
-        mostrarSeccion("inicio");
-      } else {
-        alert("Error al enviar el reporte.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Error de conexión.");
-    }
-  });
+    // C. Listener de Envío
+    newFormReporte.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const currentYear = new Date().getFullYear();
+        
+        // Captura de valores
+        const semNumero = document.getElementById("sem_numero").value;
+        const colecciones = document.getElementById("sem_colecciones").value;
+        const monto = document.getElementById("sem_monto").value;
+        const horas = document.getElementById("sem_horas").value;
+        const estudios = document.getElementById("sem_estudios").value;
+
+        // --- VALIDACIONES DE NEGATIVOS ---
+        if (semNumero <= 0) return mostrarAlerta("Semana Inválida", "El número de semana debe ser mayor a 0.", "warning");
+        if (colecciones < 0) return mostrarAlerta("Error en Colecciones", "No puedes poner números negativos.", "warning");
+        if (monto < 0) return mostrarAlerta("Error en Monto", "El monto no puede ser negativo.", "warning");
+        if (horas < 0) return mostrarAlerta("Error en Horas", "Las horas no pueden ser negativas.", "warning");
+        if (estudios < 0) return mostrarAlerta("Error en Estudios", "No puedes poner números negativos.", "warning");
+
+        const datos = {
+            semana_numero: semNumero,
+            anio: currentYear,
+            colecciones: colecciones,
+            monto: monto,
+            horas: horas,
+            estudios: estudios,
+        };
+
+        // Feedback visual
+        const btn = newFormReporte.querySelector('button[type="submit"]');
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`${API_BASE}/reports/create-weekly`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(datos),
+            });
+
+            if (res.ok) {
+                mostrarAlerta("¡Reporte Enviado!", "Tus datos se guardaron exitosamente.", "success");
+                newFormReporte.reset();
+                
+                // Actualizar todo el dashboard
+                await cargarEstadisticas();
+                await cargarHistorialReportes();
+                
+                // Opcional: Volver al inicio
+                mostrarSeccion("inicio");
+            } else {
+                mostrarAlerta("Error", "No se pudo enviar el reporte.", "error");
+            }
+        } catch (error) {
+            console.error(error);
+            mostrarAlerta("Error de conexión", "Intenta nuevamente.", "error");
+        } finally {
+            btn.innerHTML = textoOriginal;
+            btn.disabled = false;
+        }
+    });
+}
 
 // 3. CAMPAÑA INVIERNO
 const datosCampana = {
@@ -575,54 +669,108 @@ document.getElementById("formBio").addEventListener("submit", async (e) => {
   }
 });
 
-document
-  .getElementById("formPersonales")
-  .addEventListener("submit", async (e) => {
-    e.preventDefault();
+// --- GUARDAR PERFIL PERSONAL (CON VALIDACIÓN PRO) ---
+const formPersonales = document.getElementById("formPersonales");
 
-    // console.log(document.getElementById("reg_union").value + document.getElementById("reg_campo").value)
-    const datos = {
-      nombre_completo: document.getElementById("reg_nombre").value,
-      cedula: document.getElementById("reg_cedula").value,
-      telefono: document.getElementById("reg_telefono").value,
-      carrera: document.getElementById("reg_carrera").value,
-      religion: document.getElementById("reg_religion").value,
-      estado_civil: document.getElementById("reg_civil").value,
-      union_procedencia: document.getElementById("reg_union").value,
-      campo_procedencia: document.getElementById("reg_campo").value,
-      lugar_procedencia: document.getElementById("reg_lugar_procedencia").value,
-      padre_nombre: document.getElementById("padre_nombre").value,
-      padre_telefono: document.getElementById("padre_telefono").value,
-      madre_nombre: document.getElementById("madre_nombre").value,
-      madre_telefono: document.getElementById("madre_telefono").value,
-      rol_id: document.getElementById('gt_rol').value,
-      direccion_origen: document.getElementById("reg_direccion").value,
-      conyuge_nombre: document.getElementById("conyuge_nombre").value,
-      padecimiento: document.getElementById("padecimiento").value,
-    };
+if (formPersonales) {
+    // 1. Activamos la protección de teclas (para que no escriban números en nombres)
+    // (Asegúrate de tener la función protegerInputsPerfil() definida al inicio del archivo)
+    protegerInputsPerfil();
 
-    const res = await fetch(`${API_BASE}/profile/personales`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(datos),
+    // 2. Clonamos para limpiar eventos viejos y evitar duplicados
+    const newFormPersonales = formPersonales.cloneNode(true);
+    formPersonales.parentNode.replaceChild(newFormPersonales, formPersonales);
+
+    // 3. Listener de Envío
+    newFormPersonales.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // --- VALIDACIONES PREVIAS (SweetAlert) ---
+        const nombre = document.getElementById("reg_nombre").value.trim();
+        const cedula = document.getElementById("reg_cedula").value.trim();
+        const telefono = document.getElementById("reg_telefono").value.trim();
+
+        if (nombre.length < 3) {
+            return mostrarAlerta("Nombre Inválido", "El nombre es muy corto.", "warning");
+        }
+        if (cedula.length < 7) {
+            return mostrarAlerta("Cédula Inválida", "Debe tener al menos 7 dígitos.", "warning");
+        }
+        if (telefono.length < 10) {
+            return mostrarAlerta("Teléfono Inválido", "Verifique el número (min 10 dígitos).", "warning");
+        }
+
+        // --- RECOPILAR DATOS ---
+        // Usamos IDs seguros (reg_union y reg_campo que ya arreglamos en el HTML)
+        const unionInput = document.getElementById("reg_union");
+        const campoInput = document.getElementById("reg_campo");
+
+        const datos = {
+            nombre_completo: nombre,
+            cedula: cedula,
+            telefono: telefono,
+            carrera: document.getElementById("reg_carrera").value,
+            religion: document.getElementById("reg_religion").value,
+            estado_civil: document.getElementById("reg_civil").value,
+            
+            // Lógica inteligente: Si no existe el select, envía null
+            union_procedencia: unionInput ? unionInput.value : null,
+            campo_procedencia: campoInput ? campoInput.value : null,
+            
+            lugar_procedencia: document.getElementById("reg_lugar_procedencia").value,
+            
+            padre_nombre: document.getElementById("padre_nombre").value,
+            padre_telefono: document.getElementById("padre_telefono").value,
+            madre_nombre: document.getElementById("madre_nombre").value,
+            madre_telefono: document.getElementById("madre_telefono").value,
+            
+            direccion_origen: document.getElementById("reg_direccion").value,
+            conyuge_nombre: document.getElementById("conyuge_nombre").value,
+            padecimiento: document.getElementById("padecimiento").value,
+        };
+
+        // --- ENVIAR AL BACKEND ---
+        // Feedback visual en el botón
+        const btnGuardar = newFormPersonales.querySelector('button[type="submit"]');
+        const textoOriginal = btnGuardar.innerHTML;
+        btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+        btnGuardar.disabled = true;
+
+        try {
+            const res = await fetch(`${API_BASE}/profile/personales`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(datos),
+            });
+
+            if (res.ok) {
+                mostrarAlerta("¡Perfil Actualizado!", "Tus datos se guardaron correctamente.", "success");
+                
+                // Actualizar vista de lectura inmediatamente
+                document.getElementById("headerNombre").innerText = datos.nombre_completo;
+                document.getElementById("view_cedula").innerText = datos.cedula;
+                document.getElementById("view_telefono").innerText = datos.telefono;
+                document.getElementById("view_procedencia").innerText = datos.lugar_procedencia;
+                document.getElementById("view_religion").innerText = datos.religion;
+                document.getElementById("view_civil").innerText = datos.estado_civil;
+                
+                toggleEditProfile(); // Cerrar edición
+            } else {
+                mostrarAlerta("Error", "No se pudo actualizar el perfil.", "error");
+            }
+        } catch (error) {
+            console.error(error);
+            mostrarAlerta("Error de Conexión", "Intenta nuevamente.", "error");
+        } finally {
+            // Restaurar botón
+            btnGuardar.innerHTML = textoOriginal;
+            btnGuardar.disabled = false;
+        }
     });
-
-    if (res.ok) {
-      alert("Datos actualizados correctamente");
-      document.getElementById("headerNombre").innerText = datos.nombre_completo;
-      document.getElementById("headerCarrera").innerText = datos.carrera;
-      document.getElementById("view_cedula").innerText = datos.cedula;
-      document.getElementById("view_telefono").innerText = datos.telefono;
-      document.getElementById("view_procedencia").innerText =
-        datos.lugar_procedencia;
-      document.getElementById("view_religion").innerText = datos.religion;
-      document.getElementById("view_civil").innerText = datos.estado_civil;
-      toggleEditProfile();
-    }
-  });
+}
 
 // 5. COMPAÑEROS
 async function cargarCompaneros() {
@@ -915,7 +1063,7 @@ if (formTotal) {
             });
 
             if(res.ok) {
-                alert("✅ Perfil maestro actualizado correctamente");
+                alert(" Perfil maestro actualizado correctamente");
                 
                 // Cerrar modal manualmente (necesario tras usar cloneNode)
                 document.getElementById('modalGestionTotal').style.display = 'none';
@@ -923,11 +1071,11 @@ if (formTotal) {
                 // Recargar las tablas para ver los cambios
                 await actualizarTablas();
               } else {
-                alert("❌ Error al guardar.");
+                alert(" Error al guardar.");
             }
         } catch(e) { 
             console.error(e); 
-            alert("❌ Error de conexión"); 
+            alert(" Error de conexión"); 
         }
     });
 
@@ -1136,7 +1284,7 @@ async function descargarIndividual() {
             const urlLimpia = `http://localhost:3000/${data.url.replace(/\\/g, '/')}`;
             window.open(urlLimpia, '_blank');
         } else {
-            alert("❌ " + data.message);
+            alert(" " + data.message);
         }
     } catch (e) {
         console.error(e);
@@ -1182,10 +1330,10 @@ async function descargarMasivo() {
             a.remove(); // Limpiamos
             window.URL.revokeObjectURL(url);
 
-            alert("✅ Archivo ZIP descargado exitosamente.");
+            alert(" Archivo ZIP descargado exitosamente.");
         } else {
             const errorData = await res.json();
-            alert("⚠️ " + (errorData.message || "No se pudo descargar."));
+            alert(" " + (errorData.message || "No se pudo descargar."));
         }
 
     } catch (e) {
