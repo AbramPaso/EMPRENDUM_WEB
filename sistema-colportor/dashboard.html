@@ -20,6 +20,8 @@
             <li><a href="#" onclick="mostrarSeccion('inicio')" id="nav-inicio" class="active"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('reportes')" id="nav-reportes"><i class="fas fa-file-invoice"></i> <span>Reportes</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('colportaje')" id="nav-colportaje"><i class="fas fa-map-marked-alt"></i> <span>Campaña 2025</span></a></li>
+            <li><a href="#" onclick="mostrarSeccion('campanas')" id="nav-campanas"><i class="fas fa-bullhorn"></i> <span>Campañas</span></a></li>
+            <li><a href="#" onclick="mostrarSeccion('libros')" id="nav-libros"><i class="fas fa-book"></i> <span>Inventario</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('perfil')" id="nav-perfil"><i class="fas fa-user-circle"></i> <span>Mi Perfil</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('companeros')" id="nav-companeros"><i class="fas fa-users"></i> <span>Equipo</span></a></li>
         </ul>
@@ -176,8 +178,19 @@
                         <div class="form-group full-width">
                             <label>Mes</label>
                             <select id="mes_reporte">
-                                <option value="1">Enero</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
-                                </select>
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
                         </div>
                         <div class="form-group full-width">
                             <label>Archivo</label>
@@ -210,6 +223,210 @@
         </table>
     </div>
 </div>           
+        </section>
+
+        <!-- =============================================== -->
+        <!-- SECCIÓN: GESTIÓN DE CAMPAÑAS                  -->
+        <!-- =============================================== -->
+        <section id="campanas" class="section-view">
+            <div class="section-header"><h2>Gestión de Campañas</h2></div>
+
+            <!-- VISTA DIRECTOR: crear y administrar campañas -->
+            <div id="vista-campanas-director" style="display: none;">
+                <div class="form-container">
+                    <h3><i class="fas fa-plus-circle"></i> Crear Nueva Campaña</h3>
+                    <form id="formNuevaCampana">
+                        <div class="form-grid">
+                            <div class="form-group full-width"><label>Nombre</label><input type="text" id="nueva_camp_nombre" placeholder="Ej: Campaña Verano 2025" required></div>
+                            <div class="form-group full-width"><label>Descripción (opcional)</label><input type="text" id="nueva_camp_descripcion" placeholder="Descripción breve..."></div>
+                            <div class="form-group"><label>Fecha Inicio</label><input type="date" id="nueva_camp_inicio" required></div>
+                            <div class="form-group"><label>Fecha Fin</label><input type="date" id="nueva_camp_fin" required></div>
+                        </div>
+                        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar Campaña</button>
+                    </form>
+                </div>
+
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3><i class="fas fa-list"></i> Historial de Campañas</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="table-pro">
+                            <thead><tr><th>Nombre</th><th>Descripción</th><th>Fechas</th><th>Estado</th><th style="text-align:center;">Acciones</th></tr></thead>
+                            <tbody id="tabla-campanas-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA COLPORTOR: inscribirse a campaña activa -->
+            <div id="vista-inscripcion-colportor" style="display: none;">
+                <div class="form-container">
+                    <h3><i class="fas fa-clipboard-check"></i> Inscripción a Campaña Activa</h3>
+                    <div id="bloque-inscribirse" style="display:none;">
+                        <p style="color: #475569; margin-bottom: 15px;">Hay una campaña activa. Selecciona tu zona y solicita inscribirte.</p>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <select id="select_zona_inscripcion" style="min-width: 220px;"><option value="">Seleccione Zona...</option></select>
+                            <button onclick="solicitarInscripcionCampana()" class="btn-primary" style="background-color: var(--success);"><i class="fas fa-paper-plane"></i> Inscribirme</button>
+                        </div>
+                    </div>
+                    <div id="estado-inscripcion-msg" style="margin-top: 15px; font-weight: bold; padding: 12px; border-radius: 8px; display: none;"></div>
+                </div>
+            </div>
+
+            <!-- VISTA COACH/DIRECTOR: aprobar/rechazar inscripciones -->
+            <div id="vista-aprobacion-inscripciones" style="display: none;">
+                <div class="form-container">
+                    <h3><i class="fas fa-user-check"></i> Inscripciones Pendientes de Aprobación</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="table-pro">
+                            <thead><tr><th>Colportor</th><th>Zona</th><th>Fecha Solicitud</th><th style="text-align:center;">Acción</th></tr></thead>
+                            <tbody id="tabla-inscripciones-pendientes"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================== -->
+        <!-- SECCIÓN: GESTIÓN DE INVENTARIO (LIBROS)        -->
+        <!-- =============================================== -->
+        <section id="libros" class="section-view">
+            <div class="section-header"><h2>Gestión de Inventario (Libros)</h2></div>
+
+            <!-- VISTA DIRECTOR: catálogo, stock global, asignación a zonas -->
+            <div id="vista-libros-director" style="display: none;">
+                <div class="form-container">
+                    <h3><i class="fas fa-plus-circle"></i> Añadir al Catálogo</h3>
+                    <form id="formNuevoLibro">
+                        <div class="form-grid">
+                            <div class="form-group full-width"><label>Título</label><input type="text" id="libro_titulo" required></div>
+                            <div class="form-group"><label>Autor</label><input type="text" id="libro_autor"></div>
+                            <div class="form-group"><label>Precio Sugerido ($)</label><input type="number" step="0.01" min="0" id="libro_precio" required></div>
+                        </div>
+                        <button type="submit" class="btn-primary"><i class="fas fa-book-medical"></i> Añadir Libro</button>
+                    </form>
+                </div>
+
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3><i class="fas fa-warehouse"></i> Stock Global (Campaña Activa)</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <select id="select_libro_stock" style="flex: 1; min-width: 200px;"><option value="">Seleccione Libro...</option></select>
+                        <input type="number" id="cantidad_stock" placeholder="Cantidad..." min="1" style="width: 130px;">
+                        <button onclick="agregarStockGlobal()" class="btn-primary">Añadir Stock</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="table-pro">
+                            <thead><tr><th>Libro</th><th style="text-align:center;">Total</th><th style="text-align:center;">Asignado a Zonas</th><th style="text-align:center;">Disponible</th></tr></thead>
+                            <tbody id="tabla-stock-global"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3><i class="fas fa-map-marker-alt"></i> Asignar Libros a Zona</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+                        <div>
+                            <label style="font-size: 0.8rem; color: #64748b;">Zona Destino</label>
+                            <select id="asig_zona" style="display:block; margin-top: 4px;"><option value="">Seleccione Zona...</option></select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; color: #64748b;">Stock de Libro</label>
+                            <select id="asig_stock_id" style="display:block; margin-top: 4px;"><option value="">Seleccione Libro...</option></select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; color: #64748b;">Cantidad</label>
+                            <input type="number" id="asig_zona_cant" placeholder="Cantidad..." min="1" style="display:block; margin-top: 4px; width: 120px;">
+                        </div>
+                        <button onclick="asignarStockZona()" class="btn-primary">Asignar a Zona</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA COACH: asignar libros a colportores de su zona -->
+            <div id="vista-libros-coach" style="display: none; margin-top: 20px;">
+                <div class="form-container">
+                    <h3><i class="fas fa-hand-holding-heart"></i> Asignar Libros a Colportor</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+                        <div>
+                            <label style="font-size: 0.8rem; color: #64748b;">Colportor</label>
+                            <select id="coach_asig_colportor" style="display:block; margin-top: 4px;"><option value="">Seleccione Colportor...</option></select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; color: #64748b;">Libro (Stock de Zona)</label>
+                            <select id="coach_asig_stock_zona" style="display:block; margin-top: 4px;"><option value="">Seleccione Libro...</option></select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; color: #64748b;">Cantidad</label>
+                            <input type="number" id="coach_asig_cant" placeholder="Cantidad..." min="1" style="display:block; margin-top: 4px; width: 120px;">
+                        </div>
+                        <button onclick="asignarStockColportor()" class="btn-primary">Entregar Libros</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA COLPORTOR: ver mis libros -->
+            <div id="vista-mis-libros" style="display: none; margin-top: 20px;">
+                <div class="form-container">
+                    <h3><i class="fas fa-books"></i> Mis Libros Asignados</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="table-pro">
+                            <thead><tr><th>Título</th><th>Autor</th><th style="text-align:right;">Precio ($)</th><th style="text-align:center;">Cantidad</th></tr></thead>
+                            <tbody id="tabla-mis-libros"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRANSFERENCIAS (Coach y Director) -->
+            <div id="vista-transferencias" style="display: none; margin-top: 20px;">
+                <div class="form-container">
+                    <h3 style="color: var(--accent-yellow);"><i class="fas fa-exchange-alt"></i> Solicitar Transferencia de Libros</h3>
+                    <div style="background: #eff6ff; padding: 15px; border-radius: 8px;">
+                        <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; align-items: end; flex-wrap: wrap;">
+                            <div>
+                                <label style="font-size: 0.8rem; color: #64748b;">Libro</label>
+                                <select id="trans_libro" style="display:block; margin-top: 4px; width:100%;"><option value="">Seleccione...</option></select>
+                            </div>
+                            <div style="text-align:center;">
+                                <label style="font-size: 0.8rem; color: #64748b;">Cantidad</label>
+                                <input type="number" id="trans_cant" placeholder="Cant." min="1" style="display:block; margin-top: 4px; width: 80px;">
+                            </div>
+                            <div></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; align-items: end; margin-top: 10px;">
+                            <div>
+                                <label style="font-size: 0.8rem; color: #64748b;">Origen</label>
+                                <select id="trans_origen_tipo" style="display:block; margin-top: 4px; width:100%;" onchange="cargarOpcionesTransfer('origen')">
+                                    <option value="zona">Desde Zona</option>
+                                    <option value="colportor">Desde Colportor</option>
+                                </select>
+                                <select id="trans_origen_id" style="display:block; margin-top: 6px; width:100%;"><option value="">Seleccione origen...</option></select>
+                            </div>
+                            <div style="text-align:center; padding-bottom:10px; font-size: 1.3rem; color: #94a3b8;">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem; color: #64748b;">Destino</label>
+                                <select id="trans_destino_tipo" style="display:block; margin-top: 4px; width:100%;" onchange="cargarOpcionesTransfer('destino')">
+                                    <option value="zona">Hacia Zona</option>
+                                    <option value="colportor">Hacia Colportor</option>
+                                </select>
+                                <select id="trans_destino_id" style="display:block; margin-top: 6px; width:100%;"><option value="">Seleccione destino...</option></select>
+                            </div>
+                        </div>
+                        <button onclick="solicitarTransferencia()" class="btn-primary" style="margin-top: 15px;"><i class="fas fa-paper-plane"></i> Solicitar Transferencia</button>
+                    </div>
+                </div>
+
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3><i class="fas fa-clock"></i> Transferencias Pendientes</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="table-pro">
+                            <thead><tr><th>Libro</th><th style="text-align:center;">Cant.</th><th>Origen</th><th>Destino</th><th>Solicitante</th><th style="text-align:center;">Acciones</th></tr></thead>
+                            <tbody id="tabla-transferencias-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="colportaje" class="section-view">
@@ -342,7 +559,8 @@
                             <div class="form-group"><label>Tlf Padre</label><input type="text" id="padre_telefono"></div>
                             <div class="form-group"><label>Nombre Madre</label><input type="text" id="madre_nombre"></div>
                             <div class="form-group"><label>Tlf Madre</label><input type="text" id="madre_telefono"></div>
-                            <div class="form-group full-width"><label>Nombre Cónyuge (Si aplica)</label><input type="text" id="conyuge_nombre"></div>
+                            <div class="form-group"><label>Nombre Cónyuge (Si aplica)</label><input type="text" id="conyuge_nombre"></div>
+                            <div class="form-group"><label>Tlf Cónyuge</label><input type="text" id="conyuge_telefono"></div>
                         </div>
 
                         <h4 style="color: var(--text-muted); border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin: 20px 0 15px 0;">
@@ -418,7 +636,7 @@
                 </div>
                 <div style="background: #fff1f2; padding: 10px; border: 1px dashed #f43f5e; border-radius: 6px; margin-top: 10px;">
                     <label style="color: #e11d48;">Nueva Contraseña</label>
-                    <input type="text" id="gest_password" placeholder="Opcional" style="background: white;">
+                    <input type="password" id="gest_password" placeholder="Opcional" style="background: white;" autocomplete="new-password">
                 </div>
                 <div style="text-align: right; margin-top: 20px;">
                     <button type="button" class="btn-primary" style="background: #94a3b8;" onclick="cerrarModalGestion()">Cancelar</button>
@@ -509,7 +727,7 @@
 
                     <div style="background: #fff1f2; padding: 10px; border: 1px dashed #f43f5e; border-radius: 6px;">
                         <label style="color: #e11d48;">Cambiar Contraseña</label>
-                        <input type="text" id="gt_password" placeholder="Nueva clave..." style="background: white;">
+                        <input type="password" id="gt_password" placeholder="Nueva clave..." style="background: white;" autocomplete="new-password">
                     </div>
 
                     <div style="display: flex; justify-content: space-between; margin-top: 20px;">
@@ -563,6 +781,17 @@
     </div>
 </div>
 
-    <script src="../script/script-dashboard.js"></script>
+    <!-- core primero (globals, helpers, navegación) -->
+    <script src="../script/modules/core.js"></script>
+    <!-- módulos de sección -->
+    <script src="../script/modules/inicio.js"></script>
+    <script src="../script/modules/gestion.js"></script>
+    <script src="../script/modules/reportes.js"></script>
+    <script src="../script/modules/campana-trabajo.js"></script>
+    <script src="../script/modules/perfil.js"></script>
+    <script src="../script/modules/companeros.js"></script>
+    <script src="../script/modules/campanas.js"></script>
+    <script src="../script/modules/libros.js"></script>
+    <script src="../script/modules/transferencias.js"></script>
 </body>
 </html>
