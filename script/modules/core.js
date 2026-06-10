@@ -125,7 +125,7 @@ function mostrarSeccion(idSeccion) {
 
     if (idSeccion === "companeros")  cargarCompaneros();
     if (idSeccion === "perfil")      cargarPerfil();
-    if (idSeccion === "reportes")    cargarHistorialReportes();
+    if (idSeccion === "reportes")    cargarSeccionReportes();
     if (idSeccion === "campanas")    cargarSeccionCampanas();
     if (idSeccion === "libros")      cargarSeccionLibros();
 }

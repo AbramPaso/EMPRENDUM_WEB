@@ -157,14 +157,36 @@
 
         <section id="reportes" class="section-view">
             <div class="section-header"><h2>Gestión de Reportes</h2></div>
-            <div class="form-container">
+
+            <!-- Mensaje: no puede reportar (inscripción pendiente / sin libros / etc.) -->
+            <div id="bloque-no-puede-reportar" class="form-container" style="display:none;">
+                <p id="msg-no-puede-reportar" style="text-align:center;padding:30px 0;color:#64748b;font-weight:500;">
+                    <i class="fas fa-lock" style="font-size:2.5rem;color:#cbd5e1;display:block;margin-bottom:12px;"></i>
+                    Verificando estado...
+                </p>
+            </div>
+
+            <!-- Formulario reporte (visible solo si puede reportar) -->
+            <div id="bloque-puede-reportar" class="form-container" style="display:none;">
                 <h3>Nuevo Reporte Semanal</h3>
                 <form id="formReporteSemanal">
                     <div class="form-grid">
                         <div class="form-group"><label>Semana #</label><input type="number" id="sem_numero" placeholder="Ej: 1" required></div>
-                        <div class="form-group"><label>Colecciones</label><input type="number" id="sem_colecciones" placeholder="0" required></div>
+
+                        <!-- Director: ingresa colecciones manualmente -->
+                        <div class="form-group" id="bloque-colecciones-manual" style="display:none;">
+                            <label>Colecciones Vendidas</label>
+                            <input type="number" id="sem_colecciones" placeholder="0" min="0">
+                        </div>
+
+                        <!-- Coach / Colportor: libros asignados con cantidades -->
+                        <div class="form-group full-width" id="bloque-libros-reporte" style="display:none;">
+                            <label><i class="fas fa-book" style="margin-right:5px;color:var(--primary-blue);"></i> Libros vendidos esta semana</label>
+                            <div id="lista-libros-reporte" style="margin-top:10px;border:1px solid #e2e8f0;border-radius:8px;padding:10px;"></div>
+                        </div>
+
                         <div class="form-group full-width"><label>Monto Depositado ($)</label><input type="number" step="0.01" id="sem_monto" placeholder="0.00" required></div>
-                        <div class="form-group"><label>Horas</label><input type="number" step="0.5" id="sem_horas" required></div>
+                        <div class="form-group"><label>Horas Trabajadas</label><input type="number" step="0.5" id="sem_horas" required></div>
                         <div class="form-group"><label>Estudios Bíblicos</label><input type="number" id="sem_estudios" required></div>
                     </div>
                     <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Enviar Reporte</button>
