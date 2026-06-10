@@ -11,12 +11,13 @@ async function cargarSeccionCampanas() {
     });
 
     if (rol === 1) {
-        document.getElementById('vista-campanas-director').style.display    = 'block';
+        document.getElementById('vista-campanas-director').style.display        = 'block';
         document.getElementById('vista-aprobacion-inscripciones').style.display = 'block';
-        await Promise.all([cargarCampanasAdmin(), cargarInscripcionesPendientes()]);
+        await Promise.all([cargarCampanasAdmin(), cargarInscripcionesPendientes(), cargarZonasCampana()]);
     } else if (rol === 2) {
+        document.getElementById('vista-inscripcion-colportor').style.display    = 'block';
         document.getElementById('vista-aprobacion-inscripciones').style.display = 'block';
-        await cargarInscripcionesPendientes();
+        await Promise.all([cargarInscripcionColportor(), cargarInscripcionesPendientes()]);
     } else {
         document.getElementById('vista-inscripcion-colportor').style.display = 'block';
         await cargarInscripcionColportor();
@@ -133,7 +134,7 @@ async function cargarInscripcionColportor() {
             estadoMsg.innerText = 'No hay ninguna campaña activa en este momento.';
         } else if (data.estado === 'no_inscrito') {
             bloqueInscribirse.style.display = 'block';
-            await cargarTodasZonasEnSelect('select_zona_inscripcion');
+            await cargarZonasCampanaEnSelect('select_zona_inscripcion');
         } else if (data.estado === 'pendiente') {
             estadoMsg.style.cssText = 'display:block;background:#fffbeb;color:#b45309;padding:12px;border-radius:8px;font-weight:bold;';
             estadoMsg.innerText = '⏳ Tu solicitud está pendiente de aprobación.';
@@ -144,7 +145,7 @@ async function cargarInscripcionColportor() {
             estadoMsg.style.cssText = 'display:block;background:#fff1f2;color:#e11d48;padding:12px;border-radius:8px;font-weight:bold;';
             estadoMsg.innerText = '❌ Tu inscripción fue rechazada. Puedes volver a solicitar.';
             bloqueInscribirse.style.display = 'block';
-            await cargarTodasZonasEnSelect('select_zona_inscripcion');
+            await cargarZonasCampanaEnSelect('select_zona_inscripcion');
         }
     } catch (e) { console.error("Error cargarInscripcionColportor:", e); }
 }
@@ -218,6 +219,117 @@ async function responderInscripcion(id, estado) {
         if (res.ok) {
             mostrarAlerta(estado === 'aprobado' ? '¡Aprobado!' : 'Rechazado', data.message, estado === 'aprobado' ? 'success' : 'info');
             await cargarInscripcionesPendientes();
+        } else {
+            mostrarAlerta('Error', data.message, 'error');
+        }
+    } catch (e) { mostrarAlerta('Error de conexión', '', 'error'); }
+}
+
+// =====================================================
+// ZONAS DE CAMPAÑA — Gestión (solo Director)
+// =====================================================
+
+async function cargarZonasCampanaEnSelect(selectId) {
+    const sel = document.getElementById(selectId);
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Cargando zonas...</option>';
+    try {
+        const res = await fetch(`${API_BASE}/zonas/campana`, { headers: { Authorization: `Bearer ${token}` } });
+        const zonas = await res.json();
+        sel.innerHTML = '<option value="">Seleccione Zona...</option>';
+        if (zonas.length === 0) {
+            sel.innerHTML = '<option value="">Sin zonas definidas aún</option>';
+            return;
+        }
+        zonas.forEach(z => { sel.innerHTML += `<option value="${z.id}">${z.nombre}</option>`; });
+    } catch (e) {
+        sel.innerHTML = '<option value="">Error al cargar zonas</option>';
+    }
+}
+
+async function cargarZonasCampana() {
+    try {
+        const res = await fetch(`${API_BASE}/zonas/campana`, { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) return;
+        const zonas = await res.json();
+
+        const tbody = document.getElementById('tabla-zonas-campana-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        if (zonas.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:20px;color:#94a3b8;">Sin zonas para esta campaña. Agrega la primera usando el formulario de arriba.</td></tr>';
+            return;
+        }
+
+        zonas.forEach((z, idx) => {
+            tbody.innerHTML += `
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px;color:#94a3b8;">${idx + 1}</td>
+                    <td style="padding:10px;font-weight:bold;">${z.nombre}</td>
+                    <td style="padding:10px;color:#64748b;">${z.descripcion || '--'}</td>
+                    <td style="padding:10px;">
+                        <span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:12px;font-size:0.8rem;font-weight:bold;">${z.union_nombre || '--'}</span>
+                    </td>
+                    <td style="padding:10px;text-align:center;">
+                        <button onclick="eliminarZonaCampana(${z.id})" style="background:#e11d48;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;" title="Eliminar zona">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (e) { console.error("Error cargarZonasCampana:", e); }
+}
+
+async function crearZonaCampana() {
+    const nombre      = (document.getElementById('nueva_zona_nombre')?.value      || '').trim();
+    const descripcion = (document.getElementById('nueva_zona_descripcion')?.value || '').trim();
+    const union_id    = document.getElementById('nueva_zona_union')?.value;
+
+    if (!nombre)    return mostrarAlerta('Nombre requerido',  'Escribe el nombre de la zona.', 'warning');
+    if (!union_id)  return mostrarAlerta('Unión requerida',   'Selecciona una unión.',          'warning');
+
+    try {
+        const res = await fetch(`${API_BASE}/zonas`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ nombre, descripcion, union_id })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            mostrarAlerta('¡Zona creada!', data.message, 'success');
+            document.getElementById('nueva_zona_nombre').value      = '';
+            document.getElementById('nueva_zona_descripcion').value = '';
+            document.getElementById('nueva_zona_union').value       = '';
+            await cargarZonasCampana();
+        } else {
+            mostrarAlerta('Error', data.message, 'error');
+        }
+    } catch (e) { mostrarAlerta('Error de conexión', '', 'error'); }
+}
+
+async function eliminarZonaCampana(id) {
+    const conf = await Swal.fire({
+        title: '¿Eliminar zona?',
+        text: 'Se eliminará esta zona de la campaña activa.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e11d48',
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Sí, Eliminar'
+    });
+    if (!conf.isConfirmed) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/zonas/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (res.ok) {
+            mostrarAlerta('Zona eliminada', '', 'success');
+            await cargarZonasCampana();
         } else {
             mostrarAlerta('Error', data.message, 'error');
         }
