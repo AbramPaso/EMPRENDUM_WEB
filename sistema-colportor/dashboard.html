@@ -19,7 +19,6 @@
         <ul class="nav-links">
             <li><a href="#" onclick="mostrarSeccion('inicio')" id="nav-inicio" class="active"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('reportes')" id="nav-reportes"><i class="fas fa-file-invoice"></i> <span>Reportes</span></a></li>
-            <li><a href="#" onclick="mostrarSeccion('colportaje')" id="nav-colportaje"><i class="fas fa-map-marked-alt"></i> <span>Campaña 2025</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('campanas')" id="nav-campanas"><i class="fas fa-bullhorn"></i> <span>Campañas</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('libros')" id="nav-libros"><i class="fas fa-book"></i> <span>Inventario</span></a></li>
             <li><a href="#" onclick="mostrarSeccion('perfil')" id="nav-perfil"><i class="fas fa-user-circle"></i> <span>Mi Perfil</span></a></li>
@@ -460,36 +459,6 @@
             </div>
         </section>
 
-        <section id="colportaje" class="section-view">
-            <div class="section-header"><h2>Configuración de Campaña</h2></div>
-            <div class="form-container">
-                <form id="formCampana">
-                    <div class="form-grid">
-                        <div class="form-group full-width">
-                            <label>Unión</label>
-                            <select id="camp_union" onchange="filtrarCampos()">
-                                <option value="">Seleccione...</option>
-                                <option value="1">UVOC (Occidental)</option>
-                                <option value="2">UVO (Oriental)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Campo</label>
-                            <select id="camp_campo" disabled></select>
-                        </div>
-                        <div class="form-group">
-                            <label>Zona</label>
-                            <select id="camp_zona" disabled></select>
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Ciudad Específica</label>
-                            <input type="text" id="camp_ciudad" placeholder="Ej: Barquisimeto">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-primary">Guardar Asignación</button>
-                </form>
-            </div>
-        </section>
 
         <section id="perfil" class="section-view">
             <div class="profile-header">
@@ -818,7 +787,6 @@
     <script src="../script/modules/inicio.js"></script>
     <script src="../script/modules/gestion.js"></script>
     <script src="../script/modules/reportes.js"></script>
-    <script src="../script/modules/campana-trabajo.js"></script>
     <script src="../script/modules/perfil.js"></script>
     <script src="../script/modules/companeros.js"></script>
     <script src="../script/modules/campanas.js"></script>
