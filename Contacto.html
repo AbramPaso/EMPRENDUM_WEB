@@ -1,132 +1,393 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto - Emprendum</title>
-    <link rel="icon" type="image/png" href="image/Logo_individual_azul.png">
-    <link rel="stylesheet" href="styles/style.css">
-    <link href="styles/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto — EMPRENDUM</title>
+  <meta name="description" content="¿Quieres ser parte de EMPRENDUM? Contáctanos y descubre cómo unirte a la misión.">
+  <link rel="icon" type="image/png" href="image/Logo_individual_azul.png">
+  <link rel="stylesheet" href="styles/style.css">
+  <link href="styles/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    /* Estilos específicos de Contacto */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      max-width: var(--max);
+      margin: 0 auto;
+      outline: 1px solid var(--borde);
+      align-items: stretch;
+    }
+    .contact-info-block {
+      background: var(--blanco);
+      border-radius: 0;
+      padding: 3rem;
+      border: 1px solid var(--borde);
+      border-top: 3px solid var(--azul-marino);
+      margin: -1px 0 0 -1px;
+      box-shadow: none;
+    }
+    .contact-info-block h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--negro);
+      margin-bottom: 2rem;
+    }
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--borde);
+    }
+    .contact-item:first-of-type { border-top: 1px solid var(--borde); }
+    .contact-icon {
+      width: 38px;
+      height: 38px;
+      background: transparent;
+      border: 1px solid var(--borde);
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-icon i { font-size: 0.9rem; color: var(--azul-marino); }
+    .contact-detail { flex: 1; }
+    .contact-detail strong {
+      display: block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--texto-tenue);
+      margin-bottom: 0.3rem;
+    }
+    .contact-detail span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--negro);
+    }
+    .social-follow { margin-top: 2rem; }
+    .social-follow p {
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--texto-tenue);
+      margin-bottom: 1rem;
+    }
+    .social-follow .social-links a {
+      background: transparent;
+      border: 1px solid var(--borde);
+      border-radius: 0;
+      width: 32px;
+      height: 32px;
+    }
+    .social-follow .social-links a:hover { background: var(--azul-marino); border-color: var(--azul-marino); }
+    .social-follow .social-links img { filter: brightness(0); }
+    .social-follow .social-links a:hover img { filter: invert(1) brightness(3); }
+
+    .join-block {
+      background: var(--azul-marino);
+      border-radius: 0;
+      padding: 3rem;
+      color: var(--blanco);
+      border: 1px solid var(--azul-marino);
+      border-top: 3px solid var(--amarillo);
+      margin: -1px 0 0 -1px;
+    }
+    .join-block h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--blanco);
+      margin-bottom: 1rem;
+    }
+    .join-block p {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.62);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+    .join-steps { margin-bottom: 2.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
+    .join-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      padding: 1.1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 0;
+      background: var(--amarillo);
+      color: var(--negro);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-text { flex: 1; }
+    .step-text strong {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--blanco);
+      margin-bottom: 0.2rem;
+    }
+    .step-text span { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
+
+    @media (max-width: 768px) {
+      .contact-grid { grid-template-columns: 1fr; outline: none; }
+      .contact-info-block,
+      .join-block { margin: 0; border: 1px solid var(--borde); }
+      .join-block { border-top: 3px solid var(--amarillo); border-color: var(--azul-marino); }
+    }
+  </style>
 </head>
 <body>
-    
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════ -->
 <header class="header">
-    <nav class="navbar">
-        <a href="Index.html" class="nav-logo">
-            <img src="image/logo.png" alt="Emprendum" class="logo-img">
+  <nav class="navbar">
+    <a href="Index.html" class="nav-logo">
+      <img src="image/logo.png" alt="Logo EMPRENDUM" class="logo-img">
+    </a>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="Index.html"            class="nav-link">Inicio</a></li>
+      <li class="nav-item"><a href="Nuestra-Historia.html" class="nav-link">Nuestra Historia</a></li>
+      <li class="nav-item"><a href="universitarios.html"   class="nav-link">Universitarios</a></li>
+      <li class="nav-item"><a href="Contacto.html"         class="nav-link">Contacto</a></li>
+      <li class="nav-item nav-cta-item">
+        <a href="sistema-colportor/login.html" class="nav-link nav-cta-btn">
+          Ingresar al Sistema del Colportor
         </a>
-    
-        <ul class="nav-menu">
-            <li class="nav-item"><a href="Index.html" class="nav-link">Inicio</a></li>
-            <li class="nav-item"><a href="Nuestra-Historia.html" class="nav-link">Nuestra Historia</a></li>
-            <li class="nav-item"><a href="universitarios.html" class="nav-link">Universitarios</a></li>
-            <li class="nav-item"><a href="Contacto.html" class="nav-link">Contacto</a></li>
-            <li class="nav-item nav-cta-item">
-                <a href="sistema-colportor/login.html" class="nav-link nav-cta-btn">Ingresar al Sistema del Colportor</a>
-            </li>
-        </ul>
+      </li>
+    </ul>
     <div class="hamburger">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
     </div>
-</nav>
-    </header>
+  </nav>
+</header>
 
-    <main>
-        <section class="hero-universitarios">
-            <div class="hero-text">
-                <h1>¿Quieres conocer mas de Nosotros?</h1>
-                <p>La puerta esta abierta para que formes parte de esta gran familia.</p>
+<main>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE HERO
+  ════════════════════════════════════════════ -->
+  <section class="page-hero" style="background-image: url('image/imagen_carrusel3.jpeg');">
+    <div class="page-hero-content">
+      <span class="badge-tag">Estamos para escucharte</span>
+      <h1>¿Quieres conocer más de Nosotros?</h1>
+      <p>La puerta está abierta para que formes parte de esta gran familia. Da el primer paso hoy.</p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       ¿QUÉ NECESITAS?  — Benefit cards
+  ════════════════════════════════════════════ -->
+  <section class="section section--gray">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="eyebrow eyebrow--dark">Beneficios del programa</span>
+        <h2 class="section-title">¿Qué <span class="accent">necesitas</span>?</h2>
+        <p class="section-sub">Todo lo que necesitas para crecer profesional y espiritualmente está en EMPRENDUM.</p>
+      </div>
+
+      <div class="cards-grid">
+        <article class="pilar-card">
+          <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
+          <h3>Crecimiento Exponencial</h3>
+          <p>Un espacio seguro para desarrollar tus ideas y crecer en un ambiente de confianza y apoyo constante.</p>
+        </article>
+
+        <article class="pilar-card">
+          <div class="card-icon"><i class="fas fa-network-wired"></i></div>
+          <h3>Trabajo en Equipo</h3>
+          <p>Conecta con otros colportores, profesionales y estudiantes que comparten tu visión y valores.</p>
+        </article>
+
+        <article class="pilar-card">
+          <div class="card-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+          <h3>Talleres y Capacitación</h3>
+          <p>Accede a talleres sobre finanzas, marketing, tecnología y habilidades de ventas impartidos por expertos.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       CONTACTO + CÓMO UNIRSE
+  ════════════════════════════════════════════ -->
+  <section class="section section--white">
+    <div class="section-inner">
+      <div class="contact-grid">
+
+        <!-- Información de contacto -->
+        <div class="contact-info-block">
+          <h2>Información de Contacto</h2>
+
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="contact-detail">
+              <strong>Ubicación</strong>
+              <span>Carretera Panamericana, vía Salom</span>
             </div>
-        </section>
+          </div>
 
-        <section class="benefits-section">
-            <h2>¿Qué necesitas?</h2>
-            <div class="benefits-grid">
-                <div class="benefit-card">
-                    <i class="fas fa-lightbulb benefit-icon"></i>
-                    <h3>Crecimiento exponencial</h3>
-                    <p>Un espacio para desarrollar tu idea, tendras espacio para crecer en un area segura.</p>
-                </div>
-
-                <div class="benefit-card">
-                    <i class="fas fa-network-wired benefit-icon"></i>
-                    <h3>Trabajo en equipo</h3>
-                    <p>Conecta con otros colportores, profesionales y estudiantes .</p>
-                </div>
-
-                <div class="benefit-card">
-                    <i class="fas fa-chalkboard-teacher benefit-icon"></i>
-                    <h3>Talleres y Capacitación</h3>
-                    <p>Accede a talleres sobre finanzas, marketing, tecnología y habilidades de ventas.</p>
-                </div>
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+            <div class="contact-detail">
+              <strong>Teléfono</strong>
+              <span>0412-123-4567</span>
             </div>
-        </section>
+          </div>
 
-        <section class="cta-section">
-            <h2>¿Listo para empezar?</h2>
-            <p>Forma parte de nuestra comunidad de innovadores.</p>
-            <a href="#" class="cta-button">Únete ahora</a>
-        </section>
-    </main>
-
-    <footer class="main-footer">
-    <div class="footer-grid-container">
-        
-        <div class="footer-col logo-info">
-            <div class="logo-area">
-                <img src="image/logo.png" alt="Logo EMPRENDUM" class="footer-logo">
-                
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-globe"></i></div>
+            <div class="contact-detail">
+              <strong>Campus Virtual</strong>
+              <span>campusvirtual.iunav.edu.ve</span>
             </div>
-            <p class="lema">"Mientras eras un <span class="destacado">INSTRUMENTO de transformación</span> eres transformado"</p>
-            <img src="image/Iunav2.png" alt="Quiero ser un agente" class="agent-logo">
-        </div>
+          </div>
 
-        <div class="footer-col">
-            <h3>Explorar</h3>
-            <ul>
-                <li><a href="Index.html">Inicio</a></li>
-                <li><a href="universitarios.html">Súmate al esfuerzo</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-col">
-            <h3>Conócenos</h3>
-            <ul>
-                <li><a href="Nuestra-Historia.html">Nuestra historia</a></li>
-                <li><a href="Contacto.html">Contacto</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-col">
-            <h3>Legal</h3>
-            <ul>
-                <li><a href="#">Aviso de privacidad</a></li>
-                <li><a href="#">Términos y condiciones</a></li>
-                <li><a href="#">Preguntas frecuentes</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-col social-copy">
-            <h3>SÍGUENOS</h3>
+          <div class="social-follow">
+            <p>Síguenos en redes</p>
             <div class="social-links">
-                <a href="#"><img src="image/facebook.PNG" alt="Facebook"></a>
-                <a href="#"><img src="image/instagram.PNG" alt="Instagram"></a>
-                <a href="#"><img src="image/tuiter .PNG" alt="twitter"></a>
-                <a href="#"><img src="image/threads.PNG" alt="threads"></a>
-                <a href="#"><img src="image/telegram.PNG" alt="telegram"></a>
+              <a href="#" aria-label="Facebook"><img src="image/facebook.PNG" alt="Facebook"></a>
+              <a href="#" aria-label="Instagram"><img src="image/instagram.PNG" alt="Instagram"></a>
+              <a href="#" aria-label="Twitter"><img src="image/tuiter .PNG" alt="Twitter"></a>
+              <a href="#" aria-label="Threads"><img src="image/threads.PNG" alt="Threads"></a>
+              <a href="#" aria-label="Telegram"><img src="image/telegram.PNG" alt="Telegram"></a>
             </div>
-            
-            <img src="image/redes-iunav.png" alt="Logo UM" class="iunav-logo">
-            <p class="copyright">© 2025 EMPRENDUM</p>
+          </div>
         </div>
-        
+
+        <!-- Cómo unirse -->
+        <div class="join-block">
+          <span class="badge-tag">¿Cómo unirte?</span>
+          <h2>Tres pasos para comenzar</h2>
+          <p>El proceso de incorporación a EMPRENDUM es sencillo. Te guiamos desde el primer momento.</p>
+
+          <div class="join-steps">
+            <div class="join-step">
+              <div class="step-num">1</div>
+              <div class="step-text">
+                <strong>Contáctanos</strong>
+                <span>Escríbenos o llámanos para obtener información sobre el programa.</span>
+              </div>
+            </div>
+            <div class="join-step">
+              <div class="step-num">2</div>
+              <div class="step-text">
+                <strong>Asiste a una capacitación</strong>
+                <span>Participa en una sesión de orientación y conoce al equipo de tu zona.</span>
+              </div>
+            </div>
+            <div class="join-step">
+              <div class="step-num">3</div>
+              <div class="step-text">
+                <strong>Regístrate en el sistema</strong>
+                <span>Crea tu cuenta en el Sistema del Colportor y comienza tu misión.</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="sistema-colportor/registro.html" class="btn-primary">Registrarme ahora</a>
+        </div>
+
+      </div>
     </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       CTA SECTION
+  ════════════════════════════════════════════ -->
+  <section class="cta-section">
+    <span class="eyebrow eyebrow--dark">No esperes más</span>
+    <h2>¿Listo para empezar?</h2>
+    <p>Forma parte de nuestra comunidad de estudiantes que transforman vidas a través de la misión.</p>
+    <a href="universitarios.html" class="btn-primary">Conoce el programa</a>
+  </section>
+
+</main>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="main-footer">
+  <div class="footer-grid-container">
+
+    <div class="footer-col logo-info">
+      <img src="image/logo.png" alt="Logo EMPRENDUM" class="footer-logo">
+      <p class="lema">"Mientras eras un <span class="destacado">INSTRUMENTO de transformación</span> eres transformado"</p>
+      <a href="https://campusvirtual.iunav.edu.ve/" target="_blank" rel="noopener">
+        <img src="image/Iunav2.png" alt="Campus Virtual IUNAV" class="agent-logo">
+      </a>
+    </div>
+
+    <div class="footer-col">
+      <h3>Explorar</h3>
+      <ul>
+        <li><a href="Index.html">Inicio</a></li>
+        <li><a href="universitarios.html">Súmate al esfuerzo</a></li>
+        <li><a href="Nuestra-Historia.html">Nuestra Historia</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Conócenos</h3>
+      <ul>
+        <li><a href="Nuestra-Historia.html">¿Quiénes somos?</a></li>
+        <li><a href="Contacto.html">Contacto</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Ubicación</h3>
+      <ul>
+        <li><a>Carretera Panamericana, vía Salom</a></li>
+        <li><a>Teléfono: 0412-123-4567</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col social-copy">
+      <h3>Síguenos</h3>
+      <div class="social-links">
+        <a href="#" aria-label="Facebook"><img src="image/facebook.PNG" alt="Facebook"></a>
+        <a href="#" aria-label="Instagram"><img src="image/instagram.PNG" alt="Instagram"></a>
+        <a href="#" aria-label="Twitter"><img src="image/tuiter .PNG" alt="Twitter"></a>
+        <a href="#" aria-label="Threads"><img src="image/threads.PNG" alt="Threads"></a>
+        <a href="#" aria-label="Telegram"><img src="image/telegram.PNG" alt="Telegram"></a>
+      </div>
+      <img src="image/redes-iunav.png" alt="IUNAV" class="iunav-logo">
+      <p class="copyright">© 2025 EMPRENDUM</p>
+    </div>
+
+  </div>
+  <div class="footer-bottom">
+    EMPRENDUM — Universidad de Montemorelos · IUNAV · Venezuela
+  </div>
 </footer>
 
-    <script src="styles/bootstrap.bundle.min.js"></script>
-    <script src="script/script.js"></script>
+<script src="styles/bootstrap.bundle.min.js"></script>
+<script src="script/script.js"></script>
 </body>
 </html>

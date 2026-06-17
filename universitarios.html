@@ -1,138 +1,211 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universitarios - Emprendum</title>
-    <link rel="icon" type="image/png" href="image/Logo_individual_azul.png">
-    <link rel="stylesheet" href="styles/style.css">
-    <link href="styles/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universitarios — EMPRENDUM</title>
+  <meta name="description" content="Descubre cómo EMPRENDUM integra tu carrera universitaria con la misión de llevar esperanza a Venezuela.">
+  <link rel="icon" type="image/png" href="image/Logo_individual_azul.png">
+  <link rel="stylesheet" href="styles/style.css">
+  <link href="styles/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
+<!-- ═══════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════ -->
 <header class="header">
-    <nav class="navbar">
-        <a href="Index.html" class="nav-logo">
-            <img src="image/logo.png" alt="Emprendum" class="logo-img">
+  <nav class="navbar">
+    <a href="Index.html" class="nav-logo">
+      <img src="image/logo.png" alt="Logo EMPRENDUM" class="logo-img">
+    </a>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="Index.html"            class="nav-link">Inicio</a></li>
+      <li class="nav-item"><a href="Nuestra-Historia.html" class="nav-link">Nuestra Historia</a></li>
+      <li class="nav-item"><a href="universitarios.html"   class="nav-link">Universitarios</a></li>
+      <li class="nav-item"><a href="Contacto.html"         class="nav-link">Contacto</a></li>
+      <li class="nav-item nav-cta-item">
+        <a href="sistema-colportor/login.html" class="nav-link nav-cta-btn">
+          Ingresar al Sistema del Colportor
         </a>
-        <ul class="nav-menu">
-            <li class="nav-item"><a href="Index.html" class="nav-link">Inicio</a></li>
-            <li class="nav-item"><a href="Nuestra-Historia.html" class="nav-link">Nuestra Historia</a></li>
-            <li class="nav-item"><a href="universitarios.html" class="nav-link">Universitarios</a></li>
-            <li class="nav-item"><a href="Contacto.html" class="nav-link">Contacto</a></li>
-            <li class="nav-item nav-cta-item">
-                <a href="sistema-colportor/login.html" class="nav-link nav-cta-btn">Ingresar al Sistema del Colportor</a>
-            </li>
-        </ul>
-        <div class="hamburger">
-            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-        </div>
-    </nav>
+      </li>
+    </ul>
+    <div class="hamburger">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+  </nav>
 </header>
 
 <main>
-    <section class="hero-universitarios">
-        <div class="hero-text">
-            <h1>Desarrollo Estudiantil</h1>
-            <p>Formación, Práctica y Misión en un solo lugar.</p>
-        </div>
-    </section>
 
-    <section class="split-section">
-        <div class="split-image">
-            <img src="image/Photo_ejemplo2.jpg" alt="Capacitación de estudiantes">
-        </div>
-        <div class="split-content">
-            <h2>Capacitación Constante</h2>
-            <p>
-                EMPRENDUM incluye un programa de capacitaciones semanales dirigidas por expertos. 
-                Abarcamos temas vitales como estrategias de ventas, manejo de clientes, evangelismo personal 
-                y planificación de rutas.
-            </p>
-            <p>
-                <strong>Horario:</strong> Domingos de 4:00 pm a 5:30 pm, un espacio continuo para tu aprendizaje.
-            </p>
-        </div>
-    </section>
+  <!-- ═══════════════════════════════════════════
+       PAGE HERO
+  ════════════════════════════════════════════ -->
+  <section class="page-hero" style="background-image: url('image/imagen_carrusel2.jpg');">
+    <div class="page-hero-content">
+      <span class="badge-tag">Programa universitario</span>
+      <h1>Desarrollo Estudiantil</h1>
+      <p>Formación, práctica y misión en un solo lugar. Descubre cómo EMPRENDUM transforma tu carrera.</p>
+    </div>
+  </section>
 
-    <section class="split-section reverse">
-        <div class="split-image">
-            <img src="image/image_carrusel1.jpg" alt="Proyectos innovadores">
-        </div>
-        <div class="split-content">
-            <h2>Proyectos por Carrera</h2>
-            <p>
-                Integramos tus estudios con la práctica. Los estudiantes de informática, administración y educación preescolar 
-                participan en campañas enfocadas en la venta de materiales de valor cultural y educativo.
-            </p>
-            <p>
-                Estos proyectos están diseñados para que desarrolles habilidades de comunicación antes de enfrentarte 
-                a campañas nacionales más grandes.
-            </p>
-        </div>
-    </section>
 
-    <section class="split-section">
-        <div class="split-image">
-            <img src="image/presidente.jpg" alt="Prácticas ministeriales">
-        </div>
-        <div class="split-content">
-            <h2>Teología y Misión</h2>
-            <p>
-                Para los estudiantes de teología, el colportaje no es solo un trabajo, se integra con sus prácticas ministeriales.
-            </p>
-            <p>
-                Logramos una sinergia perfecta entre el evangelismo, el trabajo pastoral y la distribución de literatura, 
-                preparándote para ser un líder espiritual efectivo.
-            </p>
-        </div>
-    </section>
+  <!-- ═══════════════════════════════════════════
+       SPLIT 1 — Capacitación Constante
+  ════════════════════════════════════════════ -->
+  <section class="section section--white">
+    <div class="split-section" style="padding: 0;">
+      <div class="split-image">
+        <img src="image/Photo_ejemplo2.jpg" alt="Capacitación de estudiantes">
+      </div>
+      <div class="split-content">
+        <span class="eyebrow eyebrow--dark">Aprende cada semana</span>
+        <h2>Capacitación Constante</h2>
+        <p>EMPRENDUM incluye un programa de capacitaciones semanales dirigidas por expertos en diversas áreas.</p>
+        <p>Abarcamos temas vitales como estrategias de ventas, manejo de clientes, evangelismo personal y planificación de rutas de trabajo.</p>
+        <ul class="split-list">
+          <li class="split-list-item">
+            <i class="fas fa-clock split-list-icon"></i>
+            <span><strong>Horario:</strong> Domingos de 4:00 pm a 5:30 pm.</span>
+          </li>
+          <li class="split-list-item">
+            <i class="fas fa-users split-list-icon"></i>
+            <span>Capacitaciones grupales e individuales según tu zona de trabajo.</span>
+          </li>
+          <li class="split-list-item">
+            <i class="fas fa-award split-list-icon"></i>
+            <span>Certificación al completar el programa semestral.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-    <section class="cta-banner" style="background-image: url('image/imagen_carrusel3.jpeg');">
-        <div class="cta-overlay"></div>
-        <div class="cta-content">
-            <h2>¿Listo para empezar tu viaje?</h2>
-            <p>Desarrolla habilidades para la vida mientras compartes esperanza.</p>
-            <a href="Contacto.html" class="cta-button">Contáctanos Hoy</a>
-        </div>
-    </section>
+
+  <!-- ═══════════════════════════════════════════
+       SPLIT 2 — Proyectos por Carrera (reverse)
+  ════════════════════════════════════════════ -->
+  <section class="section section--gray">
+    <div class="split-section reverse" style="padding: 0;">
+      <div class="split-image">
+        <img src="image/image_carrusel1.jpg" alt="Proyectos innovadores por carrera">
+      </div>
+      <div class="split-content">
+        <span class="eyebrow eyebrow--dark">Tu carrera + la misión</span>
+        <h2>Proyectos por Carrera</h2>
+        <p>Integramos tus estudios con la práctica. Los estudiantes de cada carrera participan en campañas diseñadas según su perfil profesional.</p>
+        <p>Estos proyectos están diseñados para que desarrolles habilidades de comunicación antes de enfrentarte a campañas nacionales más grandes.</p>
+        <ul class="split-list">
+          <li class="split-list-item">
+            <i class="fas fa-laptop-code split-list-icon"></i>
+            <span><strong>Informática / Administración:</strong> Materiales de valor cultural y educativo.</span>
+          </li>
+          <li class="split-list-item">
+            <i class="fas fa-chalkboard-teacher split-list-icon"></i>
+            <span><strong>Educación Preescolar:</strong> Desarrollo de habilidades pedagógicas en campo.</span>
+          </li>
+          <li class="split-list-item">
+            <i class="fas fa-cross split-list-icon"></i>
+            <span><strong>Teología:</strong> Integración con prácticas ministeriales y pastorales.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       SPLIT 3 — Teología y Misión
+  ════════════════════════════════════════════ -->
+  <section class="section section--white">
+    <div class="split-section" style="padding: 0;">
+      <div class="split-image">
+        <img src="image/presidente.jpg" alt="Prácticas ministeriales">
+      </div>
+      <div class="split-content">
+        <span class="eyebrow eyebrow--dark">Evangelismo y servicio</span>
+        <h2>Teología y Misión</h2>
+        <p>Para los estudiantes de teología, el colportaje no es solo un trabajo; se integra plenamente con sus prácticas ministeriales.</p>
+        <p>Logramos una sinergia perfecta entre el evangelismo, el trabajo pastoral y la distribución de literatura edificante, preparándote para ser un líder espiritual efectivo.</p>
+        <a href="Contacto.html" class="btn-primary">Quiero ser parte</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       CTA BANNER
+  ════════════════════════════════════════════ -->
+  <section class="cta-banner" style="background-image: url('image/imagen_carrusel3.jpeg');">
+    <div class="cta-overlay"></div>
+    <div class="cta-content">
+      <span class="badge-tag">Da el primer paso</span>
+      <h2>¿Listo para empezar tu viaje?</h2>
+      <p>Desarrolla habilidades para la vida mientras compartes esperanza con cada hogar que visitas.</p>
+      <a href="Contacto.html" class="btn-primary">Contáctanos hoy</a>
+    </div>
+  </section>
 
 </main>
 
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
 <footer class="main-footer">
-    <div class="footer-grid-container">
-        <div class="footer-col logo-info">
-            <div class="logo-area">
-                <img src="image/logo.png" alt="Logo EMPRENDUM" class="footer-logo">
-            </div>
-            <p class="lema">"Mientras eras un <span class="destacado">INSTRUMENTO de transformación</span> eres transformado"</p>
-            <img src="image/Iunav2.png" alt="Quiero ser un agente" class="agent-logo">
-        </div>
-        <div class="footer-col">
-            <h3>Explorar</h3>
-            <ul>
-                <li><a href="Index.html">Inicio</a></li>
-                <li><a href="universitarios.html">Súmate al esfuerzo</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h3>Conócenos</h3>
-            <ul>
-                <li><a href="Nuestra-Historia.html">Nuestra historia</a></li>
-                <li><a href="Contacto.html">Contacto</a></li>
-            </ul>
-        </div>
-        <div class="footer-col social-copy">
-            <h3>SÍGUENOS</h3>
-            <div class="social-links">
-                <a href="#"><img src="image/facebook.PNG" alt="Facebook"></a>
-                <a href="#"><img src="image/instagram.PNG" alt="Instagram"></a>
-                <a href="#"><img src="image/telegram.PNG" alt="telegram"></a>
-            </div>
-            <p class="copyright">© 2025 EMPRENDUM</p>
-        </div>
+  <div class="footer-grid-container">
+
+    <div class="footer-col logo-info">
+      <img src="image/logo.png" alt="Logo EMPRENDUM" class="footer-logo">
+      <p class="lema">"Mientras eras un <span class="destacado">INSTRUMENTO de transformación</span> eres transformado"</p>
+      <a href="https://campusvirtual.iunav.edu.ve/" target="_blank" rel="noopener">
+        <img src="image/Iunav2.png" alt="Campus Virtual IUNAV" class="agent-logo">
+      </a>
     </div>
+
+    <div class="footer-col">
+      <h3>Explorar</h3>
+      <ul>
+        <li><a href="Index.html">Inicio</a></li>
+        <li><a href="universitarios.html">Súmate al esfuerzo</a></li>
+        <li><a href="Nuestra-Historia.html">Nuestra Historia</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Conócenos</h3>
+      <ul>
+        <li><a href="Nuestra-Historia.html">¿Quiénes somos?</a></li>
+        <li><a href="Contacto.html">Contacto</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Ubicación</h3>
+      <ul>
+        <li><a>Carretera Panamericana, vía Salom</a></li>
+        <li><a>Teléfono: 0412-123-4567</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col social-copy">
+      <h3>Síguenos</h3>
+      <div class="social-links">
+        <a href="#" aria-label="Facebook"><img src="image/facebook.PNG" alt="Facebook"></a>
+        <a href="#" aria-label="Instagram"><img src="image/instagram.PNG" alt="Instagram"></a>
+        <a href="#" aria-label="Telegram"><img src="image/telegram.PNG" alt="Telegram"></a>
+      </div>
+      <img src="image/redes-iunav.png" alt="IUNAV" class="iunav-logo">
+      <p class="copyright">© 2025 EMPRENDUM</p>
+    </div>
+
+  </div>
+  <div class="footer-bottom">
+    EMPRENDUM — Universidad de Montemorelos · IUNAV · Venezuela
+  </div>
 </footer>
 
 <script src="styles/bootstrap.bundle.min.js"></script>
