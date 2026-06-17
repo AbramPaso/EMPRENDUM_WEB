@@ -1,0 +1,115 @@
+REQUISITOS DE IMÁGENES - PROYECTO EMPRENDUM
+============================================
+Generado: 2026-06-17
+
+================================================================================
+IMÁGENES DEL CARRUSEL (Hero Section — 100vh, fullscreen)
+================================================================================
+
+Archivo: image_carrusel1.jpg
+  Orientación  : Horizontal (paisaje)
+  Dimensiones  : 1920 x 1080 px (mínimo)
+  Relación     : 16:9
+  Tipo         : Panorámica exterior / acción
+  Contenido    : Estudiantes con libros, trabajo de campo o evangelismo
+  Texto        : "Formación Integral"
+  Nota         : Imagen oscurecida con filter: brightness(60%) en CSS.
+                 Asegurarse de que haya zonas oscuras donde irá el texto blanco
+                 en el lado izquierdo de la composición.
+
+Archivo: imagen_carrusel2.jpg
+  Orientación  : Horizontal (paisaje)
+  Dimensiones  : 1920 x 1080 px (mínimo)
+  Relación     : 16:9
+  Tipo         : Panorámica grupal / comunidad
+  Contenido    : Grupo de universitarios, trabajo en equipo o comunidad
+  Texto        : "Liderazgo Misionero"
+  Nota         : Mismas condiciones de brillo que el anterior.
+
+Archivo: imagen_carrusel3.jpeg
+  Orientación  : Horizontal (paisaje)
+  Dimensiones  : 1920 x 1080 px (mínimo)
+  Relación     : 16:9
+  Tipo         : Panorámica inspiracional
+  Contenido    : Hogares, naturaleza, esperanza, salud o bienestar
+  Texto        : "Salud y Bienestar"
+  Nota         : Mismas condiciones de brillo que los anteriores.
+
+================================================================================
+SECCIÓN SPLIT (Proyectos Innovadores)
+================================================================================
+
+Archivo: Photo_ejemplo2.jpg
+  Orientación  : Horizontal
+  Dimensiones  : 800 x 600 px (mínimo)
+  Relación     : 4:3
+  Tipo         : Retrato de actividad / trabajo académico
+  Contenido    : Estudiantes colaborando, usando laptops, o actividad de campo
+  Nota         : Se muestra en un contenedor con height: 350px y border-radius.
+                 La imagen se recorta con object-fit: cover — enfocar el sujeto
+                 principal en el centro.
+
+================================================================================
+BANNER CTA (Historias que Transforman — fondo parallax)
+================================================================================
+
+Archivo: Photo_ejemplo1.jpg
+  Orientación  : Horizontal (gran panorámica)
+  Dimensiones  : 1920 x 800 px (mínimo)
+  Relación     : ~12:5 (panorámica amplia)
+  Tipo         : Paisaje inspiracional / misión
+  Contenido    : Paisaje, ciudad desde arriba, o imagen impactante de misión
+  Nota         : Usada con efecto parallax (background-attachment: fixed) en
+                 desktop. En iOS/móvil se cambia a scroll automáticamente.
+                 También se usa como fondo blureado en Nuestra-Historia.html.
+                 Evitar imágenes con detalles finos (el blur las puede degradar).
+
+================================================================================
+LOGOS E IDENTIDAD CORPORATIVA
+================================================================================
+
+Archivo: logo.png
+  Orientación  : Horizontal
+  Dimensiones  : 200 x 60 px aprox. (o mayor con misma proporción)
+  Fondo        : Transparente (PNG con canal alfa — OBLIGATORIO)
+  Colores      : Puede ser en azul o blanco; el CSS aplica filter: invert(1)
+                 para mostrarlo en blanco sobre el header transparente y luego
+                 filter: none para mostrarlo en color sobre fondo blanco.
+  Nota         : Si el logo es oscuro/azul, el CSS ya maneja ambos estados.
+
+Archivo: Iunav2.png
+  Orientación  : Horizontal
+  Dimensiones  : 200 x 80 px aprox.
+  Fondo        : Preferiblemente transparente
+  Uso          : Footer — enlace al campus virtual IUNAV (campusvirtual.iunav.edu.ve)
+  Altura CSS   : 90px (se escala automáticamente)
+
+Archivo: Logo_individual_azul.png
+  Uso          : Favicon del sitio (pestaña del navegador)
+  Dimensiones  : 32 x 32 px o 64 x 64 px
+  Fondo        : Transparente
+
+================================================================================
+NOTAS TÉCNICAS GENERALES
+================================================================================
+
+Formato recomendado:
+  - Fotografías          → JPG (calidad 80-85%)
+  - Logos / íconos       → PNG con canal alfa
+  - Ilustraciones web    → SVG (si aplica)
+
+Peso máximo recomendado por imagen:
+  - Carrusel             → 400-500 KB
+  - Split / CTA          → 200-300 KB
+  - Logos                → 20-50 KB
+
+Herramientas de optimización sugeridas:
+  - Squoosh (web)        → squoosh.app
+  - TinyPNG (web)        → tinypng.com
+  - ImageOptim (Mac)
+  - RIOT (Windows)
+
+Colocación de imágenes:
+  Todas las imágenes deben ir en la carpeta: EMPRENDUM_WEB/image/
+  Respetar los nombres de archivo exactamente como están listados arriba,
+  incluyendo mayúsculas y la extensión correcta (.jpg / .jpeg / .png).

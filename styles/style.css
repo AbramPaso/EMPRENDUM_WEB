@@ -1,7 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 :root {
-    --color-secundario: rgb(255, 251, 1);
+    --color-primario: #005a87;
+    --color-primario-oscuro: #004687;
+    --color-acento: #ffc107;
+    --color-acento-oscuro: #e6a800;
+    --color-texto: #333333;
+    --color-texto-claro: #666666;
+    --color-fondo: #f8f9fa;
+    --color-blanco: #ffffff;
+    --color-secundario: #ffc107;
+    --color-footer-bg: #004687;
+    --color-enlace-footer: #c0d9e8;
+    --color-destacado: #f5b041;
+    --radio-borde: 10px;
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --sombra-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --transicion: all 0.3s ease;
 }
 * {
     margin: 0;
@@ -35,8 +50,9 @@ body {
 
 /* Nueva clase para cuando el usuario hace scroll */
 .header.scrolled {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); 
-    padding: 1rem 5%; 
+    background-color: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: 1rem 5%;
 }
 
 .navbar {
@@ -83,6 +99,41 @@ body {
     list-style: none;
     gap: 2rem;
     margin-bottom: 0;
+    align-items: center;
+}
+
+/* Botón CTA dentro del navbar */
+.nav-cta-item {
+    display: flex;
+    align-items: center;
+}
+
+a.nav-cta-btn {
+    background-color: var(--color-acento);
+    color: #1a1a1a !important;
+    font-weight: 700;
+    padding: 0.5rem 1.4rem;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: var(--transicion);
+    white-space: nowrap;
+}
+
+a.nav-cta-btn:hover {
+    background-color: var(--color-acento-oscuro);
+    color: #1a1a1a !important;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.5);
+}
+
+.header.scrolled a.nav-cta-btn {
+    background-color: var(--color-acento);
+    color: #1a1a1a !important;
+    border: 1px solid var(--color-acento-oscuro);
+}
+
+.header.scrolled a.nav-cta-btn:hover {
+    background-color: var(--color-acento-oscuro);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
 }
 
 a.nav-link {
@@ -97,12 +148,11 @@ a.nav-link:hover {
 
 /* Color de los enlaces al hacer scroll */
 .header.scrolled .nav-link {
-    color: #fff;
-    -webkit-text-stroke: .4px black;
+    color: var(--color-primario);
 }
 
 .header.scrolled .nav-link:hover {
-    color: #005a87;
+    color: var(--color-primario-oscuro);
 }
 
 .hamburger {
@@ -170,23 +220,6 @@ a.nav-link:hover {
     color: #fff;
 }
 
-/* Estilos de tu botón CTA, asegúrate de que se vean bien sobre el fondo oscuro */
-.cta-button {
-    background-color: #007bff; /* Color azul de Bootstrap */
-    color: #fff;
-    padding: 0.8rem 2rem;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-    border: none; /* Elimina el borde si Bootstrap lo agrega */
-}
-
-.cta-button:hover {
-    background-color: #0056b3;
-    color: #fff;
-}
-
 /* Puedes ajustar el color de los indicadores y flechas si es necesario */
 .carousel-indicators [data-bs-target] {
     background-color: #fff;
@@ -207,17 +240,20 @@ a.nav-link:hover {
 }
 
 .cta-button {
-    background-color: #ffc107;
-    color: #333;
+    background-color: var(--color-acento);
+    color: var(--color-texto);
     padding: 1rem 2rem;
     text-decoration: none;
     font-weight: 700;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    transition: var(--transicion);
+    display: inline-block;
 }
 
 .cta-button:hover {
-    background-color: #e0a800;
+    background-color: var(--color-acento-oscuro);
+    color: var(--color-texto);
+    box-shadow: var(--sombra-hover);
 }
 
 /* Info Section */
@@ -407,7 +443,7 @@ a.nav-link:hover {
 
 /* Hero section específica para esta página */
 .hero-universitarios {
-    background: linear-gradient(rgba(0, 90, 135, 0.8), rgba(0, 90, 135, 0.8)), url('https://via.placeholder.com/1500x600.png?text=Estudiantes+Colaborando') no-repeat center center/cover;
+    background: linear-gradient(rgba(0, 90, 135, 0.8), rgba(0, 90, 135, 0.8)), url('../image/imagen_carrusel2.jpg') no-repeat center center / cover;
     height: 60vh;
     display: flex;
     justify-content: center;
@@ -427,8 +463,15 @@ a.nav-link:hover {
 
 .benefits-section h2 {
     font-size: 2.5rem;
-    margin-bottom: 3rem;
-    color: #005a87;
+    margin-bottom: 0.6rem;
+    color: var(--color-primario);
+}
+
+.section-subtitle {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    color: var(--color-texto-claro);
+    font-size: 1.05rem;
 }
 
 .benefits-grid {
@@ -444,16 +487,18 @@ a.nav-link:hover {
 
 .benefit-card {
     padding: 2rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    
-    
+    border: none;
+    border-radius: var(--radio-borde);
+    background-color: var(--color-blanco);
+    box-shadow: var(--sombra-suave);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-top 0.3s ease;
+    border-top: 3px solid transparent;
 }
 
 .benefit-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--sombra-hover);
+    border-top: 3px solid var(--color-primario);
 }
 
 .benefit-icon {
@@ -552,15 +597,29 @@ a.nav-link:hover {
     border: none;
     padding: 10px 30px;
     width: fit-content;
-    color: #fff;
+    color: #1a1a1a;
     text-transform: uppercase;
     font-weight: 600;    
 }
 
 
 @media only screen and (max-width: 768px) {
-    .nav-link {
+    .nav-link:not(.nav-cta-btn) {
         color: #000 !important;
+    }
+
+    .nav-cta-item {
+        padding: 0.5rem 1rem;
+    }
+
+    a.nav-cta-btn {
+        display: block;
+        margin: 0.5rem 1rem;
+        border-radius: 50px;
+        text-align: center;
+        background-color: var(--color-acento);
+        color: #1a1a1a !important;
+        padding: 0.75rem 1.4rem;
     }
 }
 
@@ -956,18 +1015,10 @@ a.nav-link:hover {
     }
 }
 
-/* Colores de referencia */
-:root {
-    --color-footer-bg: #004687; /* Azul oscuro principal */
-    --color-texto-claro: #fff;
-    --color-enlace-footer: #c0d9e8; /* Azul claro para los enlaces */
-    --color-destacado: #f5b041; /* Color amarillo/naranja para el lema */
-}
-
 /* === Contenedor Principal del Footer === */
 .main-footer {
     background-color: var(--color-footer-bg);
-    color: var(--color-texto-claro);
+    color: var(--color-blanco);
     padding: 3rem 5%;
 }
 
@@ -1202,9 +1253,33 @@ a.nav-link:hover {
 
 .split-content p {
     font-size: 1.1rem;
-    color: #555;
+    color: var(--color-texto-claro);
     line-height: 1.8;
     margin-bottom: 1.5rem;
+}
+
+.split-list {
+    margin-top: 1.25rem;
+    color: var(--color-texto-claro);
+    list-style: none;
+    padding: 0;
+}
+
+.split-list-item {
+    margin-bottom: 0.625rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.split-list-item:last-child {
+    margin-bottom: 0;
+}
+
+.split-list-icon {
+    color: var(--color-primario);
+    margin-right: 0.625rem;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
 }
 
 .split-image {
@@ -1239,6 +1314,12 @@ a.nav-link:hover {
     background-repeat: no-repeat;
     background-size: cover;
     margin: 4rem 0;
+}
+
+@media (max-device-width: 1024px) {
+    .cta-banner {
+        background-attachment: scroll;
+    }
 }
 
 /* Capa oscura sobre el banner */
