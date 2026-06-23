@@ -577,6 +577,23 @@
 
         <section id="companeros" class="section-view">
             <div class="section-header"><h2>Directorio de Equipo</h2></div>
+
+            <!-- Filtros del Director (JS los activa con inicializarFiltrosDirectorio) -->
+            <div id="filtros-directorio" style="display:none; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.25rem; align-items:center;">
+                <button id="btn-dir-todos" class="btn-filtro-dir active" onclick="cargarCompaneros('todos')">
+                    <i class="fas fa-users"></i> Todos los inscritos
+                </button>
+                <button id="btn-dir-zona" class="btn-filtro-dir" onclick="document.getElementById('select-zona-filtro').style.display='inline-block'; this.classList.add('active');">
+                    <i class="fas fa-map-marker-alt"></i> Por Zona
+                </button>
+                <button id="btn-dir-coaches" class="btn-filtro-dir" onclick="cargarCompaneros('coaches')">
+                    <i class="fas fa-chalkboard-teacher"></i> Solo Coaches
+                </button>
+                <select id="select-zona-filtro" style="display:none; padding:0.4rem 0.75rem; border:1px solid var(--border-color); border-radius:6px; font-size:0.82rem;">
+                    <option value="">Selecciona zona…</option>
+                </select>
+            </div>
+
             <div class="colleagues-grid" id="listaCompaneros"></div>
         </section>
 

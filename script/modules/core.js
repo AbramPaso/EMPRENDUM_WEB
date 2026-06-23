@@ -123,7 +123,7 @@ function mostrarSeccion(idSeccion) {
     const navEl = document.getElementById("nav-" + idSeccion);
     if (navEl) navEl.classList.add("active");
 
-    if (idSeccion === "companeros")  cargarCompaneros();
+    if (idSeccion === "companeros") { inicializarFiltrosDirectorio(); cargarCompaneros(); }
     if (idSeccion === "perfil")      cargarPerfil();
     if (idSeccion === "reportes")    cargarSeccionReportes();
     if (idSeccion === "campanas")    cargarSeccionCampanas();
