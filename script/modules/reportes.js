@@ -17,6 +17,7 @@ async function cargarSeccionReportes() {
         if (bloqueOk)      bloqueOk.style.display      = 'block';
         if (bloqueManual)  bloqueManual.style.display   = 'block';
         if (bloqueLibros)  bloqueLibros.style.display   = 'none';
+        await cargarHistorialReportes({ puedeReportar: true });
     } else {
         // Coach y Colportor: verificar inscripción y libros
         try {
@@ -37,12 +38,12 @@ async function cargarSeccionReportes() {
                 if (msgNo) msgNo.innerHTML =
                     `<i class="fas fa-lock" style="font-size:2.5rem;color:#cbd5e1;display:block;margin-bottom:12px;"></i>${data.razon || 'No puedes reportar en este momento.'}`;
             }
+            await cargarHistorialReportes({ puedeReportar: data.puede_reportar, razon: data.razon });
         } catch (e) {
             console.error('Error cargarSeccionReportes:', e);
+            await cargarHistorialReportes({});
         }
     }
-
-    await cargarHistorialReportes();
 }
 
 function poblarLibrosEnForm(libros) {
@@ -172,48 +173,8 @@ if (formReporte) {
     });
 }
 
-// --- Informe Mensual (PDF) ---
-const formInformeMensual = document.getElementById("formInformeMensual");
-if (formInformeMensual) {
-    formInformeMensual.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const archivo = document.getElementById("archivo_informe").files[0];
-        if (!archivo) return mostrarAlerta("Sin archivo", "Debes seleccionar un archivo.", "warning");
-
-        const formData = new FormData();
-        formData.append("mes",     document.getElementById("mes_reporte").value);
-        formData.append("anio",    new Date().getFullYear());
-        formData.append("informe", archivo);
-
-        const btn = e.target.querySelector('button[type="submit"]');
-        const textoOriginal = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
-        btn.disabled = true;
-
-        try {
-            const res = await fetch(`${API_BASE}/reports/upload-monthly`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}` },
-                body: formData
-            });
-            if (res.ok) {
-                mostrarAlerta("¡Informe subido!", "El archivo se guardó correctamente.", "success");
-                e.target.reset();
-            } else {
-                const err = await res.json();
-                mostrarAlerta("Error", err.message || "No se pudo subir el archivo.", "error");
-            }
-        } catch (error) {
-            mostrarAlerta("Error de conexión", "Intenta nuevamente.", "error");
-        } finally {
-            btn.innerHTML = textoOriginal;
-            btn.disabled = false;
-        }
-    });
-}
-
 // --- Historial de Reportes ---
-async function cargarHistorialReportes() {
+async function cargarHistorialReportes(ctx = {}) {
     try {
         const res = await fetch(`${API_BASE}/reports/my-reports`, {
             headers: { Authorization: `Bearer ${token}` }
@@ -226,7 +187,11 @@ async function cargarHistorialReportes() {
         tbody.innerHTML = '';
 
         if (reportes.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">No hay reportes registrados aún.</td></tr>';
+            let msg = 'No hay reportes registrados aún.';
+            if (ctx.puedeReportar === false && ctx.razon) {
+                msg = ctx.razon;
+            }
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">${msg}</td></tr>`;
             return;
         }
 
