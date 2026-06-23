@@ -134,7 +134,7 @@ async function cargarInscripcionColportor() {
             estadoMsg.innerText = 'No hay ninguna campaña activa en este momento.';
         } else if (data.estado === 'no_inscrito') {
             bloqueInscribirse.style.display = 'block';
-            await cargarZonasCampanaEnSelect('select_zona_inscripcion');
+            await cargarInscripcionSelects();
         } else if (data.estado === 'pendiente') {
             estadoMsg.style.cssText = 'display:block;background:#fffbeb;color:#b45309;padding:12px;border-radius:8px;font-weight:bold;';
             estadoMsg.innerText = '⏳ Tu solicitud está pendiente de aprobación.';
@@ -145,7 +145,7 @@ async function cargarInscripcionColportor() {
             estadoMsg.style.cssText = 'display:block;background:#fff1f2;color:#e11d48;padding:12px;border-radius:8px;font-weight:bold;';
             estadoMsg.innerText = '❌ Tu inscripción fue rechazada. Puedes volver a solicitar.';
             bloqueInscribirse.style.display = 'block';
-            await cargarZonasCampanaEnSelect('select_zona_inscripcion');
+            await cargarInscripcionSelects();
         }
     } catch (e) { console.error("Error cargarInscripcionColportor:", e); }
 }
@@ -228,6 +228,61 @@ async function responderInscripcion(id, estado) {
 // =====================================================
 // ZONAS DE CAMPAÑA — Gestión (solo Director)
 // =====================================================
+
+// ── Inscripción: cascada Unión → Zona ──────────────────────────────────────
+let _zonasInscripcion = [];
+
+async function cargarInscripcionSelects() {
+    const selUnion = document.getElementById('select_union_inscripcion');
+    const selZona  = document.getElementById('select_zona_inscripcion');
+    if (!selUnion || !selZona) return;
+
+    selUnion.innerHTML = '<option value="">Cargando…</option>';
+    selZona.innerHTML  = '<option value="">2. Selecciona tu Zona…</option>';
+    selZona.disabled   = true;
+
+    try {
+        const res = await fetch(`${API_BASE}/zonas/campana`, { headers: { Authorization: `Bearer ${token}` } });
+        _zonasInscripcion = await res.json();
+
+        if (_zonasInscripcion.length === 0) {
+            selUnion.innerHTML = '<option value="">Sin zonas definidas aún</option>';
+            return;
+        }
+
+        selUnion.innerHTML = '<option value="">1. Selecciona tu Unión…</option>';
+        const vistas = new Set();
+        _zonasInscripcion.forEach(z => {
+            if (z.union_id && !vistas.has(z.union_id)) {
+                vistas.add(z.union_id);
+                selUnion.innerHTML += `<option value="${z.union_id}">${z.union_nombre || 'Unión ' + z.union_id}</option>`;
+            }
+        });
+    } catch {
+        selUnion.innerHTML = '<option value="">Error al cargar</option>';
+    }
+}
+
+function filtrarZonasInscripcion() {
+    const selUnion = document.getElementById('select_union_inscripcion');
+    const selZona  = document.getElementById('select_zona_inscripcion');
+    if (!selUnion || !selZona) return;
+
+    const unionId = selUnion.value;
+    selZona.innerHTML = '<option value="">2. Selecciona tu Zona…</option>';
+
+    if (!unionId) {
+        selZona.disabled = true;
+        return;
+    }
+
+    const filtradas = _zonasInscripcion.filter(z => String(z.union_id) === String(unionId));
+    filtradas.forEach(z => {
+        const label = z.descripcion ? `${z.nombre} — ${z.descripcion}` : z.nombre;
+        selZona.innerHTML += `<option value="${z.id}">${label}</option>`;
+    });
+    selZona.disabled = filtradas.length === 0;
+}
 
 async function cargarZonasCampanaEnSelect(selectId) {
     const sel = document.getElementById(selectId);

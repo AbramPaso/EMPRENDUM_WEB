@@ -285,9 +285,14 @@
                 <div class="form-container">
                     <h3><i class="fas fa-clipboard-check"></i> Inscripción a Campaña Activa</h3>
                     <div id="bloque-inscribirse" style="display:none;">
-                        <p style="color: #475569; margin-bottom: 15px;">Hay una campaña activa. Selecciona tu zona y solicita inscribirte.</p>
+                        <p style="color: #475569; margin-bottom: 15px;">Hay una campaña activa. Selecciona tu unión y luego tu zona para inscribirte.</p>
                         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                            <select id="select_zona_inscripcion" style="min-width: 220px;"><option value="">Seleccione Zona...</option></select>
+                            <select id="select_union_inscripcion" style="min-width: 180px;" onchange="filtrarZonasInscripcion()">
+                                <option value="">1. Selecciona tu Unión…</option>
+                            </select>
+                            <select id="select_zona_inscripcion" style="min-width: 240px;" disabled>
+                                <option value="">2. Selecciona tu Zona…</option>
+                            </select>
                             <button onclick="solicitarInscripcionCampana()" class="btn-primary" style="background-color: var(--success);"><i class="fas fa-paper-plane"></i> Inscribirme</button>
                         </div>
                     </div>
@@ -583,14 +588,20 @@
                 <button id="btn-dir-todos" class="btn-filtro-dir active" onclick="cargarCompaneros('todos')">
                     <i class="fas fa-users"></i> Todos los inscritos
                 </button>
-                <button id="btn-dir-zona" class="btn-filtro-dir" onclick="document.getElementById('select-zona-filtro').style.display='inline-block'; this.classList.add('active');">
-                    <i class="fas fa-map-marker-alt"></i> Por Zona
+                <button id="btn-dir-no_inscritos" class="btn-filtro-dir" onclick="cargarCompaneros('no_inscritos')">
+                    <i class="fas fa-user-times"></i> No inscritos
+                </button>
+                <button id="btn-dir-union" class="btn-filtro-dir" onclick="abrirFiltroUnion()">
+                    <i class="fas fa-sitemap"></i> Por Unión
                 </button>
                 <button id="btn-dir-coaches" class="btn-filtro-dir" onclick="cargarCompaneros('coaches')">
                     <i class="fas fa-chalkboard-teacher"></i> Solo Coaches
                 </button>
                 <select id="select-zona-filtro" style="display:none; padding:0.4rem 0.75rem; border:1px solid var(--border-color); border-radius:6px; font-size:0.82rem;">
                     <option value="">Selecciona zona…</option>
+                </select>
+                <select id="select-union-filtro" style="display:none; padding:0.4rem 0.75rem; border:1px solid var(--border-color); border-radius:6px; font-size:0.82rem;">
+                    <option value="">Selecciona unión…</option>
                 </select>
             </div>
 

@@ -3,6 +3,7 @@
 // =====================================================
 
 const ROLES_LABEL = { 1: 'Director', 2: 'Coach' };
+let _zonasCache = [];  // zonas de campaña activa, cargadas una vez
 
 async function cargarCompaneros(filtro = 'auto', zonaId = null) {
     const container = document.getElementById("listaCompaneros");
@@ -11,7 +12,7 @@ async function cargarCompaneros(filtro = 'auto', zonaId = null) {
     let url = `${API_BASE}/users/directorio`;
     const params = new URLSearchParams();
     if (filtro !== 'auto') params.set('filtro', filtro);
-    if (zonaId)            params.set('zona_id', zonaId);
+    if (zonaId && filtro === 'zona') params.set('zona_id', zonaId);
     if ([...params].length) url += '?' + params.toString();
 
     try {
@@ -19,9 +20,9 @@ async function cargarCompaneros(filtro = 'auto', zonaId = null) {
         if (!res.ok) throw new Error();
         const users = await res.json();
 
-        // Marcar botón activo en los filtros del director
+        // Marcar botón activo
         document.querySelectorAll('.btn-filtro-dir').forEach(b => b.classList.remove('active'));
-        const keyBtn = filtro === 'auto' ? 'todos' : filtro;
+        const keyBtn = (filtro === 'auto' || filtro === 'todos') ? 'todos' : filtro;
         const btnActivo = document.getElementById(`btn-dir-${keyBtn}`);
         if (btnActivo) btnActivo.classList.add('active');
 
@@ -50,28 +51,71 @@ async function cargarCompaneros(filtro = 'auto', zonaId = null) {
     }
 }
 
-// Muestra los filtros del director y carga las zonas de campaña activa
+// Rellena el select de zonas con la lista recibida (nombre + descripción)
+function _poblarSelectZona(zonas) {
+    const sel = document.getElementById('select-zona-filtro');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Selecciona zona…</option>';
+    zonas.forEach(z => {
+        const opt = document.createElement('option');
+        opt.value = z.id;
+        opt.textContent = z.descripcion ? `${z.nombre} — ${z.descripcion}` : z.nombre;
+        sel.appendChild(opt);
+    });
+}
+
+// Abre el filtro de unión (oculta zona hasta que se elija unión)
+function abrirFiltroUnion() {
+    const selZ = document.getElementById('select-zona-filtro');
+    const selU = document.getElementById('select-union-filtro');
+    if (selU) { selU.style.display = 'inline-block'; selU.value = ''; }
+    if (selZ) { selZ.style.display = 'none'; selZ.value = ''; }
+}
+
+// Inicializa filtros del director (solo se ejecuta una vez por sesión de tab)
 async function inicializarFiltrosDirectorio() {
     const filtros = document.getElementById('filtros-directorio');
     if (!filtros || usuarioActual.rol !== 1) return;
+    if (filtros.dataset.init) return;
+    filtros.dataset.init = '1';
     filtros.style.display = 'flex';
 
     try {
         const res = await fetch(`${API_BASE}/zonas/campana`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) return;
-        const zonas = await res.json();
-        const sel = document.getElementById('select-zona-filtro');
-        if (!sel) return;
-        zonas.forEach(z => {
-            const opt = document.createElement('option');
-            opt.value = z.id;
-            opt.textContent = z.nombre;
-            sel.appendChild(opt);
-        });
+        _zonasCache = await res.json();
+
+        // Poblar select de zonas con todas las zonas
+        _poblarSelectZona(_zonasCache);
+
+        // Poblar select de uniones (deduplicar por union_id)
+        const selUnion = document.getElementById('select-union-filtro');
+        if (selUnion) {
+            const vistas = new Set();
+            _zonasCache.forEach(z => {
+                if (z.union_id && !vistas.has(z.union_id)) {
+                    vistas.add(z.union_id);
+                    const opt = document.createElement('option');
+                    opt.value = z.union_id;
+                    opt.textContent = z.union_nombre || `Unión ${z.union_id}`;
+                    selUnion.appendChild(opt);
+                }
+            });
+        }
     } catch {}
 }
 
-// Handler del select de zona (evita doble llamada desde el botón)
+// Al cambiar unión: filtra zonas y muestra el select de zona
+document.getElementById('select-union-filtro')?.addEventListener('change', function () {
+    const unionId = this.value;
+    if (!unionId) return;
+    const filtradas = _zonasCache.filter(z => String(z.union_id) === String(unionId));
+    _poblarSelectZona(filtradas);
+    const selZ = document.getElementById('select-zona-filtro');
+    if (selZ) { selZ.style.display = 'inline-block'; selZ.value = ''; }
+});
+
+// Al cambiar zona: carga el directorio filtrado por zona
 document.getElementById('select-zona-filtro')?.addEventListener('change', function () {
     if (this.value) cargarCompaneros('zona', this.value);
 });
