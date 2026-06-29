@@ -25,11 +25,12 @@ async function cargarSeccionLibros() {
     if (rol === 1) {
         if (vistaDir)    vistaDir.style.display    = 'block';
         if (vistaTransf) vistaTransf.style.display = 'block';
-        await Promise.all([cargarStockGlobal(), cargarZonasParaLibros(), cargarTransferenciasPendientes()]);
+        await Promise.all([cargarStockGlobal(), cargarZonasParaLibros(), cargarTransferenciasPendientes(), cargarZonasTransfer()]);
     } else if (rol === 2) {
         if (vistaCoach)  vistaCoach.style.display  = 'block';
         if (vistaTransf) vistaTransf.style.display = 'block';
         await Promise.all([cargarStockCoach(), cargarColportoresCoach(), cargarTransferenciasPendientes()]);
+        inicializarTransferCoach();
     } else {
         if (vistaColp) vistaColp.style.display = 'block';
         await cargarMisLibros();
@@ -95,20 +96,48 @@ async function cargarStockGlobal() {
     } catch (e) { console.error("Error cargarStockGlobal:", e); }
 }
 
+let _zonasLibros = [];
+
 async function cargarZonasParaLibros() {
     try {
-        const res = await fetch(`${API_BASE}/zonas`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API_BASE}/zonas/campana`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) return;
-        zonasData = await res.json();
+        _zonasLibros = await res.json();
 
-        const sel = document.getElementById('asig_zona');
-        if (sel) {
-            sel.innerHTML = '<option value="">Seleccione Zona...</option>';
-            zonasData.forEach(z => {
-                sel.innerHTML += `<option value="${z.id}">${z.nombre}</option>`;
+        const selUnion = document.getElementById('asig_union');
+        if (selUnion) {
+            selUnion.innerHTML = '<option value="">1. Selecciona Unión…</option>';
+            const vistas = new Set();
+            _zonasLibros.forEach(z => {
+                if (z.union_id && !vistas.has(z.union_id)) {
+                    vistas.add(z.union_id);
+                    const opt = document.createElement('option');
+                    opt.value = z.union_id;
+                    opt.textContent = z.union_nombre || `Unión ${z.union_id}`;
+                    selUnion.appendChild(opt);
+                }
             });
         }
+
+        const selZona = document.getElementById('asig_zona');
+        if (selZona) { selZona.innerHTML = '<option value="">2. Selecciona Zona…</option>'; selZona.disabled = true; }
     } catch (e) { console.error("Error cargarZonasParaLibros:", e); }
+}
+
+function filtrarZonasLibros() {
+    const unionId = document.getElementById('asig_union')?.value;
+    const selZona = document.getElementById('asig_zona');
+    if (!selZona) return;
+    selZona.innerHTML = '<option value="">2. Selecciona Zona…</option>';
+    if (!unionId) { selZona.disabled = true; return; }
+    const filtradas = _zonasLibros.filter(z => String(z.union_id) === String(unionId));
+    filtradas.forEach(z => {
+        const opt = document.createElement('option');
+        opt.value = z.id;
+        opt.textContent = z.descripcion ? `${z.nombre} — ${z.descripcion}` : z.nombre;
+        selZona.appendChild(opt);
+    });
+    selZona.disabled = filtradas.length === 0;
 }
 
 async function agregarStockGlobal() {
@@ -153,6 +182,9 @@ async function asignarStockZona() {
         if (res.ok) {
             mostrarAlerta('¡Asignado!', 'Libros asignados a la zona.', 'success');
             document.getElementById('asig_zona_cant').value = '';
+            document.getElementById('asig_union').value = '';
+            document.getElementById('asig_zona').innerHTML = '<option value="">2. Selecciona Zona…</option>';
+            document.getElementById('asig_zona').disabled = true;
             await cargarStockGlobal();
         } else {
             const err = await res.json();

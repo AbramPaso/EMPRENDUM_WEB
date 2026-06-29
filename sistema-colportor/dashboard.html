@@ -353,8 +353,16 @@
                     <h3><i class="fas fa-map-marker-alt"></i> Asignar Libros a Zona</h3>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
                         <div>
+                            <label style="font-size: 0.8rem; color: #64748b;">Unión</label>
+                            <select id="asig_union" style="display:block; margin-top: 4px;" onchange="filtrarZonasLibros()">
+                                <option value="">1. Selecciona Unión…</option>
+                            </select>
+                        </div>
+                        <div>
                             <label style="font-size: 0.8rem; color: #64748b;">Zona Destino</label>
-                            <select id="asig_zona" style="display:block; margin-top: 4px;"><option value="">Seleccione Zona...</option></select>
+                            <select id="asig_zona" style="display:block; margin-top: 4px;" disabled>
+                                <option value="">2. Selecciona Zona…</option>
+                            </select>
                         </div>
                         <div>
                             <label style="font-size: 0.8rem; color: #64748b;">Stock de Libro</label>
@@ -420,25 +428,46 @@
                             </div>
                             <div></div>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; align-items: end; margin-top: 10px;">
+                        <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; align-items: start; margin-top: 10px;">
+                            <!-- ── ORIGEN ── -->
                             <div>
                                 <label style="font-size: 0.8rem; color: #64748b;">Origen</label>
-                                <select id="trans_origen_tipo" style="display:block; margin-top: 4px; width:100%;" onchange="cargarOpcionesTransfer('origen')">
+                                <select id="trans_origen_tipo" style="display:block; margin-top: 4px; width:100%;" onchange="cambiarTipoTransfer('origen')">
                                     <option value="zona">Desde Zona</option>
                                     <option value="colportor">Desde Colportor</option>
                                 </select>
-                                <select id="trans_origen_id" style="display:block; margin-top: 6px; width:100%;"><option value="">Seleccione origen...</option></select>
+                                <!-- Director: unión -->
+                                <select id="trans_origen_union" style="display:none; margin-top:6px; width:100%;" onchange="filtrarZonaTransfer('origen')">
+                                    <option value="">1. Selecciona Unión…</option>
+                                </select>
+                                <!-- Director: zona | Coach: zona de solo lectura -->
+                                <select id="trans_origen_zona" style="display:block; margin-top:6px; width:100%;" disabled onchange="filtrarColportorTransfer('origen')">
+                                    <option value="">Selecciona Zona…</option>
+                                </select>
+                                <!-- Colportor (director y coach) -->
+                                <select id="trans_origen_colportor" style="display:none; margin-top:6px; width:100%;" disabled>
+                                    <option value="">Selecciona Colportor…</option>
+                                </select>
                             </div>
-                            <div style="text-align:center; padding-bottom:10px; font-size: 1.3rem; color: #94a3b8;">
+                            <div style="text-align:center; padding-top:52px; font-size: 1.3rem; color: #94a3b8;">
                                 <i class="fas fa-arrow-right"></i>
                             </div>
+                            <!-- ── DESTINO ── -->
                             <div>
                                 <label style="font-size: 0.8rem; color: #64748b;">Destino</label>
-                                <select id="trans_destino_tipo" style="display:block; margin-top: 4px; width:100%;" onchange="cargarOpcionesTransfer('destino')">
+                                <select id="trans_destino_tipo" style="display:block; margin-top: 4px; width:100%;" onchange="cambiarTipoTransfer('destino')">
                                     <option value="zona">Hacia Zona</option>
                                     <option value="colportor">Hacia Colportor</option>
                                 </select>
-                                <select id="trans_destino_id" style="display:block; margin-top: 6px; width:100%;"><option value="">Seleccione destino...</option></select>
+                                <select id="trans_destino_union" style="display:none; margin-top:6px; width:100%;" onchange="filtrarZonaTransfer('destino')">
+                                    <option value="">1. Selecciona Unión…</option>
+                                </select>
+                                <select id="trans_destino_zona" style="display:block; margin-top:6px; width:100%;" disabled onchange="filtrarColportorTransfer('destino')">
+                                    <option value="">Selecciona Zona…</option>
+                                </select>
+                                <select id="trans_destino_colportor" style="display:none; margin-top:6px; width:100%;" disabled>
+                                    <option value="">Selecciona Colportor…</option>
+                                </select>
                             </div>
                         </div>
                         <button onclick="solicitarTransferencia()" class="btn-primary" style="margin-top: 15px;"><i class="fas fa-paper-plane"></i> Solicitar Transferencia</button>

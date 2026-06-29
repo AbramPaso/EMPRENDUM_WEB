@@ -59,7 +59,8 @@ async function cargarEstadisticas() {
 
         const data = await res.json();
         const rol = data.rol_detectado;
-        usuarioActual.rol = rol;
+        usuarioActual.rol     = rol;
+        usuarioActual.zona_id = data.zona_detectada || null;
 
         const badge = document.getElementById("rol-badge");
         if (badge) {
