@@ -308,31 +308,48 @@ async function cargarZonasCampana() {
         if (!res.ok) return;
         const zonas = await res.json();
 
-        const tbody = document.getElementById('tabla-zonas-campana-body');
-        if (!tbody) return;
-        tbody.innerHTML = '';
+        const wrapper = document.getElementById('zonas-por-union-wrapper');
+        if (!wrapper) return;
+        wrapper.innerHTML = '';
 
         if (zonas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:20px;color:#94a3b8;">Sin zonas para esta campaña. Agrega la primera usando el formulario de arriba.</td></tr>';
+            wrapper.innerHTML = '<p style="color:#94a3b8;padding:16px 0;">Sin zonas para esta campaña. Agrega la primera usando el formulario de arriba.</p>';
             return;
         }
 
-        zonas.forEach((z, idx) => {
-            tbody.innerHTML += `
+        // Agrupar por union_id manteniendo el orden de aparición
+        const gruposMap = new Map();
+        zonas.forEach(z => {
+            const key = z.union_id || 0;
+            if (!gruposMap.has(key)) gruposMap.set(key, { nombre: z.union_nombre || 'Sin Unión', zonas: [] });
+            gruposMap.get(key).zonas.push(z);
+        });
+
+        gruposMap.forEach(grupo => {
+            const filas = grupo.zonas.map((z, idx) => `
                 <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px;color:#94a3b8;">${idx + 1}</td>
-                    <td style="padding:10px;font-weight:bold;">${z.nombre}</td>
-                    <td style="padding:10px;color:#64748b;">${z.descripcion || '--'}</td>
-                    <td style="padding:10px;">
-                        <span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:12px;font-size:0.8rem;font-weight:bold;">${z.union_nombre || '--'}</span>
-                    </td>
-                    <td style="padding:10px;text-align:center;">
-                        <button onclick="eliminarZonaCampana(${z.id})" style="background:#e11d48;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;" title="Eliminar zona">
+                    <td style="padding:8px 10px;color:#94a3b8;">${idx + 1}</td>
+                    <td style="padding:8px 10px;font-weight:bold;">${z.nombre}</td>
+                    <td style="padding:8px 10px;color:#64748b;">${z.descripcion || '--'}</td>
+                    <td style="padding:8px 10px;text-align:center;">
+                        <button onclick="eliminarZonaCampana(${z.id})" style="background:#e11d48;color:white;border:none;padding:4px 9px;border-radius:5px;cursor:pointer;" title="Eliminar zona">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
-                </tr>
-            `;
+                </tr>`).join('');
+
+            const col = document.createElement('div');
+            col.style.cssText = 'flex:1;min-width:260px;overflow-x:auto;';
+            col.innerHTML = `
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:8px;">
+                    <span style="background:#e0f2fe;color:#0369a1;padding:2px 10px;border-radius:12px;font-size:0.82rem;font-weight:700;">${grupo.nombre}</span>
+                    <span style="font-size:0.78rem;color:#94a3b8;">${grupo.zonas.length} zona${grupo.zonas.length !== 1 ? 's' : ''}</span>
+                </div>
+                <table class="table-pro">
+                    <thead><tr><th>#</th><th>Nombre</th><th>Descripción</th><th style="text-align:center;">Eliminar</th></tr></thead>
+                    <tbody>${filas}</tbody>
+                </table>`;
+            wrapper.appendChild(col);
         });
     } catch (e) { console.error("Error cargarZonasCampana:", e); }
 }

@@ -2,6 +2,50 @@
 // INICIO — Estadísticas, gráficas y tablas del dashboard
 // =====================================================
 
+let _campanaActual = null;  // null = activa; número = campana_id elegida por el director
+
+async function cargarSelectorCampanas() {
+    const wrapper = document.getElementById('selector-campana-director');
+    if (!wrapper || wrapper.dataset.init) return;
+    wrapper.dataset.init = '1';
+
+    try {
+        const res = await fetch(`${API_BASE}/campanas`, { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) return;
+        const campanas = await res.json();
+
+        campanas.sort((a, b) => {
+            if (a.estado === 'activa') return -1;
+            if (b.estado === 'activa') return 1;
+            return new Date(b.fecha_inicio) - new Date(a.fecha_inicio);
+        });
+
+        wrapper.innerHTML = '<span style="font-size:0.8rem;color:#64748b;font-weight:600;margin-right:0.5rem;align-self:center;">Campaña:</span>';
+        campanas.forEach((c, i) => {
+            const badge = c.estado === 'activa'
+                ? '<span class="badge-camp-activa">Activa</span>'
+                : '<span class="badge-camp-cerrada">Cerrada</span>';
+            const btn = document.createElement('button');
+            btn.className = 'pill-campana' + (i === 0 ? ' active' : '');
+            btn.dataset.campanaId = c.id;
+            btn.innerHTML = `${c.nombre} ${badge}`;
+            btn.onclick = () => seleccionarCampana(c.id, btn);
+            wrapper.appendChild(btn);
+        });
+
+        if (campanas.length) _campanaActual = campanas[0].id;
+    } catch {}
+}
+
+function seleccionarCampana(id, btnEl) {
+    _campanaActual = id;
+    document.querySelectorAll('.pill-campana').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    cargarGraficasDirector();
+    cargarTablaCoaches();
+    cargarTablaGlobalDirector();
+}
+
 async function cargarEstadisticas() {
     try {
         const res = await fetch(`${API_BASE}/reports/dashboard-stats`, {
@@ -30,6 +74,7 @@ async function cargarEstadisticas() {
 
         if (rol === 1) {
             document.getElementById("vista-director").style.display = "block";
+            await cargarSelectorCampanas();
             cargarGraficasDirector();
             cargarTablaCoaches();
             cargarTablaGlobalDirector();
@@ -55,7 +100,8 @@ function llenarTarjetas(data) {
 
 async function cargarGraficasDirector() {
     try {
-        const res = await fetch(`${API_BASE}/reports/director-charts`, {
+        const qs = _campanaActual ? `?campana_id=${_campanaActual}` : '';
+        const res = await fetch(`${API_BASE}/reports/director-charts${qs}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) return;
@@ -152,7 +198,8 @@ async function cargarTablaCoach() {
 
 async function cargarTablaGlobalDirector() {
     try {
-        const res = await fetch(`${API_BASE}/users/gestion/todos`, {
+        const qs = _campanaActual ? `?campana_id=${_campanaActual}` : '';
+        const res = await fetch(`${API_BASE}/users/gestion/todos${qs}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) return;
@@ -197,7 +244,8 @@ async function cargarTablaGlobalDirector() {
 
 async function cargarTablaCoaches() {
     try {
-        const res = await fetch(`${API_BASE}/users/lista-coaches`, {
+        const qs = _campanaActual ? `?campana_id=${_campanaActual}` : '';
+        const res = await fetch(`${API_BASE}/users/lista-coaches${qs}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) return;

@@ -592,6 +592,53 @@ input:focus, select:focus, textarea:focus {
     border-color: var(--primary-blue);
 }
 
+/* Selector de campaña (pills) — Panel de Control del Director */
+.pill-campana {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--border-color, #e2e8f0);
+    background: var(--bg-card, #fff);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    white-space: nowrap;
+}
+.pill-campana:hover,
+.pill-campana.active {
+    background: var(--primary-blue, #2563eb);
+    color: #fff;
+    border-color: var(--primary-blue, #2563eb);
+}
+.pill-campana.active .badge-camp-activa,
+.pill-campana.active .badge-camp-cerrada {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+}
+.badge-camp-activa {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: #dcfce7;
+    color: #166534;
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+.badge-camp-cerrada {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+
 /* Badge de rol en tarjeta de compañero */
 .colleague-badge {
     display: inline-block;
