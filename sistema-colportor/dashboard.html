@@ -735,15 +735,12 @@
 
                     <div style="background: #eff6ff; padding: 15px; border: 1px solid #bfdbfe; border-radius: 8px; margin-bottom: 15px;">
                         <label style="color: #1e40af;">Asignación de Campaña</label>
-                        <select id="gt_union" style="margin-top: 10px;" onchange="filtrarCamposGestion()">
-                            <option value="">Unión...</option>
-                            <option value="1">UVOC</option>
-                            <option value="2">UVO</option>
+                        <select id="gt_union" style="margin-top: 10px;" onchange="filtrarZonasGestion()">
+                            <option value="">1. Selecciona la Unión…</option>
                         </select>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-                            <select id="gt_campo" disabled><option>Campo...</option></select>
-                            <select id="gt_zona" disabled><option>Zona...</option></select>
-                        </div>
+                        <select id="gt_zona" style="margin-top: 10px;" disabled>
+                            <option value="">2. Selecciona la Zona…</option>
+                        </select>
                     </div>
 
                     <div style="background: #fff1f2; padding: 10px; border: 1px dashed #f43f5e; border-radius: 6px;">

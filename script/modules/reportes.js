@@ -240,7 +240,17 @@ async function descargarIndividual() {
 async function descargarMasivo() {
     const mes  = document.getElementById('descarga_mes').value;
     const anio = document.getElementById('descarga_anio').value;
-    if (!confirm(`¿Generar ZIP con los informes del ${mes}/${anio}?`)) return;
+    const confZip = await Swal.fire({
+        title: '¿Generar informe ZIP?',
+        text: `Se comprimirán los informes del ${mes}/${anio}.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, generar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#0f172a',
+        cancelButtonColor: '#94a3b8',
+    });
+    if (!confZip.isConfirmed) return;
 
     const btn = document.querySelector('#modalDescarga button[onclick="descargarMasivo()"]');
     const textoOriginal = btn.innerHTML;

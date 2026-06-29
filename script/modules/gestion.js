@@ -34,6 +34,55 @@ function cerrarModalGestion() {
 
 // Modal Maestro (engranaje) — Solo Director
 let pasoActual = 1;
+let _zonasGestion = [];  // zonas de campaña activa, cargadas una vez por sesión
+
+async function cargarZonasGestion() {
+    const selUnion = document.getElementById('gt_union');
+    const selZona  = document.getElementById('gt_zona');
+    if (!selUnion) return;
+
+    // Evitar múltiples fetches; si ya tiene opciones, no recargar
+    if (_zonasGestion.length === 0) {
+        try {
+            const res = await fetch(`${API_BASE}/zonas/campana`, { headers: { Authorization: `Bearer ${token}` } });
+            if (res.ok) _zonasGestion = await res.json();
+        } catch {}
+    }
+
+    // Poblar select de uniones (deduplicar)
+    const unionActual = selUnion.value;
+    selUnion.innerHTML = '<option value="">1. Selecciona la Unión…</option>';
+    const vistas = new Set();
+    _zonasGestion.forEach(z => {
+        if (z.union_id && !vistas.has(z.union_id)) {
+            vistas.add(z.union_id);
+            const opt = document.createElement('option');
+            opt.value = z.union_id;
+            opt.textContent = z.union_nombre || `Unión ${z.union_id}`;
+            selUnion.appendChild(opt);
+        }
+    });
+    // Restaurar valor anterior si existe
+    if (unionActual) selUnion.value = unionActual;
+
+    if (selZona) { selZona.innerHTML = '<option value="">2. Selecciona la Zona…</option>'; selZona.disabled = true; }
+}
+
+function filtrarZonasGestion() {
+    const unionId  = document.getElementById('gt_union')?.value;
+    const selZona  = document.getElementById('gt_zona');
+    if (!selZona) return;
+    selZona.innerHTML = '<option value="">2. Selecciona la Zona…</option>';
+    if (!unionId) { selZona.disabled = true; return; }
+    const filtradas = _zonasGestion.filter(z => String(z.union_id) === String(unionId));
+    filtradas.forEach(z => {
+        const opt = document.createElement('option');
+        opt.value = z.id;
+        opt.textContent = z.descripcion ? `${z.nombre} — ${z.descripcion}` : z.nombre;
+        selZona.appendChild(opt);
+    });
+    selZona.disabled = filtradas.length === 0;
+}
 
 async function abrirModalCompleto(id) {
     try {
@@ -66,13 +115,15 @@ async function abrirModalCompleto(id) {
         document.getElementById('gt_rol').value      = u.rol_id || 3;
         document.getElementById('gt_password').value = '';
 
+        // Cargar uniones dinámicamente desde zonas de campaña
+        await cargarZonasGestion();
         const unionId = u.union_trabajo_id || '';
-        document.getElementById('gt_union').value = unionId;
-        filtrarCamposGestion();
-
         if (unionId) {
-            document.getElementById('gt_campo').value = u.campo_trabajo_id || '';
-            document.getElementById('gt_zona').value  = u.zona_id || '';
+            document.getElementById('gt_union').value = unionId;
+            filtrarZonasGestion();
+            // Pre-seleccionar zona si pertenece a la campaña activa
+            const selZona = document.getElementById('gt_zona');
+            if (selZona && u.zona_id) selZona.value = u.zona_id;
         }
 
         document.getElementById('modalGestionTotal').style.display = 'flex';
@@ -100,30 +151,6 @@ function cerrarModalTotal() {
     document.getElementById('modalGestionTotal').style.display = 'none';
 }
 
-function filtrarCamposGestion() {
-    const unionId     = document.getElementById('gt_union').value;
-    const selectCampo = document.getElementById('gt_campo');
-    const selectZona  = document.getElementById('gt_zona');
-
-    selectCampo.innerHTML = '<option value="">Seleccione...</option>';
-    selectZona.innerHTML  = '<option value="">Seleccione...</option>';
-
-    if (camposPorUnion[unionId]) {
-        selectCampo.disabled = false;
-        camposPorUnion[unionId].forEach(c => {
-            selectCampo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
-        });
-    } else {
-        selectCampo.disabled = true;
-    }
-
-    if (unionId) {
-        cargarZonasEnSelect('gt_zona', unionId);
-    } else {
-        selectZona.disabled = true;
-    }
-}
-
 // Guardar Modal Rápido
 const formBasico = document.getElementById('formGestionColportor');
 if (formBasico) {
@@ -137,7 +164,17 @@ if (formBasico) {
             nueva_password:  document.getElementById('gest_password').value
         };
 
-        if (!confirm("¿Guardar cambios básicos?")) return;
+        const conf1 = await Swal.fire({
+            title: '¿Guardar cambios?',
+            text: 'Se actualizarán los datos básicos del colportor.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#0f172a',
+            cancelButtonColor: '#94a3b8',
+        });
+        if (!conf1.isConfirmed) return;
 
         try {
             const res = await fetch(`${API_BASE}/users/gestion/update-basic/${id}`, {
@@ -166,7 +203,17 @@ if (formTotal) {
     formTotal.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (!confirm("¿Estás seguro de guardar TODOS los cambios?")) return;
+        const conf2 = await Swal.fire({
+            title: '¿Guardar todos los cambios?',
+            text: 'Se actualizará el perfil completo del usuario.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, guardar todo',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#0f172a',
+            cancelButtonColor: '#94a3b8',
+        });
+        if (!conf2.isConfirmed) return;
 
         const id = document.getElementById('gt_id_usuario').value;
         const datos = {
@@ -185,7 +232,6 @@ if (formTotal) {
             direccion_origen: document.getElementById('gt_direccion').value,
             padecimiento:     document.getElementById('gt_salud').value,
             union_id:         document.getElementById('gt_union').value,
-            campo_id:         document.getElementById('gt_campo').value,
             zona_id:          document.getElementById('gt_zona').value,
             nueva_password:   document.getElementById('gt_password').value,
             rol_id:           document.getElementById('gt_rol').value

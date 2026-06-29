@@ -215,7 +215,7 @@ async function cargarTablaGlobalDirector() {
             if (u.rol_id === 1) iconoRol = '<i class="fas fa-crown" style="color:#d9534f;margin-right:5px;" title="Director"></i>';
 
             const nombreZona = u.zona_nombre
-                ? `<span style="color:#005a87;font-weight:500;">${u.zona_nombre}</span>`
+                ? `<span style="color:#005a87;font-weight:500;">${u.zona_nombre}</span>${u.union_nombre ? `<br><span style="font-size:0.75rem;color:#94a3b8;">${u.union_nombre}</span>` : ''}`
                 : '<span style="color:#ccc;">--</span>';
 
             const tr = document.createElement('tr');
@@ -229,11 +229,8 @@ async function cargarTablaGlobalDirector() {
                     <button onclick="abrirModalBasico(${u.id})" style="cursor:pointer;background:none;border:none;color:#005a87;font-size:1.1rem;margin-right:5px;" title="Ver ficha">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button onclick="abrirModalCompleto(${u.id})" style="cursor:pointer;background:none;border:none;color:#d9534f;font-size:1.1rem;margin-right:5px;" title="Gestión maestra">
+                    <button onclick="abrirModalCompleto(${u.id})" style="cursor:pointer;background:none;border:none;color:#d9534f;font-size:1.1rem;" title="Gestión maestra">
                         <i class="fas fa-cogs"></i>
-                    </button>
-                    <button onclick="abrirModalDescarga(${u.id}, '${u.nombre_completo.replace(/'/g,"\\'")}'')" style="cursor:pointer;background:none;border:none;color:#e74c3c;font-size:1.1rem;" title="Descargar informe">
-                        <i class="fas fa-file-pdf"></i>
                     </button>
                 </td>
             `;
@@ -259,7 +256,10 @@ async function cargarTablaCoaches() {
             tbody.innerHTML += `
                 <tr style="border-bottom:1px solid #eee;">
                     <td style="padding:10px;"><strong>${c.nombre_completo}</strong></td>
-                    <td style="padding:10px;">${c.zona_nombre || 'Sin Asignar'}</td>
+                    <td style="padding:10px;">
+                        ${c.zona_nombre || 'Sin Asignar'}
+                        ${c.union_nombre ? `<br><span style="font-size:0.75rem;color:#94a3b8;">${c.union_nombre}</span>` : ''}
+                    </td>
                     <td style="padding:10px;">${c.equipo_cantidad} a cargo</td>
                     <td style="padding:10px;font-weight:bold;color:green;">$${parseFloat(c.total_zona_dinero).toFixed(2)}</td>
                     <td style="padding:10px;font-weight:bold;">${c.total_zona_colecciones}</td>
