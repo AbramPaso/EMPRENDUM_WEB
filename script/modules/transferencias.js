@@ -4,6 +4,104 @@
 
 let _zonasTransfer = [];
 
+// ─── Helpers de stock ────────────────────────────────────────────────────────
+
+function _applyStockBoxStyle(box, bg, border, color) {
+    box.style.backgroundColor = bg;
+    box.style.borderColor = border;
+    box.style.color = color;
+}
+
+function limpiarStockTransfer(lado) {
+    const box = document.getElementById(`info-stock-${lado}`);
+    if (!box) return;
+    box.style.display = 'none';
+    box.innerHTML = '';
+    _applyStockBoxStyle(box, '#f0fdf4', '#bbf7d0', '#166534');
+}
+
+async function mostrarStockZona(lado, zonaId) {
+    const box = document.getElementById(`info-stock-${lado}`);
+    if (!box || !zonaId) { limpiarStockTransfer(lado); return; }
+
+    box.style.display = 'block';
+    _applyStockBoxStyle(box, '#f0fdf4', '#bbf7d0', '#166534');
+    box.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consultando…';
+
+    try {
+        const res = await fetch(`${API_BASE}/libros/zona/${zonaId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error();
+        const libros = await res.json();
+
+        if (libros.length === 0) {
+            box.innerHTML = '<i class="fas fa-box-open"></i> Sin libros asignados a esta zona.';
+        } else {
+            const total = libros.reduce((s, l) => s + (l.cantidad || 0), 0);
+            const disponible = libros.reduce((s, l) => s + (l.cantidad_disponible || 0), 0);
+            box.innerHTML = `<i class="fas fa-book"></i> <strong>${total}</strong> libros totales · <strong style="color:#15803d;">${disponible}</strong> disponibles`;
+        }
+    } catch {
+        _applyStockBoxStyle(box, '#fef2f2', '#fecaca', '#991b1b');
+        box.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error al consultar.';
+    }
+}
+
+async function mostrarStockColportor(lado, colportorId) {
+    const box = document.getElementById(`info-stock-${lado}`);
+    if (!box || !colportorId) { limpiarStockTransfer(lado); return; }
+
+    box.style.display = 'block';
+    _applyStockBoxStyle(box, '#eff6ff', '#bfdbfe', '#1e40af');
+    box.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consultando…';
+
+    try {
+        const res = await fetch(`${API_BASE}/libros/colportor/${colportorId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error();
+        const libros = await res.json();
+
+        if (libros.length === 0) {
+            box.innerHTML = '<i class="fas fa-box-open"></i> Sin libros asignados a este colportor.';
+        } else {
+            const total = libros.reduce((s, l) => s + (l.cantidad || 0), 0);
+            box.innerHTML = `<i class="fas fa-user"></i> <strong>${total}</strong> libros asignados a este colportor`;
+        }
+    } catch {
+        _applyStockBoxStyle(box, '#fef2f2', '#fecaca', '#991b1b');
+        box.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error al consultar.';
+    }
+}
+
+// Handlers de cambio en selects de zona / colportor
+function onZonaChange(lado) {
+    const tipo = document.getElementById(`trans_${lado}_tipo`)?.value;
+    if (tipo === 'colportor') {
+        limpiarStockTransfer(lado);
+        filtrarColportorTransfer(lado);
+    } else {
+        const zonaId = document.getElementById(`trans_${lado}_zona`)?.value;
+        if (zonaId) mostrarStockZona(lado, zonaId);
+        else limpiarStockTransfer(lado);
+    }
+}
+
+function onColportorChange(lado) {
+    const colportorId = document.getElementById(`trans_${lado}_colportor`)?.value;
+    if (colportorId) mostrarStockColportor(lado, colportorId);
+    else limpiarStockTransfer(lado);
+}
+
+// Nombre legible de origen/destino para las tablas
+function _nombreTransfer(t, lado) {
+    if (t[`${lado}_tipo`] === 'zona') {
+        return t[`${lado}_zona_nombre`] || `Zona ${t[`${lado}_zona_id`]}`;
+    }
+    return t[`${lado}_colportor_nombre`] || `Colportor #${t[`${lado}_usuario_id`]}`;
+}
+
 // ─── Inicialización según rol ────────────────────────────────────────────────
 
 async function cargarZonasTransfer() {
@@ -39,28 +137,27 @@ async function cargarZonasTransfer() {
 }
 
 async function inicializarTransferCoach() {
-    // Coach: su zona queda pre-seleccionada; colportores vienen de su equipo
     const zona_id = usuarioActual.zona_id;
 
     ['origen', 'destino'].forEach(lado => {
-        // Ocultar union select (no aplica para coach)
         const selUnion = document.getElementById(`trans_${lado}_union`);
         if (selUnion) selUnion.style.display = 'none';
 
-        // Pre-poblar zona con la suya (solo lectura)
         const selZona = document.getElementById(`trans_${lado}_zona`);
         if (selZona && zona_id) {
             selZona.innerHTML = `<option value="${zona_id}">Tu Zona</option>`;
             selZona.disabled = true;
         }
 
-        // Ocultar colportor hasta que tipo=colportor
         const selColp = document.getElementById(`trans_${lado}_colportor`);
         if (selColp) { selColp.style.display = 'none'; selColp.disabled = true; }
     });
 
-    // Pre-poblar colportores del coach (se cargan cuando tipo cambia a 'colportor')
-    // La lista ya está en colportoresData desde cargarColportoresCoach()
+    // Mostrar stock de la zona del coach automáticamente (ambos lados)
+    if (zona_id) {
+        mostrarStockZona('origen', zona_id);
+        mostrarStockZona('destino', zona_id);
+    }
 }
 
 // ─── Cambio de tipo (zona / colportor) ──────────────────────────────────────
@@ -72,27 +169,28 @@ function cambiarTipoTransfer(lado) {
     const selColp  = document.getElementById(`trans_${lado}_colportor`);
 
     if (tipo === 'zona') {
-        // Mostrar zona, ocultar colportor
         if (selColp) { selColp.style.display = 'none'; selColp.disabled = true; selColp.innerHTML = '<option value="">Selecciona Colportor…</option>'; }
 
         if (usuarioActual.rol === 1) {
-            // Director: resetear cascada
             if (selUnion) { selUnion.value = ''; }
             if (selZona)  { selZona.innerHTML = '<option value="">2. Selecciona Zona…</option>'; selZona.disabled = true; }
+            limpiarStockTransfer(lado);
+        } else {
+            // Coach: zona ya fija, mostrar stock de su zona
+            const zonaId = selZona?.value;
+            if (zonaId) mostrarStockZona(lado, zonaId);
+            else limpiarStockTransfer(lado);
         }
-        // Coach: zona ya está fija, no hacer nada
 
     } else {
-        // tipo = colportor
         if (selColp) { selColp.style.display = 'block'; }
+        limpiarStockTransfer(lado);
 
         if (usuarioActual.rol === 1) {
-            // Director: resetear cascada y habilitar flujo
             if (selUnion) { selUnion.value = ''; }
             if (selZona)  { selZona.innerHTML = '<option value="">2. Selecciona Zona…</option>'; selZona.disabled = true; }
             if (selColp)  { selColp.innerHTML = '<option value="">3. Selecciona Colportor…</option>'; selColp.disabled = true; }
         } else {
-            // Coach: poblar colportores de su equipo directamente
             if (selColp) {
                 selColp.innerHTML = '<option value="">Selecciona Colportor…</option>';
                 (colportoresData || []).forEach(u => {
@@ -212,10 +310,14 @@ function _resetTransferSide(lado) {
         if (selUnion) selUnion.value = '';
         if (selZona)  { selZona.innerHTML = '<option value="">2. Selecciona Zona…</option>'; selZona.disabled = true; }
         if (selColp)  { selColp.style.display = 'none'; selColp.disabled = true; }
+        limpiarStockTransfer(lado);
     } else {
-        // Coach: solo ocultar colportor select
         const selColp = document.getElementById(`trans_${lado}_colportor`);
         if (selColp) { selColp.style.display = 'none'; selColp.disabled = true; }
+        // Coach: volver a mostrar stock de su zona fija
+        const zonaId = usuarioActual.zona_id;
+        if (zonaId) mostrarStockZona(lado, zonaId);
+        else limpiarStockTransfer(lado);
     }
 }
 
@@ -239,8 +341,8 @@ async function cargarTransferenciasPendientes() {
         }
 
         transferencias.forEach(t => {
-            const origen  = t.origen_tipo  === 'zona' ? `Zona ${t.origen_zona_id}`   : `Colportor #${t.origen_usuario_id}`;
-            const destino = t.destino_tipo === 'zona' ? `Zona ${t.destino_zona_id}`  : `Colportor #${t.destino_usuario_id}`;
+            const origen  = _nombreTransfer(t, 'origen');
+            const destino = _nombreTransfer(t, 'destino');
             tbody.innerHTML += `
                 <tr style="border-bottom:1px solid #eee;">
                     <td style="padding:10px;font-weight:bold;">${t.libro_titulo}</td>
@@ -262,6 +364,44 @@ async function cargarTransferenciasPendientes() {
     } catch (e) { console.error("Error cargarTransferenciasPendientes:", e); }
 }
 
+async function cargarHistorialTransferencias() {
+    try {
+        const res = await fetch(`${API_BASE}/transferencias/historial`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const historial = await res.json();
+
+        const tbody = document.getElementById('tabla-historial-trans-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        if (historial.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#94a3b8;">Sin transferencias registradas en esta campaña.</td></tr>';
+            return;
+        }
+
+        historial.forEach(t => {
+            const origen  = _nombreTransfer(t, 'origen');
+            const destino = _nombreTransfer(t, 'destino');
+            const estadoBadge = t.estado === 'aprobado'
+                ? '<span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:600;">Aprobado</span>'
+                : '<span style="background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:600;">Rechazado</span>';
+            tbody.innerHTML += `
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px;font-weight:bold;">${t.libro_titulo}</td>
+                    <td style="padding:10px;text-align:center;">${t.cantidad}</td>
+                    <td style="padding:10px;">${origen}</td>
+                    <td style="padding:10px;">${destino}</td>
+                    <td style="padding:10px;">${estadoBadge}</td>
+                    <td style="padding:10px;color:#64748b;">${t.solicitante_nombre}</td>
+                    <td style="padding:10px;color:#64748b;">${t.resolucion_formato || '--'}</td>
+                </tr>
+            `;
+        });
+    } catch (e) { console.error("Error cargarHistorialTransferencias:", e); }
+}
+
 async function responderTransferencia(id, estado) {
     try {
         const res = await fetch(`${API_BASE}/transferencias/${id}/responder`, {
@@ -276,7 +416,7 @@ async function responderTransferencia(id, estado) {
                 data.message,
                 estado === 'aprobado' ? 'success' : 'info'
             );
-            await cargarTransferenciasPendientes();
+            await Promise.all([cargarTransferenciasPendientes(), cargarHistorialTransferencias()]);
         } else {
             mostrarAlerta('Error', data.message, 'error');
         }

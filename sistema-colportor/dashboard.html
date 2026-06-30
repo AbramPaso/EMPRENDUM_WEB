@@ -375,6 +375,26 @@
                         <button onclick="asignarStockZona()" class="btn-primary">Asignar a Zona</button>
                     </div>
                 </div>
+
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3><i class="fas fa-history"></i> Historial de Asignaciones a Zonas</h3>
+                    <p style="font-size:0.8rem;color:#64748b;margin-bottom:12px;">Registro de todos los libros asignados a zonas en la campaña activa.</p>
+                    <div style="overflow-x: auto;">
+                        <table class="table-pro">
+                            <thead>
+                                <tr>
+                                    <th>Unión</th>
+                                    <th>Zona</th>
+                                    <th>Libro</th>
+                                    <th style="text-align:center;">Cantidad</th>
+                                    <th>Asignado por</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-historial-asig-zona-body"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- VISTA COACH: asignar libros a colportores de su zona -->
@@ -441,13 +461,14 @@
                                     <option value="">1. Selecciona Unión…</option>
                                 </select>
                                 <!-- Director: zona | Coach: zona de solo lectura -->
-                                <select id="trans_origen_zona" style="display:block; margin-top:6px; width:100%;" disabled onchange="filtrarColportorTransfer('origen')">
+                                <select id="trans_origen_zona" style="display:block; margin-top:6px; width:100%;" disabled onchange="onZonaChange('origen')">
                                     <option value="">Selecciona Zona…</option>
                                 </select>
                                 <!-- Colportor (director y coach) -->
-                                <select id="trans_origen_colportor" style="display:none; margin-top:6px; width:100%;" disabled>
+                                <select id="trans_origen_colportor" style="display:none; margin-top:6px; width:100%;" disabled onchange="onColportorChange('origen')">
                                     <option value="">Selecciona Colportor…</option>
                                 </select>
+                                <div id="info-stock-origen" style="display:none;margin-top:8px;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:0.78rem;color:#166534;line-height:1.6;"></div>
                             </div>
                             <div style="text-align:center; padding-top:52px; font-size: 1.3rem; color: #94a3b8;">
                                 <i class="fas fa-arrow-right"></i>
@@ -462,12 +483,13 @@
                                 <select id="trans_destino_union" style="display:none; margin-top:6px; width:100%;" onchange="filtrarZonaTransfer('destino')">
                                     <option value="">1. Selecciona Unión…</option>
                                 </select>
-                                <select id="trans_destino_zona" style="display:block; margin-top:6px; width:100%;" disabled onchange="filtrarColportorTransfer('destino')">
+                                <select id="trans_destino_zona" style="display:block; margin-top:6px; width:100%;" disabled onchange="onZonaChange('destino')">
                                     <option value="">Selecciona Zona…</option>
                                 </select>
-                                <select id="trans_destino_colportor" style="display:none; margin-top:6px; width:100%;" disabled>
+                                <select id="trans_destino_colportor" style="display:none; margin-top:6px; width:100%;" disabled onchange="onColportorChange('destino')">
                                     <option value="">Selecciona Colportor…</option>
                                 </select>
+                                <div id="info-stock-destino" style="display:none;margin-top:8px;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:0.78rem;color:#166534;line-height:1.6;"></div>
                             </div>
                         </div>
                         <button onclick="solicitarTransferencia()" class="btn-primary" style="margin-top: 15px;"><i class="fas fa-paper-plane"></i> Solicitar Transferencia</button>
@@ -480,6 +502,27 @@
                         <table class="table-pro">
                             <thead><tr><th>Libro</th><th style="text-align:center;">Cant.</th><th>Origen</th><th>Destino</th><th>Solicitante</th><th style="text-align:center;">Acciones</th></tr></thead>
                             <tbody id="tabla-transferencias-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-container" style="margin-top: 20px;">
+                    <h3><i class="fas fa-history"></i> Historial de Transferencias</h3>
+                    <p style="font-size:0.8rem;color:#64748b;margin-bottom:12px;">Transferencias aprobadas y rechazadas de la campaña activa.</p>
+                    <div style="overflow-x: auto;">
+                        <table class="table-pro">
+                            <thead>
+                                <tr>
+                                    <th>Libro</th>
+                                    <th style="text-align:center;">Cant.</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th>Estado</th>
+                                    <th>Solicitante</th>
+                                    <th>Resuelto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-historial-trans-body"></tbody>
                         </table>
                     </div>
                 </div>

@@ -25,11 +25,11 @@ async function cargarSeccionLibros() {
     if (rol === 1) {
         if (vistaDir)    vistaDir.style.display    = 'block';
         if (vistaTransf) vistaTransf.style.display = 'block';
-        await Promise.all([cargarStockGlobal(), cargarZonasParaLibros(), cargarTransferenciasPendientes(), cargarZonasTransfer()]);
+        await Promise.all([cargarStockGlobal(), cargarZonasParaLibros(), cargarTransferenciasPendientes(), cargarZonasTransfer(), cargarHistorialTransferencias(), cargarHistorialAsignacionesZona()]);
     } else if (rol === 2) {
         if (vistaCoach)  vistaCoach.style.display  = 'block';
         if (vistaTransf) vistaTransf.style.display = 'block';
-        await Promise.all([cargarStockCoach(), cargarColportoresCoach(), cargarTransferenciasPendientes()]);
+        await Promise.all([cargarStockCoach(), cargarColportoresCoach(), cargarTransferenciasPendientes(), cargarHistorialTransferencias()]);
         inicializarTransferCoach();
     } else {
         if (vistaColp) vistaColp.style.display = 'block';
@@ -185,7 +185,7 @@ async function asignarStockZona() {
             document.getElementById('asig_union').value = '';
             document.getElementById('asig_zona').innerHTML = '<option value="">2. Selecciona Zona…</option>';
             document.getElementById('asig_zona').disabled = true;
-            await cargarStockGlobal();
+            await Promise.all([cargarStockGlobal(), cargarHistorialAsignacionesZona()]);
         } else {
             const err = await res.json();
             mostrarAlerta('Error', err.message, 'error');
@@ -277,6 +277,38 @@ async function cargarMisLibros() {
             `;
         });
     } catch (e) { console.error("Error cargarMisLibros:", e); }
+}
+
+async function cargarHistorialAsignacionesZona() {
+    try {
+        const res = await fetch(`${API_BASE}/libros/zona/historial`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const historial = await res.json();
+
+        const tbody = document.getElementById('tabla-historial-asig-zona-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        if (historial.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8;">Sin asignaciones registradas en esta campaña.</td></tr>';
+            return;
+        }
+
+        historial.forEach(h => {
+            tbody.innerHTML += `
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px;color:#94a3b8;font-size:0.85rem;">${h.union_siglas || '--'}</td>
+                    <td style="padding:10px;font-weight:500;">${h.zona_nombre}</td>
+                    <td style="padding:10px;">${h.libro_titulo}</td>
+                    <td style="padding:10px;text-align:center;font-weight:bold;color:#0f172a;">${h.cantidad}</td>
+                    <td style="padding:10px;color:#64748b;">${h.asignado_por_nombre}</td>
+                    <td style="padding:10px;color:#64748b;font-size:0.85rem;">${h.fecha_formato}</td>
+                </tr>
+            `;
+        });
+    } catch (e) { console.error("Error cargarHistorialAsignacionesZona:", e); }
 }
 
 // Form agregar libro al catálogo
