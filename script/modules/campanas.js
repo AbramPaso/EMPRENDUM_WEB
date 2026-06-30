@@ -192,7 +192,10 @@ async function cargarInscripcionesPendientes() {
             tbody.innerHTML += `
                 <tr style="border-bottom:1px solid #eee;">
                     <td style="padding:10px;"><strong>${i.nombre_completo}</strong><br><small style="color:#94a3b8;">${i.telefono || ''}</small></td>
-                    <td style="padding:10px;">${i.zona_nombre || '--'}</td>
+                    <td style="padding:10px;">
+                        ${i.zona_nombre || '--'}
+                        ${i.union_siglas ? `<br><span style="font-size:0.75rem;color:#94a3b8;">${i.union_siglas}</span>` : ''}
+                    </td>
                     <td style="padding:10px;font-size:0.85rem;color:#64748b;">${fecha}</td>
                     <td style="padding:10px;text-align:center;">
                         <button onclick="responderInscripcion(${i.id},'aprobado')" style="background:#16a34a;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;margin-right:5px;">

@@ -137,6 +137,18 @@ async function cargarEstadisticas() {
             }
         }
 
+        // Zona info debajo del badge (solo coach y colportor si están en campaña)
+        const zonaBadge = document.getElementById("zona-badge-info");
+        if (zonaBadge) {
+            if ((rol === 2 || rol === 3) && data.zona_nombre) {
+                const desc = data.zona_descripcion ? ` · ${data.zona_descripcion}` : '';
+                zonaBadge.textContent = data.zona_nombre + desc;
+                zonaBadge.style.display = 'inline-block';
+            } else {
+                zonaBadge.style.display = 'none';
+            }
+        }
+
         document.getElementById("vista-colportor").style.display = "none";
         document.getElementById("vista-director").style.display = "none";
         document.getElementById("vista-coach").style.display = "none";
