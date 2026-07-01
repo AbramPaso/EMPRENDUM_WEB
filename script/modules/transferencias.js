@@ -243,7 +243,7 @@ async function filtrarColportorTransfer(lado) {
         });
         if (!res.ok) throw new Error();
         const users = await res.json();
-        const colps = users.filter(u => u.rol_id === 3);
+        const colps = users.filter(u => u.rol_id === 3 || u.rol_id === 2);
 
         selColp.innerHTML = '<option value="">3. Selecciona Colportor…</option>';
         colps.forEach(u => {
