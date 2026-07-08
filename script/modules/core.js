@@ -128,6 +128,7 @@ function mostrarSeccion(idSeccion) {
     if (idSeccion === "reportes")    cargarSeccionReportes();
     if (idSeccion === "campanas")    cargarSeccionCampanas();
     if (idSeccion === "libros")      cargarSeccionLibros();
+    if (idSeccion === "asignacion")  cargarSeccionAsignacion();
 }
 
 // =====================================================

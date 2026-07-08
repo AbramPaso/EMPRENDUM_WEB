@@ -7,24 +7,140 @@ let stockGlobalData = [];
 let zonasData       = [];
 let colportoresData = [];
 
+// Inventario — director: catálogo+stock | coach: zona+personal | colportor: personal
 async function cargarSeccionLibros() {
-    const rol = usuarioActual.rol;
+    const rol      = usuarioActual.rol;
+    const vistaDir   = document.getElementById('vista-libros-director');
+    const vistaCoach = document.getElementById('vista-inventario-coach');
+    const vistaColp  = document.getElementById('vista-inventario-colportor');
 
-    const vistaDir    = document.getElementById('vista-libros-director');
+    [vistaDir, vistaCoach, vistaColp].forEach(v => { if (v) v.style.display = 'none'; });
+
+    // Coach y Colportor sin campaña activa aprobada: mostrar aviso y salir
+    if (rol !== 1 && !usuarioActual.zona_nombre) {
+        const contenedor = vistaCoach || vistaColp;
+        if (contenedor) {
+            contenedor.style.display = 'block';
+            contenedor.innerHTML = `
+                <div class="form-container" style="text-align:center;padding:40px;">
+                    <i class="fas fa-lock" style="font-size:2.5rem;color:var(--text-muted);margin-bottom:16px;display:block;"></i>
+                    <h3 style="color:var(--text-muted);font-weight:600;margin-bottom:8px;">Sin acceso al inventario</h3>
+                    <p style="color:var(--text-muted);font-size:0.9rem;">No estás inscrito y aprobado en la campaña activa.<br>Consulta la sección <strong>Campañas</strong> para inscribirte.</p>
+                </div>`;
+        }
+        return;
+    }
+
+    if (rol === 1) {
+        if (vistaDir) vistaDir.style.display = 'block';
+        await cargarCatalogoLibros();
+        await Promise.all([cargarStockGlobal(), cargarReporteZonas()]);
+    } else if (rol === 2) {
+        if (vistaCoach) vistaCoach.style.display = 'block';
+        await cargarInventarioCoach();
+    } else {
+        if (vistaColp) vistaColp.style.display = 'block';
+        await cargarInventarioColportor();
+    }
+}
+
+async function cargarInventarioCoach() {
+    const zonaId    = usuarioActual.zona_id;
+    const zonaNombre = usuarioActual.zona_nombre || (zonaId ? `Zona ${zonaId}` : 'Sin zona asignada');
+    const spanNombre = document.getElementById('inv-coach-zona-nombre');
+    if (spanNombre) spanNombre.textContent = zonaNombre;
+
+    // ── Inventario de zona ──
+    const tbodyZona = document.getElementById('tabla-inv-zona-coach');
+    if (tbodyZona) {
+        tbodyZona.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:16px;"><i class="fas fa-spinner fa-spin"></i></td></tr>';
+        if (!zonaId) {
+            tbodyZona.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:16px;">Sin zona asignada en la campaña activa.</td></tr>';
+        } else {
+            try {
+                const res = await fetch(`${API_BASE}/libros/zona/${zonaId}`, { headers: { Authorization: `Bearer ${token}` } });
+                if (res.ok) {
+                    const libros = await res.json();
+                    if (!libros.length) {
+                        tbodyZona.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:16px;">No hay libros asignados a esta zona.</td></tr>';
+                    } else {
+                        tbodyZona.innerHTML = libros.map(l => {
+                            const disponible = l.cantidad - l.cantidad_asignada_colportores;
+                            return `<tr>
+                                <td style="font-weight:500;">${l.titulo}</td>
+                                <td style="text-align:center;font-weight:700;color:var(--primary-dark);">${l.cantidad}</td>
+                                <td style="text-align:center;color:var(--accent-yellow);font-weight:600;">${l.cantidad_asignada_colportores}</td>
+                                <td style="text-align:center;color:var(--primary-blue);font-weight:600;">${disponible}</td>
+                            </tr>`;
+                        }).join('');
+                    }
+                }
+            } catch (e) { tbodyZona.innerHTML = '<tr><td colspan="4" style="color:#ef4444;padding:12px;">Error al cargar.</td></tr>'; }
+        }
+    }
+
+    // ── Libros personales del coach ──
+    const tbodyPersonal = document.getElementById('tabla-inv-personal-coach');
+    if (tbodyPersonal) {
+        tbodyPersonal.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:16px;"><i class="fas fa-spinner fa-spin"></i></td></tr>';
+        try {
+            const res = await fetch(`${API_BASE}/libros/mis-libros`, { headers: { Authorization: `Bearer ${token}` } });
+            if (res.ok) {
+                const libros = await res.json();
+                if (!libros.length) {
+                    tbodyPersonal.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:16px;">No tienes libros asignados.</td></tr>';
+                } else {
+                    tbodyPersonal.innerHTML = libros.map(l => `
+                        <tr>
+                            <td style="font-weight:500;">${l.titulo}</td>
+                            <td style="color:var(--text-muted);">${l.autor || '—'}</td>
+                            <td style="text-align:right;color:var(--success);font-weight:600;">$${parseFloat(l.precio).toFixed(2)}</td>
+                            <td style="text-align:center;font-weight:700;color:var(--primary-dark);">${l.cantidad}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        } catch (e) { tbodyPersonal.innerHTML = '<tr><td colspan="4" style="color:#ef4444;padding:12px;">Error al cargar.</td></tr>'; }
+    }
+}
+
+async function cargarInventarioColportor() {
+    const tbody = document.getElementById('tabla-inv-colportor');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:16px;"><i class="fas fa-spinner fa-spin"></i></td></tr>';
+    try {
+        const res = await fetch(`${API_BASE}/libros/mis-libros`, { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) throw new Error();
+        const libros = await res.json();
+        if (!libros.length) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:16px;">No tienes libros asignados aún.</td></tr>';
+        } else {
+            tbody.innerHTML = libros.map(l => `
+                <tr>
+                    <td style="font-weight:500;">${l.titulo}</td>
+                    <td style="color:var(--text-muted);">${l.autor || '—'}</td>
+                    <td style="text-align:right;color:var(--success);font-weight:600;">$${parseFloat(l.precio).toFixed(2)}</td>
+                    <td style="text-align:center;font-weight:700;color:var(--primary-dark);">${l.cantidad}</td>
+                </tr>
+            `).join('');
+        }
+    } catch (e) { tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444;padding:12px;">Error al cargar.</td></tr>'; }
+}
+
+// Asignación — contenido según rol
+async function cargarSeccionAsignacion() {
+    const rol         = usuarioActual.rol;
+    const vistaDir    = document.getElementById('vista-asignacion-director');
     const vistaCoach  = document.getElementById('vista-libros-coach');
     const vistaColp   = document.getElementById('vista-mis-libros');
     const vistaTransf = document.getElementById('vista-transferencias');
 
-    if (vistaDir)    vistaDir.style.display    = 'none';
-    if (vistaCoach)  vistaCoach.style.display  = 'none';
-    if (vistaColp)   vistaColp.style.display   = 'none';
-    if (vistaTransf) vistaTransf.style.display = 'none';
-
-    await cargarCatalogoLibros();
+    [vistaDir, vistaCoach, vistaColp, vistaTransf].forEach(v => { if (v) v.style.display = 'none'; });
 
     if (rol === 1) {
         if (vistaDir)    vistaDir.style.display    = 'block';
         if (vistaTransf) vistaTransf.style.display = 'block';
+        await cargarCatalogoLibros();
         await Promise.all([cargarStockGlobal(), cargarZonasParaLibros(), cargarTransferenciasPendientes(), cargarZonasTransfer(), cargarHistorialTransferencias(), cargarHistorialAsignacionesZona()]);
     } else if (rol === 2) {
         if (vistaCoach)  vistaCoach.style.display  = 'block';
@@ -51,13 +167,7 @@ async function cargarCatalogoLibros() {
             });
         }
 
-        const selTrans = document.getElementById('trans_libro');
-        if (selTrans) {
-            selTrans.innerHTML = '<option value="">Seleccione Libro...</option>';
-            catalogoLibros.forEach(l => {
-                selTrans.innerHTML += `<option value="${l.id}">${l.titulo}</option>`;
-            });
-        }
+        // trans_libro se repobla dinámicamente desde transferencias.js según el origen
     } catch (e) { console.error("Error cargarCatalogoLibros:", e); }
 }
 
@@ -309,6 +419,114 @@ async function cargarHistorialAsignacionesZona() {
             `;
         });
     } catch (e) { console.error("Error cargarHistorialAsignacionesZona:", e); }
+}
+
+// =====================================================
+// REPORTE DE DISTRIBUCIÓN POR ZONA
+// =====================================================
+
+let _reporteZonasData = [];
+
+async function cargarReporteZonas() {
+    const container = document.getElementById('reporte-zonas-container');
+    if (!container) return;
+    container.innerHTML = '<p style="color:var(--text-muted);padding:16px;text-align:center;"><i class="fas fa-spinner fa-spin"></i> Cargando...</p>';
+
+    try {
+        const res = await fetch(`${API_BASE}/libros/reporte-zonas`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) { container.innerHTML = '<p style="color:#ef4444;padding:12px;">Error al cargar datos.</p>'; return; }
+        _reporteZonasData = await res.json();
+
+        if (!_reporteZonasData.length) {
+            container.innerHTML = '<p style="color:var(--text-muted);padding:16px;text-align:center;">Sin datos para la campaña activa.</p>';
+            return;
+        }
+
+        let html = '<table class="table-pro"><thead><tr>'
+            + '<th style="text-align:left;">Zona</th>'
+            + '<th style="text-align:center;">Vendidos</th>'
+            + '<th style="text-align:center;">Asignados</th>'
+            + '<th style="text-align:center;">Sin Asignar</th>'
+            + '<th style="text-align:center;">Total</th>'
+            + '</tr></thead><tbody>';
+
+        _reporteZonasData.forEach(union => {
+            html += `<tr style="background:#f8fafc;cursor:default;">
+                <td colspan="5" style="padding:8px 16px;font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">
+                    <i class="fas fa-sitemap" style="margin-right:6px;"></i>${union.union_siglas} &mdash; ${union.union_nombre}
+                </td>
+            </tr>`;
+
+            union.zonas.forEach(zona => {
+                html += `<tr style="cursor:pointer;" onclick="_rzOpenModal(${zona.zona_id})" title="Ver detalle de libros">
+                    <td style="font-weight:500;">
+                        <i class="fas fa-search" style="font-size:0.7rem;margin-right:8px;color:var(--primary-blue);opacity:0.7;"></i>${zona.zona_nombre}
+                    </td>
+                    <td style="text-align:center;font-weight:600;color:var(--success);">${zona.vendidos}</td>
+                    <td style="text-align:center;font-weight:600;color:var(--accent-yellow);">${zona.asignados_colportores}</td>
+                    <td style="text-align:center;font-weight:600;color:var(--primary-blue);">${zona.sin_asignar}</td>
+                    <td style="text-align:center;font-weight:700;color:var(--primary-dark);">${zona.total_zona}</td>
+                </tr>`;
+            });
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    } catch (e) {
+        console.error('Error cargarReporteZonas:', e);
+        container.innerHTML = '<p style="color:#ef4444;padding:12px;">Error de conexión.</p>';
+    }
+}
+
+function _rzOpenModal(zonaId) {
+    let zona = null, unionData = null;
+    for (const u of _reporteZonasData) {
+        const z = u.zonas.find(z => z.zona_id === zonaId);
+        if (z) { zona = z; unionData = u; break; }
+    }
+    if (!zona) return;
+
+    document.getElementById('rz-modal-titulo').textContent = zona.zona_nombre;
+    document.getElementById('rz-modal-union').textContent  = `${unionData.union_siglas} — ${unionData.union_nombre}`;
+
+    // Mini stats tiles
+    const statsConf = [
+        { label: 'Vendidos',     value: zona.vendidos,              color: 'var(--success)',       icon: 'fa-check-circle' },
+        { label: 'Asignados',    value: zona.asignados_colportores, color: 'var(--accent-yellow)', icon: 'fa-user-tag' },
+        { label: 'Sin Asignar',  value: zona.sin_asignar,           color: 'var(--primary-blue)',  icon: 'fa-box-open' },
+        { label: 'Total Zona',   value: zona.total_zona,            color: 'var(--primary-dark)',  icon: 'fa-layer-group' },
+    ];
+    document.getElementById('rz-modal-stats').innerHTML = statsConf.map(s => `
+        <div style="background:var(--bg-body);border:1px solid var(--border-color);border-radius:var(--radius);padding:14px;text-align:center;">
+            <i class="fas ${s.icon}" style="color:${s.color};font-size:1.1rem;margin-bottom:6px;display:block;"></i>
+            <div style="font-size:1.4rem;font-weight:700;color:${s.color};">${s.value}</div>
+            <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;">${s.label}</div>
+        </div>
+    `).join('');
+
+    // Tabla de libros
+    const tbody = document.getElementById('rz-modal-tbody');
+    if (!zona.libros.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">Sin libros registrados.</td></tr>';
+    } else {
+        tbody.innerHTML = zona.libros.map(lb => `
+            <tr>
+                <td>${lb.titulo}</td>
+                <td style="text-align:center;font-weight:600;color:var(--success);">${lb.vendidos}</td>
+                <td style="text-align:center;font-weight:600;color:var(--accent-yellow);">${lb.asignados_colportores}</td>
+                <td style="text-align:center;font-weight:600;color:var(--primary-blue);">${lb.sin_asignar}</td>
+                <td style="text-align:center;font-weight:700;color:var(--primary-dark);">${lb.total}</td>
+            </tr>
+        `).join('');
+    }
+
+    document.getElementById('modalZonaDetalle').style.display = 'flex';
+}
+
+function cerrarModalZonaDetalle() {
+    document.getElementById('modalZonaDetalle').style.display = 'none';
 }
 
 // Form agregar libro al catálogo

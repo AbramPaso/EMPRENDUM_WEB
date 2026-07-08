@@ -59,8 +59,9 @@ async function cargarEstadisticas() {
 
         const data = await res.json();
         const rol = data.rol_detectado;
-        usuarioActual.rol     = rol;
-        usuarioActual.zona_id = data.zona_detectada || null;
+        usuarioActual.rol        = rol;
+        usuarioActual.zona_id    = data.zona_detectada || null;
+        usuarioActual.zona_nombre = data.zona_nombre    || null;
 
         const badge = document.getElementById("rol-badge");
         if (badge) {
@@ -78,6 +79,19 @@ async function cargarEstadisticas() {
             } else {
                 zonaBadge.style.display = 'none';
             }
+        }
+
+        // ── Visibilidad de módulos según rol y estado de campaña ──
+        const navAsignacion = document.getElementById('nav-asignacion');
+        const navLibros     = document.getElementById('nav-libros');
+
+        // Colportor: no tiene módulo de Asignación
+        if (rol === 3 && navAsignacion) navAsignacion.closest('li').style.display = 'none';
+
+        // Coach y Colportor: Inventario solo si participan en la campaña activa
+        // (zona_nombre viene del backend solo cuando están aprobados / tienen zona activa)
+        if ((rol === 2 || rol === 3) && !data.zona_nombre) {
+            if (navLibros) navLibros.closest('li').style.display = 'none';
         }
 
         document.getElementById("vista-colportor").style.display = "none";

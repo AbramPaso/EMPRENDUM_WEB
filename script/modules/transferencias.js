@@ -75,16 +75,72 @@ async function mostrarStockColportor(lado, colportorId) {
     }
 }
 
+// Repobla el select de libro según el origen seleccionado
+async function actualizarLibrosTransfer(tipo, origenId) {
+    const selLibro = document.getElementById('trans_libro');
+    if (!selLibro) return;
+
+    if (!origenId) {
+        selLibro.innerHTML = '<option value="">— Seleccione origen primero —</option>';
+        selLibro.disabled = true;
+        return;
+    }
+
+    selLibro.innerHTML = '<option value="">Cargando libros…</option>';
+    selLibro.disabled = true;
+
+    try {
+        let libros = [];
+        if (tipo === 'zona') {
+            const res = await fetch(`${API_BASE}/libros/zona/${origenId}`, { headers: { Authorization: `Bearer ${token}` } });
+            if (res.ok) {
+                const data = await res.json();
+                libros = data
+                    .map(l => ({ id: l.libro_id, titulo: l.titulo, disponible: l.cantidad - (l.cantidad_asignada_colportores || 0) }))
+                    .filter(l => l.disponible > 0);
+            }
+        } else {
+            const res = await fetch(`${API_BASE}/libros/colportor/${origenId}`, { headers: { Authorization: `Bearer ${token}` } });
+            if (res.ok) {
+                const data = await res.json();
+                libros = data.filter(l => l.cantidad > 0).map(l => ({ id: l.libro_id, titulo: l.titulo, disponible: l.cantidad }));
+            }
+        }
+
+        if (!libros.length) {
+            selLibro.innerHTML = '<option value="">Sin libros disponibles en este origen</option>';
+        } else {
+            selLibro.innerHTML = '<option value="">Seleccione Libro…</option>';
+            libros.forEach(l => {
+                const opt = document.createElement('option');
+                opt.value = l.id;
+                opt.textContent = `${l.titulo}  (${l.disponible} disp.)`;
+                selLibro.appendChild(opt);
+            });
+            selLibro.disabled = false;
+        }
+    } catch {
+        selLibro.innerHTML = '<option value="">Error al cargar libros</option>';
+    }
+}
+
 // Handlers de cambio en selects de zona / colportor
 function onZonaChange(lado) {
-    const tipo = document.getElementById(`trans_${lado}_tipo`)?.value;
+    const tipo   = document.getElementById(`trans_${lado}_tipo`)?.value;
+    const zonaId = document.getElementById(`trans_${lado}_zona`)?.value;
+
     if (tipo === 'colportor') {
         limpiarStockTransfer(lado);
         filtrarColportorTransfer(lado);
     } else {
-        const zonaId = document.getElementById(`trans_${lado}_zona`)?.value;
         if (zonaId) mostrarStockZona(lado, zonaId);
         else limpiarStockTransfer(lado);
+    }
+
+    // Solo el origen determina qué libros están disponibles
+    if (lado === 'origen') {
+        const tipoOrigen = document.getElementById('trans_origen_tipo')?.value;
+        actualizarLibrosTransfer(tipoOrigen === 'colportor' ? 'colportor' : 'zona', zonaId || null);
     }
 }
 
@@ -92,6 +148,8 @@ function onColportorChange(lado) {
     const colportorId = document.getElementById(`trans_${lado}_colportor`)?.value;
     if (colportorId) mostrarStockColportor(lado, colportorId);
     else limpiarStockTransfer(lado);
+
+    if (lado === 'origen') actualizarLibrosTransfer('colportor', colportorId || null);
 }
 
 // Nombre legible de origen/destino para las tablas
@@ -157,6 +215,8 @@ async function inicializarTransferCoach() {
     if (zona_id) {
         mostrarStockZona('origen', zona_id);
         mostrarStockZona('destino', zona_id);
+        // Pre-poblar libros disponibles en origen (zona fija del coach)
+        actualizarLibrosTransfer('zona', zona_id);
     }
 }
 
@@ -175,16 +235,20 @@ function cambiarTipoTransfer(lado) {
             if (selUnion) { selUnion.value = ''; }
             if (selZona)  { selZona.innerHTML = '<option value="">2. Selecciona Zona…</option>'; selZona.disabled = true; }
             limpiarStockTransfer(lado);
+            if (lado === 'origen') actualizarLibrosTransfer('zona', null);
         } else {
             // Coach: zona ya fija, mostrar stock de su zona
             const zonaId = selZona?.value;
             if (zonaId) mostrarStockZona(lado, zonaId);
             else limpiarStockTransfer(lado);
+            if (lado === 'origen') actualizarLibrosTransfer('zona', zonaId || null);
         }
 
     } else {
         if (selColp) { selColp.style.display = 'block'; }
         limpiarStockTransfer(lado);
+
+        if (lado === 'origen') actualizarLibrosTransfer('colportor', null);
 
         if (usuarioActual.rol === 1) {
             if (selUnion) { selUnion.value = ''; }
@@ -212,6 +276,8 @@ function filtrarZonaTransfer(lado) {
     if (!selZona) return;
     selZona.innerHTML = '<option value="">2. Selecciona Zona…</option>';
     if (selColp) { selColp.innerHTML = '<option value="">3. Selecciona Colportor…</option>'; selColp.disabled = true; }
+    // Cambio de unión resetea zona → resetear también libros si es el origen
+    if (lado === 'origen') actualizarLibrosTransfer('zona', null);
 
     if (!unionId) { selZona.disabled = true; return; }
 
@@ -311,6 +377,7 @@ function _resetTransferSide(lado) {
         if (selZona)  { selZona.innerHTML = '<option value="">2. Selecciona Zona…</option>'; selZona.disabled = true; }
         if (selColp)  { selColp.style.display = 'none'; selColp.disabled = true; }
         limpiarStockTransfer(lado);
+        if (lado === 'origen') actualizarLibrosTransfer('zona', null);
     } else {
         const selColp = document.getElementById(`trans_${lado}_colportor`);
         if (selColp) { selColp.style.display = 'none'; selColp.disabled = true; }
@@ -318,6 +385,7 @@ function _resetTransferSide(lado) {
         const zonaId = usuarioActual.zona_id;
         if (zonaId) mostrarStockZona(lado, zonaId);
         else limpiarStockTransfer(lado);
+        if (lado === 'origen') actualizarLibrosTransfer('zona', zonaId || null);
     }
 }
 
