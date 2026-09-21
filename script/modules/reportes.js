@@ -79,15 +79,28 @@ function poblarLibrosEnForm(libros) {
 const formReporte = document.getElementById("formReporteSemanal");
 
 if (formReporte) {
-    const inputsNumericos = ['sem_numero','sem_colecciones','sem_monto','sem_horas','sem_estudios'];
-    inputsNumericos.forEach(id => {
+    // Solo enteros positivos: semana, colecciones, estudios bíblicos
+    ['sem_numero', 'sem_colecciones', 'sem_estudios'].forEach(id => {
         const input = document.getElementById(id);
-        if (input) {
-            input.addEventListener('keydown', e => {
-                if (['Backspace','Delete','Tab','ArrowLeft','ArrowRight','Enter'].includes(e.key)) return;
-                if (['e','E','-','+'].includes(e.key)) e.preventDefault();
-            });
-        }
+        if (!input) return;
+        input.min = id === 'sem_numero' ? '1' : '0';
+        input.addEventListener('keydown', e => {
+            if (['Backspace','Delete','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter'].includes(e.key)) return;
+            if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+        });
+    });
+
+    // Decimales no-negativos: monto y horas
+    ['sem_monto', 'sem_horas'].forEach(id => {
+        const input = document.getElementById(id);
+        if (!input) return;
+        input.min = '0';
+        input.addEventListener('keydown', e => {
+            if (['Backspace','Delete','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter'].includes(e.key)) return;
+            if (/^[0-9]$/.test(e.key)) return;
+            if (e.key === '.' && !input.value.includes('.')) return;
+            e.preventDefault();
+        });
     });
 
     formReporte.addEventListener("submit", async (e) => {
@@ -101,6 +114,10 @@ if (formReporte) {
         if (!semNumero || semNumero <= 0 || semNumero > 52) {
             return mostrarAlerta("Semana inválida", "El número de semana debe estar entre 1 y 52.", "warning");
         }
+        if (!horas || horas <= 0) return mostrarAlerta("Horas requeridas",   "Las horas trabajadas son obligatorias y deben ser mayores a 0.", "warning");
+        if (monto < 0)            return mostrarAlerta("Monto inválido",     "El monto depositado no puede ser negativo.", "warning");
+        if (horas < 0)            return mostrarAlerta("Horas inválidas",    "Las horas trabajadas no pueden ser negativas.", "warning");
+        if (estudios < 0)         return mostrarAlerta("Estudios inválidos", "Los estudios bíblicos no pueden ser negativos.", "warning");
 
         let colecciones    = 0;
         let libros_vendidos = [];
@@ -126,9 +143,7 @@ if (formReporte) {
                 colecciones += cant;
             });
 
-            if (libros_vendidos.length === 0) {
-                return mostrarAlerta("Sin libros", "Debes indicar al menos un libro vendido.", "warning");
-            }
+            // Libros vendidos es opcional — se permite enviar el reporte sin ventas
         }
 
         const datos = {
